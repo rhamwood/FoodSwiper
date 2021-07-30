@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_swipe">
+
+    <fragment
+        android:id="@+id/navigation_swipe"
+        android:name="org.rowanhamwood.hungr.ui.swipe.SwipeFragment"
+        android:label="@string/title_swipe"
+        tools:layout="@layout/fragment_swipe" />
+
+    <fragment
+        android:id="@+id/navigation_search"
+        android:name="org.rowanhamwood.hungr.ui.search.SearchFragment"
+        android:label="@string/title_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_navigation_search_to_navigation_swipe"
+            app:destination="@id/navigation_swipe" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_recipe_list"
+        android:name="org.rowanhamwood.hungr.ui.recipelist.RecipeListFragment"
+        android:label="@string/title_recipe_list"
+        tools:layout="@layout/fragment_recipe_list" />
+</navigation>

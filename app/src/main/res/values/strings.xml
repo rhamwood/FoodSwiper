@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Hungr</string>
+    <string name="title_swipe">Swipe</string>
+    <string name="title_search">Search</string>
+    <string name="title_recipe_list">Recipe List</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cuisine_label">Cuisine Type</string>
+    <string name="diet_label">Diet Type</string>
+    <string name="new_search">Search for new recipes</string>
+</resources>
