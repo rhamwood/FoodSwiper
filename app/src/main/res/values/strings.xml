@@ -8,4 +8,5 @@
     <string name="cuisine_label">Cuisine Type</string>
     <string name="diet_label">Diet Type</string>
     <string name="new_search">Search for new recipes</string>
+    <string name="preference_file_key">org.rowanhamwood.hungr.PREFERENCE_FILE_KEY</string>
 </resources>

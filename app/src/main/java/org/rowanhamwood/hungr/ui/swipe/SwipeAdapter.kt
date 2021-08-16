@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.rowanhamwood.hungr.databinding.SwipeItemViewBinding
 import org.rowanhamwood.hungr.network.Recipe
+import org.rowanhamwood.hungr.network.RecipeModel
+
 
 class SwipeAdapter :ListAdapter<Recipe,SwipeAdapter.SwipeViewHolder>(DiffCallback) {
 
@@ -22,16 +24,23 @@ class SwipeAdapter :ListAdapter<Recipe,SwipeAdapter.SwipeViewHolder>(DiffCallbac
     }
 
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SwipeViewHolder {
         return SwipeViewHolder(SwipeItemViewBinding.inflate(
             LayoutInflater.from(parent.context)))
     }
 
-    override fun onBindViewHolder(holder: SwipeAdapter.SwipeViewHolder, position: Int) {
+
+
+    override fun onBindViewHolder(holder: SwipeViewHolder, position: Int) {
         val recipe = getItem(position)
         holder.bind(recipe)
 
     }
+
+
+
+
 
     companion object DiffCallback : DiffUtil.ItemCallback<Recipe>() {
         override fun areItemsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
@@ -39,7 +48,7 @@ class SwipeAdapter :ListAdapter<Recipe,SwipeAdapter.SwipeViewHolder>(DiffCallbac
         }
 
         override fun areContentsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.recipeInfo.uri == newItem.recipeInfo.uri
         }
     }
 

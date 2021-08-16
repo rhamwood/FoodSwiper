@@ -16,5 +16,6 @@
         android:id="@+id/card_stack_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:listData="@{viewModel.recipes}" />
+        app:listRecipes="@{viewModel.recipes}" />
+
 </layout>

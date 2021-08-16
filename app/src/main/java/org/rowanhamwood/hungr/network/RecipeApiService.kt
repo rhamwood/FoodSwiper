@@ -1,6 +1,6 @@
 package org.rowanhamwood.hungr.network
 
-import com.squareup.moshi.Json
+import android.util.Log
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
@@ -10,10 +10,14 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.Url
+
+private const val TAG = "RecipeApiService"
 
 
-private const val BASE_URL = "https://api.spoonacular.com/recipes/"
-private const val API_KEY = "41c3f4042c90429299a6d6740b34a351"
+private const val BASE_URL = "https://api.edamam.com/api/"
+private const val API_KEY = "801fbc496f6b39e5afbe4b810261585f"
+private const val APP_ID = "2023fe67"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -34,25 +38,39 @@ private fun addApiKeyToRequests(chain: Interceptor.Chain): Response {
     val request = chain.request().newBuilder()
     val originalHttpUrl = chain.request().url()
     val newUrl = originalHttpUrl.newBuilder()
-        .addQueryParameter("apiKey", API_KEY).build()
-
-
+        .addQueryParameter("app_id", APP_ID)
+        .addQueryParameter("app_key", API_KEY)
+        .build()
+    Log.d(TAG, "addApiKeyToRequests: $newUrl")
     request.url(newUrl)
     return chain.proceed(request.build())
 }
 
+
 interface RecipeApiService {
-    @GET("complexSearch")
+    @GET("recipes/v2")
+
     suspend fun getRecipes(
-        @Query("query") searchQuery: String,
-        @Query("number") numberQuery: Int,
-        @Query("cuisine") cuisineQuery: String?,
-        @Query("diet") dietQuery: String?
+        @Query("type") type: String = "public",
+        @Query("q") searchQuery: String,
+        @Query("health") healthQuery: String?,
+        @Query("cuisineType") cuisineQuery: String?,
+        @Query("field") uri : String = "uri",
+        @Query("field") label : String = "label",
+        @Query("field") image : String = "image",
+        @Query("field") source : String = "source",
+        @Query("field") url : String = "url"
+
     )
-            : RecipeList
+            : RecipeData
+
+    @GET
+    suspend fun getNext(
+        @Url url: String
+    ) : RecipeData
 }
 
-//@Query("apiKey") apiKey: String,
+
 
 object RecipeApi {
 

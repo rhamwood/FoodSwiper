@@ -15,9 +15,9 @@ import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
 
 private const val TAG = "SearchFragment"
 
-class SearchFragment : Fragment()  {
+class SearchFragment : Fragment() {
 
-    //private lateinit var dashboardViewModel: DashboardViewModel
+
     private var _binding: FragmentSearchBinding? = null
 
     private val sharedViewModel: RecipeViewModel by activityViewModels()
@@ -41,44 +41,62 @@ class SearchFragment : Fragment()  {
         val searchView = binding.searchView
         val submitButton = binding.submitButton
         // cuisine selection menu
-        val cuisineMenu =  binding.cuisineMenu
+        val cuisineMenu = binding.cuisineMenu
         val cuisineTextView = binding.cuisineTextView
         // diet selection menu
-        val dietMenu =  binding.dietMenu
-        val dietTextView = binding.dietTextView
-
-
-
+        val healthMenu = binding.dietMenu
+        val healthTextView = binding.dietTextView
 
 
         //cuisineMenu setup
-        val cuisineItems = listOf("None", "African", "American", "Cajun", "Caribbean", "Chinese", "Eastern European",
-            "European", "French", "German", "Greek", "Indian", "Irish", "Italian", "Japanese", "Jewish", "Korean", "Latin American",
-                "Mediterranean Mexican", "Middle Eastern", "Nordic Southern", "Spanish", "Thai",
-                "Vietnamese")
-        val cuisineAdapter = ArrayAdapter(requireContext(), R.layout.cuisine_list_item, cuisineItems)
+        val cuisineItems = listOf(
+            "None",
+            "American",
+            "Asian",
+            "British",
+            "Caribbean",
+            "Central Europe",
+            "Chinese",
+            "Eastern Europe",
+            "French",
+            "Indian",
+            "Italian",
+            "Japanese",
+            "Kosher",
+            "Mediterranean",
+            "Mexican",
+            "Middle Eastern",
+            "Nordic",
+            "South American",
+            "South East Asian"
+        )
+        val cuisineAdapter =
+            ArrayAdapter(requireContext(), R.layout.cuisine_list_item, cuisineItems)
         (cuisineMenu.editText as? AutoCompleteTextView)?.setAdapter(cuisineAdapter)
         cuisineTextView.setText(sharedViewModel.cuisine.value, false)
 
         cuisineTextView.setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-            if((view as TextView).text == "None"){
-                sharedViewModel.setCuisine("")
+            if ((view as TextView).text == "None") {
+                sharedViewModel.setCuisine(null)
             } else {
                 sharedViewModel.setCuisine((view).text.toString())
             }
         }
 
         //Diet menu setup
-        val dietItems = listOf("None", "Gluten Free", "Ketogenic", "Vegetarian", "Vegan", "Pescatarian", "Paleo"  )
-        val dietAdapter = ArrayAdapter(requireContext(), R.layout.diet_list_item, dietItems)
-        (dietMenu.editText as? AutoCompleteTextView)?.setAdapter(dietAdapter)
-        dietTextView.setText(sharedViewModel.diet.value, false)
+        val healthItems = listOf(
+            "None"
 
-        dietTextView.setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-            if((view as TextView).text == "None"){
-                sharedViewModel.setDiet("")
+        )
+        val healthAdapter = ArrayAdapter(requireContext(), R.layout.health_list_item, healthItems)
+        (healthMenu.editText as? AutoCompleteTextView)?.setAdapter(healthAdapter)
+        healthTextView.setText(sharedViewModel.health.value, false)
+
+        healthTextView.setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+            if ((view as TextView).text == "None") {
+                sharedViewModel.setHealth(null)
             } else {
-                sharedViewModel.setDiet((view).text.toString())
+                sharedViewModel.setHealth((view).text.toString())
             }
         }
 
@@ -120,7 +138,7 @@ class SearchFragment : Fragment()  {
         _binding = null
     }
 
-    fun goToNextScreen(){
+    fun goToNextScreen() {
         findNavController().navigate(R.id.action_navigation_search_to_navigation_swipe)
     }
 
