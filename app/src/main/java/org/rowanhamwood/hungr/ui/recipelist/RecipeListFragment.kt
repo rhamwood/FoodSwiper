@@ -39,7 +39,11 @@ class RecipeListFragment : Fragment() {
         _binding = FragmentRecipeListBinding.inflate(inflater, container, false)
         val root: View = binding.root
         val recyclerView = binding.recyclerview
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val linearLayoutManager = LinearLayoutManager(requireContext())
+        linearLayoutManager.reverseLayout = true
+        linearLayoutManager.stackFromEnd = true
+        recyclerView.layoutManager = linearLayoutManager
+
 
         recyclerView.adapter = RecipeListAdapter(RecipeListAdapter.RecipeListListener { recipeUrl ->
             sharedViewModel.setUrl(recipeUrl)

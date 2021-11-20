@@ -12,17 +12,17 @@ data class RecipeData(
 
 
 
-//fun RecipeData.asRecipeModel(): List<RecipeModel> {
-//    return recipeList.map {
-//        RecipeModel(
-//            uri = it.recipeInfo.uri,
-//            label = it.recipeInfo.label,
-//            image = it.recipeInfo.image,
-//            source = it.recipeInfo.source,
-//            url = it.recipeInfo.url
-//        )
-//    }
-//}
+fun RecipeData.asRecipeModel(): List<RecipeModel> {
+    return recipeList.map {
+        RecipeModel(
+            uri = it.recipeInfo.uri,
+            label = it.recipeInfo.label,
+            image = it.recipeInfo.image,
+            source = it.recipeInfo.source,
+            url = it.recipeInfo.url
+        )
+    }
+}
 
 
 

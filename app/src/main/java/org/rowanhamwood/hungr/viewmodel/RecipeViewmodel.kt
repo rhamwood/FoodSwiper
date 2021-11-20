@@ -4,26 +4,25 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 
 import kotlinx.coroutines.launch
+import org.rowanhamwood.hungr.database.DatabaseRecipe
+import org.rowanhamwood.hungr.database.getDatabase
 import org.rowanhamwood.hungr.network.*
-
+import org.rowanhamwood.hungr.repository.RecipesRepository
 
 
 private const val TAG = "RecipeViewModel"
 
-class RecipeViewModel: ViewModel() {
+class RecipeViewModel(application: Application): AndroidViewModel(application) {
 
-//    private val recipesRepository = RecipesRepository(getDatabase(application))
+    private val recipesRepository = RecipesRepository(getDatabase(application))
 
-//    val favouriteRecipes = recipesRepository.recipes
+    val favouriteRecipes = recipesRepository.recipes
 
-    private val _recipes = MutableLiveData<List<Recipe>>()
-    val recipes: LiveData<List<Recipe>> = _recipes
+    private val _recipes = MutableLiveData<List<RecipeModel>>()
+    val recipes: LiveData<List<RecipeModel>> = _recipes
 
 //    private val tempRecipeList = ArrayList<DatabaseRecipe>()
 //    private val _favouriteRecipes = MutableLiveData<List<DatabaseRecipe>>()
@@ -65,13 +64,13 @@ class RecipeViewModel: ViewModel() {
         Log.d(TAG, "setSearch: diet is ${health.value}")
     }
 
-    fun setFavouriteRecipes(recipe: Recipe) {
+    fun setFavouriteRecipes(recipe: RecipeModel) {
 //        recipe?.let { tempRecipeList.add(it) }
 //        _favouriteRecipes.value = tempRecipeList
-//        val databaseRecipe = maptoDataBaseModel(recipe)
-//        viewModelScope.launch {
-//            recipesRepository.insertRecipes(databaseRecipe)
-//        }
+        val databaseRecipe = maptoDataBaseModel(recipe)
+        viewModelScope.launch {
+            recipesRepository.insertRecipes(databaseRecipe)
+        }
     }
 
     fun setUrl(url: String?) {
@@ -89,13 +88,13 @@ class RecipeViewModel: ViewModel() {
             try {
                 Log.d(TAG, "getRecipeData: coroutine try starts")
                 val requestValue = RecipeApi.retrofitService.getRecipes(
-                    searchQuery = _search.value,
+                    searchQuery = _search.value!!,
                     healthQuery = _health.value,
                     cuisineQuery = _cuisine.value
                 )
                 Log.d(TAG, "getRecipeData: $requestValue")
                 if (requestValue.recipeList.size > 0)
-                    _recipes.value = requestValue.recipeList
+                    _recipes.value = requestValue.asRecipeModel()
                 nextUrl = requestValue.nextLink?.next?.href
                 Log.d(TAG, "getRecipeData: ${nextUrl}")
                 Log.d(TAG, "getRecipeData: Success")
@@ -119,7 +118,7 @@ class RecipeViewModel: ViewModel() {
 
                     )
                 }
-                _recipes.value = requestValue?.recipeList
+                _recipes.value = requestValue?.asRecipeModel()
                 nextUrl = requestValue?.nextLink?.next?.href
 
                 Log.d(TAG, "getNext: ${requestValue.toString()}")
@@ -131,21 +130,18 @@ class RecipeViewModel: ViewModel() {
 
     }
 
+    fun maptoDataBaseModel(recipeModel: RecipeModel): DatabaseRecipe {
+        return recipeModel.let {
+            DatabaseRecipe(
+                uri = it.uri,
+                label = it.label,
+                image = it.image,
+                source = it.source,
+                url = it.url
+            )
+        }
+    }
 
 
 }
 
-//    fun maptoDataBaseModel(recipeModel: RecipeModel): DatabaseRecipe {
-//        return recipeModel.let {
-//            DatabaseRecipe(
-//                uri = it.uri,
-//                label = it.label,
-//                image = it.image,
-//                source = it.source,
-//                url = it.url
-//            )
-//        }
-//    }
-//
-//
-//}

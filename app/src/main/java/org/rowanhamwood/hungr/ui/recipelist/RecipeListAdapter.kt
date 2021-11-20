@@ -7,13 +7,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.rowanhamwood.hungr.databinding.RecipeListItemViewBinding
 import org.rowanhamwood.hungr.network.Recipe
+import org.rowanhamwood.hungr.network.RecipeModel
 
 
-class RecipeListAdapter(val clickListener: RecipeListListener) : ListAdapter<Recipe, RecipeListAdapter.RecipeListViewHolder>(DiffCallback) {
+class RecipeListAdapter(val clickListener: RecipeListListener) : ListAdapter<RecipeModel, RecipeListAdapter.RecipeListViewHolder>(DiffCallback) {
 
     class RecipeListViewHolder(private var binding: RecipeListItemViewBinding ) : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(recipe: Recipe, clickListener: RecipeListListener){
+        fun bind(recipe: RecipeModel, clickListener: RecipeListListener){
             binding.recipe = recipe
             binding.clickListener = clickListener
             binding.executePendingBindings()
@@ -37,18 +38,18 @@ class RecipeListAdapter(val clickListener: RecipeListListener) : ListAdapter<Rec
     }
 
 
-    companion object DiffCallback : DiffUtil.ItemCallback<Recipe>() {
-        override fun areItemsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<RecipeModel>() {
+        override fun areItemsTheSame(oldItem: RecipeModel, newItem: RecipeModel): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
-            return oldItem.recipeInfo.uri == newItem.recipeInfo.uri
+        override fun areContentsTheSame(oldItem: RecipeModel, newItem: RecipeModel): Boolean {
+            return oldItem.uri == newItem.uri
         }
     }
 
     class RecipeListListener(val clickListener: (recipeUrl: String) -> Unit) {
-        fun onClick(recipe: Recipe) = clickListener(recipe.recipeInfo.url)
+        fun onClick(recipe: RecipeModel) = clickListener(recipe.url)
     }
 
 }

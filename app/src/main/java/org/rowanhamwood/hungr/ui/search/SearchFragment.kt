@@ -85,7 +85,38 @@ class SearchFragment : Fragment() {
 
         //Diet menu setup
         val healthItems = listOf(
-            "None"
+                    "None",
+                    "Alcohol-Free",
+                    "Celery-Free",
+                    "Crustacean-Free",
+                    "Dairy-Free",
+                    "Egg-Free",
+                    "Fish-Free",
+                    "FODMAP-Free",
+                    "Gluten-Free",
+                    "Immuno-Supportive",
+                    "Keto-Friendly",
+                    "Kidney-Friendly",
+                    "Kosher",
+                    "Lupine-Free",
+                    "Mediterranean",
+                    "Mollusk-Free",
+                    "Mustard-Free",
+                    "Paleo",
+                    "Peanut-Free",
+                    "Pescatarian",
+                    "Pork-Free",
+                    "Red-Meat-Free",
+                    "Sesame-Free",
+                    "Shellfish-Free",
+                    "Soy-Free",
+                    "Sugar-Conscious",
+                    "Sulfite-Free",
+                    "Tree-Nut-Free",
+                    "Vegan",
+                    "Vegetarian",
+                    "Wheat-Free"
+
 
         )
         val healthAdapter = ArrayAdapter(requireContext(), R.layout.health_list_item, healthItems)
@@ -96,7 +127,7 @@ class SearchFragment : Fragment() {
             if ((view as TextView).text == "None") {
                 sharedViewModel.setHealth(null)
             } else {
-                sharedViewModel.setHealth((view).text.toString())
+                sharedViewModel.setHealth((view).text.toString().lowercase())
             }
         }
 

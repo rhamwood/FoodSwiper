@@ -7,7 +7,7 @@
 
         <variable
             name="recipe"
-            type="org.rowanhamwood.hungr.network.Recipe" />
+            type="org.rowanhamwood.hungr.network.RecipeModel" />
 
         <import type="android.view.View" />
 
@@ -44,8 +44,9 @@
                 app:layout_constraintEnd_toStartOf="@+id/fav_recipe_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
-            <!--                app:favouriteImageUrl="@{recipe.image}"-->
+                tools:srcCompat="@tools:sample/backgrounds/scenic"
+                app:favouriteImageUrl="@{recipe.image}"/>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -64,8 +65,9 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/recipe_item_image"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="TextView" />
-<!--                android:text="@{recipe.label}"-->
+                    tools:text="TextView"
+                    android:text="@{recipe.label}"/>
+
 
                 <TextView
                     android:id="@+id/fav_recipe_source"
@@ -75,9 +77,10 @@
                     android:layout_marginTop="8dp"
 
                     android:textSize="16sp"
-                    tools:text="TextView" />
+                    tools:text="TextView"
+                    android:text="@{recipe.source}"/>
             </LinearLayout>
-<!--            android:text="@{recipe.source}"-->
+
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

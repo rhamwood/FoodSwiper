@@ -11,11 +11,11 @@ import org.rowanhamwood.hungr.network.Recipe
 import org.rowanhamwood.hungr.network.RecipeModel
 
 
-class SwipeAdapter :ListAdapter<Recipe,SwipeAdapter.SwipeViewHolder>(DiffCallback) {
+class SwipeAdapter :ListAdapter<RecipeModel,SwipeAdapter.SwipeViewHolder>(DiffCallback) {
 
     class SwipeViewHolder(private var binding: SwipeItemViewBinding) : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(recipe: Recipe){
+        fun bind(recipe: RecipeModel){
             binding.recipe = recipe
             binding.executePendingBindings()
 
@@ -42,13 +42,13 @@ class SwipeAdapter :ListAdapter<Recipe,SwipeAdapter.SwipeViewHolder>(DiffCallbac
 
 
 
-    companion object DiffCallback : DiffUtil.ItemCallback<Recipe>() {
-        override fun areItemsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<RecipeModel>() {
+        override fun areItemsTheSame(oldItem: RecipeModel, newItem: RecipeModel): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
-            return oldItem.recipeInfo.uri == newItem.recipeInfo.uri
+        override fun areContentsTheSame(oldItem: RecipeModel, newItem: RecipeModel): Boolean {
+            return oldItem.uri == newItem.uri
         }
     }
 

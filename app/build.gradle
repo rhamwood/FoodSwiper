@@ -59,7 +59,7 @@ dependencies {
     // CardStackView
     implementation "com.yuyakaido.android:card-stack-view:2.3.4"
     // Room dependency
-    def room_version = "2.1.0-alpha04"
+    def room_version = "2.1.0-alpha06"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
