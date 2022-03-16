@@ -12,6 +12,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable-v24/loading_img.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/custom_tab_icon.xml" value="0.1" />
         <entry key="app/src/main/res/layout/cuisine_list_item.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_recipe_detail.xml" value="0.24954710144927536" />
         <entry key="app/src/main/res/layout/health_list_item.xml" value="0.2604166666666667" />

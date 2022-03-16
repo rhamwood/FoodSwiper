@@ -2,11 +2,11 @@ package org.rowanhamwood.hungr.ui.recipelist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.rowanhamwood.hungr.databinding.RecipeListItemViewBinding
-import org.rowanhamwood.hungr.network.Recipe
 import org.rowanhamwood.hungr.network.RecipeModel
 
 
@@ -51,5 +51,7 @@ class RecipeListAdapter(val clickListener: RecipeListListener) : ListAdapter<Rec
     class RecipeListListener(val clickListener: (recipeUrl: String) -> Unit) {
         fun onClick(recipe: RecipeModel) = clickListener(recipe.url)
     }
+
+
 
 }

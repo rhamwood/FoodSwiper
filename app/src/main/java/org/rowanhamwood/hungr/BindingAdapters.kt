@@ -63,7 +63,7 @@ fun bindRecyclerView(
     adapter.submitList(data)
 }
 
-@BindingAdapter("loadUrl")
-fun loadUrl(webView: WebView, url: String) {
-    webView.loadUrl(url)
-}
+//@BindingAdapter("loadUrl")
+//fun loadUrl(webView: WebView, url: String) {
+//    webView.loadUrl(url)
+//}
