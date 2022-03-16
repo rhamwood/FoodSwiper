@@ -24,6 +24,8 @@ import org.rowanhamwood.hungr.databinding.FragmentRecipeListBinding
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.ItemTouchHelper
+import org.rowanhamwood.hungr.ui.swipe.SwipeAdapter
 
 
 class RecipeListFragment : Fragment() {
@@ -31,8 +33,8 @@ class RecipeListFragment : Fragment() {
 
 
     private var _binding: FragmentRecipeListBinding? = null
-
     private val sharedViewModel: RecipeViewModel by activityViewModels()
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -52,54 +54,32 @@ class RecipeListFragment : Fragment() {
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
         recyclerView.layoutManager = linearLayoutManager
-
-
-        recyclerView.adapter = RecipeListAdapter(RecipeListAdapter.RecipeListListener { recipeUrl ->
+        val adapter =
+            RecipeListAdapter(RecipeListAdapter.RecipeListListener { recipeUrl ->
             sharedViewModel.setUrl(recipeUrl)
 
-
-
-
-
-//            goToNextScreen()
-
-//            val bitmap = AppCompatResources.getDrawable(requireContext(),R.drawable.ic_baseline_arrow_back_24 )?.toBitmap()
-//            val pendingIntent =
-//
-//            val swipeHandler = object : SwipeToDeleteCallback(requireContext()) {
-//                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-//                    val position = viewHolder.adapterPosition
-//                    val item = adapter.removeItem(position) ?: return
-//                    onItemRemoved?.invoke(item)
-//            }
-
-
             val builder = CustomTabsIntent.Builder()
-
-//              bitmap?.let { builder.setActionButton(it, "Go back to your faourite recipes", pendingIntent, false) };
-             //red
-
             val defaultColors = CustomTabColorSchemeParams.Builder()
                 .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.purple_500))
                 .build()
             builder.setDefaultColorSchemeParams(defaultColors)
-
             val customTabsIntent = builder.build()
-
             customTabsIntent.launchUrl(requireContext(), Uri.parse(recipeUrl))
-
-
         })
+
+        recyclerView.adapter = adapter
+
+        val swipeHandler = ItemSwipeHandler(requireContext(), sharedViewModel)
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+
+
 
             return root
         }
 
 
-
-
-
-
-            override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
                 super.onViewCreated(view, savedInstanceState)
 
                 _binding?.apply {

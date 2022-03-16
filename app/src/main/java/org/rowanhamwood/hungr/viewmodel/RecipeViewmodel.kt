@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
+import androidx.databinding.BaseObservable
 import androidx.lifecycle.*
 
 import kotlinx.coroutines.launch
@@ -15,7 +16,7 @@ import org.rowanhamwood.hungr.repository.RecipesRepository
 
 private const val TAG = "RecipeViewModel"
 
-class RecipeViewModel(application: Application): AndroidViewModel(application) {
+class RecipeViewModel(application: Application):   AndroidViewModel(application) {
 
     private val recipesRepository = RecipesRepository(getDatabase(application))
 
@@ -71,6 +72,14 @@ class RecipeViewModel(application: Application): AndroidViewModel(application) {
         viewModelScope.launch {
             recipesRepository.insertRecipes(databaseRecipe)
         }
+    }
+
+    fun deleteFavouriteRecipes(recipe: RecipeModel){
+        val databaseRecipe = maptoDataBaseModel(recipe)
+        viewModelScope.launch {
+            recipesRepository.deleteRecipes(databaseRecipe)
+        }
+
     }
 
     fun setUrl(url: String?) {

@@ -3,6 +3,7 @@ package org.rowanhamwood.hungr.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import androidx.viewpager.widget.ViewPager
 
 @Dao
 interface RecipeDao {
@@ -11,6 +12,9 @@ interface RecipeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRecipe( recipe: DatabaseRecipe)
+
+    @Delete
+    fun deleteRecipe(recipe: DatabaseRecipe)
 }
 
 

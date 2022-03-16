@@ -9,7 +9,7 @@ import org.rowanhamwood.hungr.network.RecipeModel
 
 
 /**
-     * DatabaseVideo represents a video entity in the database.
+     * DatabaseVideo represents a recipe entity in the database.
      */
     @Entity
     data class DatabaseRecipe constructor(

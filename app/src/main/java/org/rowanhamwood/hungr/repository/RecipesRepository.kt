@@ -23,6 +23,12 @@ class RecipesRepository (private val database: FavouriteRecipesDatabase){
             database.recipeDao.insertRecipe(favouriteRecipe)
         }
     }
+
+    suspend fun deleteRecipes(favouriteRecipe: DatabaseRecipe) {
+        withContext(Dispatchers.IO){
+            database.recipeDao.deleteRecipe(favouriteRecipe)
+        }
+    }
 }
 
 
