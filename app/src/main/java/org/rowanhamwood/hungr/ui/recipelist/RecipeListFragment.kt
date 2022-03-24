@@ -54,6 +54,8 @@ class RecipeListFragment : Fragment() {
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
         recyclerView.layoutManager = linearLayoutManager
+        recyclerView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
+
         val adapter =
             RecipeListAdapter(RecipeListAdapter.RecipeListListener { recipeUrl ->
             sharedViewModel.setUrl(recipeUrl)
@@ -68,6 +70,7 @@ class RecipeListFragment : Fragment() {
         })
 
         recyclerView.adapter = adapter
+
 
         val swipeHandler = ItemSwipeHandler(requireContext(), sharedViewModel)
         val itemTouchHelper = ItemTouchHelper(swipeHandler)

@@ -7,10 +7,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import com.yuyakaido.android.cardstackview.CardStackListener
+import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.Direction
 import org.rowanhamwood.hungr.R
 
@@ -23,15 +25,14 @@ private const val TOP_CARD = "TOP_CARD"
 
 class SwipeFragment : Fragment(), CardStackListener {
 
-    private val manager by lazy { CardStackLayoutManager(requireContext(), this) }
-    private val adapter by lazy { SwipeAdapter() }
-    private val cardStackView by lazy { binding.cardStackView }
+
+    private lateinit var manager: CardStackLayoutManager
+    private lateinit var adapter: SwipeAdapter
+    private lateinit var cardStackView: CardStackView
     private lateinit var sharedPreferences : SharedPreferences
 
 
     private val sharedViewModel: RecipeViewModel by activityViewModels()
-
-
 
 
 
@@ -50,9 +51,13 @@ class SwipeFragment : Fragment(), CardStackListener {
 
         _binding = FragmentSwipeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        adapter = SwipeAdapter()
+        cardStackView = binding.cardStackView
+        manager = CardStackLayoutManager(requireContext(), this)
 
         cardStackView.layoutManager = manager
         cardStackView.adapter = adapter
+        cardStackView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
         sharedPreferences = requireContext().getSharedPreferences(getString(R.string.preference_file_key),  Context.MODE_PRIVATE)
         val cardPosition = sharedPreferences.getInt(TOP_CARD, 0)
         manager.topPosition = cardPosition
@@ -64,6 +69,7 @@ class SwipeFragment : Fragment(), CardStackListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         _binding?.apply {
             viewModel = sharedViewModel
             lifecycleOwner = viewLifecycleOwner
@@ -73,9 +79,12 @@ class SwipeFragment : Fragment(), CardStackListener {
     }
 
 
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
     }
 
     override fun onCardDragging(direction: Direction?, ratio: Float) {
@@ -86,6 +95,7 @@ class SwipeFragment : Fragment(), CardStackListener {
         if (manager.topPosition == adapter.itemCount) {
             sharedViewModel.getNext()
         }
+
         if (direction == Direction.Right){
             val item = manager.topPosition -1
             Log.d(TAG, "onCardSwiped: $item")

@@ -15,6 +15,8 @@
         <entry key="app/src/main/res/drawable/custom_tab_icon.xml" value="0.1" />
         <entry key="app/src/main/res/layout/cuisine_list_item.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_recipe_detail.xml" value="0.24954710144927536" />
+        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.14444444444444443" />
+        <entry key="app/src/main/res/layout/fragment_swipe.xml" value="0.1" />
         <entry key="app/src/main/res/layout/health_list_item.xml" value="0.2604166666666667" />
         <entry key="app/src/main/res/layout/swipe_item_view.xml" value="0.24954710144927536" />
       </map>

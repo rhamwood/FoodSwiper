@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -36,16 +37,20 @@ class SearchFragment : Fragment() {
 
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.purple_200))
 
         // search bar
         val searchView = binding.searchView
         val submitButton = binding.submitButton
+        submitButton.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
         // cuisine selection menu
         val cuisineMenu = binding.cuisineMenu
         val cuisineTextView = binding.cuisineTextView
+        cuisineTextView.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
         // diet selection menu
         val healthMenu = binding.dietMenu
         val healthTextView = binding.dietTextView
+        healthTextView.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
 
 
         //cuisineMenu setup
@@ -138,6 +143,7 @@ class SearchFragment : Fragment() {
         submitButton.setOnClickListener { view ->
             Log.d(TAG, "onCreateView: submit button clicked")
             if (searchView.query != "" && searchView.query.length > 0) {
+                // TODO:  add null check for search
                 sharedViewModel.setSearch(searchView.query.toString())
                 sharedViewModel.getRecipeData()
                 goToNextScreen()
@@ -172,6 +178,8 @@ class SearchFragment : Fragment() {
     fun goToNextScreen() {
         findNavController().navigate(R.id.action_navigation_search_to_navigation_swipe)
     }
+
+
 
 
 }

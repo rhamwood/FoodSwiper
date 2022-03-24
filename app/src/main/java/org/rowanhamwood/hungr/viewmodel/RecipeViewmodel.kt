@@ -29,7 +29,7 @@ class RecipeViewModel(application: Application):   AndroidViewModel(application)
 //    private val _favouriteRecipes = MutableLiveData<List<DatabaseRecipe>>()
 //    val favouriteRecipes: LiveData<List<DatabaseRecipe>> = _favouriteRecipes
 
-    private val _search = MutableLiveData<String>("cake")
+    private val _search = MutableLiveData("cake")
     val search: LiveData<String> = _search
 
     private val _cuisine = MutableLiveData<String?>()

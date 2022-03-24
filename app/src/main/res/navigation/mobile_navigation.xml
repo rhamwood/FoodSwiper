@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_swipe">
+    app:startDestination="@id/navigation_swipe"
+    app:defaultNavHost="false">
+
+
 
     <fragment
         android:id="@+id/navigation_swipe"
@@ -25,13 +28,5 @@
         android:id="@+id/navigation_recipe_list"
         android:name="org.rowanhamwood.hungr.ui.recipelist.RecipeListFragment"
         android:label="@string/title_recipe_list"
-        tools:layout="@layout/fragment_recipe_list" >
-        <action
-            android:id="@+id/action_navigation_recipe_list_to_recipeDetailFragment"
-            app:destination="@id/recipeDetailFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/recipeDetailFragment"
-        android:name="org.rowanhamwood.hungr.ui.detail.RecipeDetailFragment"
-        android:label="RecipeDetailFragment" />
+        tools:layout="@layout/fragment_recipe_list" />
 </navigation>
