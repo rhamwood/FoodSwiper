@@ -95,15 +95,17 @@ class SwipeFragment : Fragment(), CardStackListener {
         if (manager.topPosition == adapter.itemCount) {
             sharedViewModel.getNext()
         }
+        val item = manager.topPosition -1
+        sharedPreferences.edit().putInt(TOP_CARD, manager.topPosition).apply()
 
         if (direction == Direction.Right){
-            val item = manager.topPosition -1
+
             Log.d(TAG, "onCardSwiped: $item")
             val recipe =  sharedViewModel.recipes.value?.get(item)
 
             if (recipe!= null) {
                 sharedViewModel.setFavouriteRecipes(recipe)
-                sharedPreferences.edit().putInt(TOP_CARD, manager.topPosition).apply()
+
             }
 
         }
