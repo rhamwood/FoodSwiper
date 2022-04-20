@@ -16,6 +16,11 @@ class RecipesRepository (private val database: FavouriteRecipesDatabase){
         it.asDomainModel()
     }
 
+//    suspend fun getRecipes(searchQuery: String, healthQuery: String?, cuisineQuery: String?) {
+//        withContext(Dispatchers.IO){
+//
+//        }
+//    }
 
 
     suspend fun insertRecipes(favouriteRecipe: DatabaseRecipe) {

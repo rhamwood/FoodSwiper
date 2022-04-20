@@ -90,6 +90,15 @@ class RecipeViewModel(application: Application):   AndroidViewModel(application)
         getRecipeData()
     }
 
+//    fun getRecipesData() {
+//        val searchQuery = _search.value
+//        val healthQuery = _health.value
+//        val cuisineQuery = _cuisine.value
+//        viewModelScope.launch {
+//            recipesRepository.getRecipes(searchQuery!!, healthQuery, cuisineQuery)
+//        }
+//    }
+
 
     fun getRecipeData() {
         Log.d(TAG, "getRecipeData: starts")
