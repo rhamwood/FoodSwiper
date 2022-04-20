@@ -1,31 +1,22 @@
 package org.rowanhamwood.hungr.ui.recipelist
 
-import android.app.PendingIntent
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
+import org.rowanhamwood.hungr.HungrApplication
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.databinding.FragmentRecipeListBinding
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
-import org.rowanhamwood.hungr.ui.swipe.SwipeAdapter
+import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 
 class RecipeListFragment : Fragment() {
@@ -33,7 +24,9 @@ class RecipeListFragment : Fragment() {
 
 
     private var _binding: FragmentRecipeListBinding? = null
-    private val sharedViewModel: RecipeViewModel by activityViewModels()
+    private val sharedViewModel by activityViewModels<RecipeViewModel>() {
+        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository)
+    }
 
 
     // This property is only valid between onCreateView and

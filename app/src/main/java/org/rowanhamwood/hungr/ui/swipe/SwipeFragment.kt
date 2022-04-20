@@ -1,5 +1,6 @@
 package org.rowanhamwood.hungr.ui.swipe
 
+import org.rowanhamwood.hungr.HungrApplication
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -18,7 +19,7 @@ import org.rowanhamwood.hungr.R
 
 import org.rowanhamwood.hungr.databinding.FragmentSwipeBinding
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
-import java.util.*
+import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 private const val TAG = "SwipeFragment"
 private const val TOP_CARD = "TOP_CARD"
@@ -32,7 +33,9 @@ class SwipeFragment : Fragment(), CardStackListener {
     private lateinit var sharedPreferences : SharedPreferences
 
 
-    private val sharedViewModel: RecipeViewModel by activityViewModels()
+    private val sharedViewModel by activityViewModels<RecipeViewModel>() {
+        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository)
+    }
 
 
 

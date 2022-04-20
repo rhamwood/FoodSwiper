@@ -9,16 +9,16 @@ import androidx.lifecycle.*
 
 import kotlinx.coroutines.launch
 import org.rowanhamwood.hungr.database.DatabaseRecipe
-import org.rowanhamwood.hungr.database.getDatabase
 import org.rowanhamwood.hungr.network.*
+import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 import org.rowanhamwood.hungr.repository.RecipesRepository
 
 
 private const val TAG = "RecipeViewModel"
 
-class RecipeViewModel(application: Application):   AndroidViewModel(application) {
+class RecipeViewModel(private val recipesRepository: BaseRecipesRepository):  ViewModel() {
 
-    private val recipesRepository = RecipesRepository(getDatabase(application))
+
 
     val favouriteRecipes = recipesRepository.favouriteRecipes
 
@@ -124,3 +124,10 @@ class RecipeViewModel(application: Application):   AndroidViewModel(application)
 
 }
 
+@Suppress("UNCHECKED_CAST")
+class RecipeViewModelFactory (
+    private val baseRecipesRepository: BaseRecipesRepository
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>) =
+        (RecipeViewModel(baseRecipesRepository) as T)
+}

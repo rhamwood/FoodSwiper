@@ -19,20 +19,11 @@ interface RecipeDao {
 
 
 
-    private lateinit var INSTANCE: FavouriteRecipesDatabase
+
 
     @Database(entities = [DatabaseRecipe::class], version = 1)
     abstract class FavouriteRecipesDatabase: RoomDatabase() {
         abstract val recipeDao: RecipeDao
     }
 
-    fun getDatabase(context: Context): FavouriteRecipesDatabase {
-        synchronized(FavouriteRecipesDatabase::class.java) {
-            if (!::INSTANCE.isInitialized) {
-                INSTANCE = Room.databaseBuilder(context.applicationContext,
-                    FavouriteRecipesDatabase::class.java,
-                    "recipes").build()
-            }
-        }
-        return INSTANCE
-    }
+

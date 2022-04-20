@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.rowanhamwood.hungr.database.DatabaseRecipe
 import org.rowanhamwood.hungr.database.FavouriteRecipesDatabase
+import org.rowanhamwood.hungr.database.RecipeDao
 import org.rowanhamwood.hungr.database.asDomainModel
 import org.rowanhamwood.hungr.network.RecipeApi
 import org.rowanhamwood.hungr.network.RecipeModel
@@ -18,22 +19,22 @@ private const val TAG = "RecipesRepository"
 
 
 class RecipesRepository(
-    private val database: FavouriteRecipesDatabase,
+    private val recipeDao: RecipeDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-) {
+) : BaseRecipesRepository {
 
-    val favouriteRecipes: LiveData<List<RecipeModel>> =
-        Transformations.map(database.recipeDao.getRecipes()) {
+     override val favouriteRecipes: LiveData<List<RecipeModel>> =
+        Transformations.map(recipeDao.getRecipes()) {
             it.asDomainModel()
         }
 
-    private var nextUrl: String? = null
+     private var nextUrl: String? = null
 
-    private val _recipes = MutableLiveData<List<RecipeModel>>()
-    val recipes: LiveData<List<RecipeModel>> = _recipes
+     private val _recipes = MutableLiveData<List<RecipeModel>>()
+     override val recipes: LiveData<List<RecipeModel>> = _recipes
 
 
-    suspend fun getRecipes(searchQuery: String, healthQuery: String?, cuisineQuery: String?) {
+    override suspend fun getRecipes(searchQuery: String, healthQuery: String?, cuisineQuery: String?) {
         withContext(ioDispatcher) {
             try {
                 Log.d(TAG, "getRecipeData: coroutine try starts")
@@ -57,7 +58,7 @@ class RecipesRepository(
         }
     }
 
-    suspend fun getNext() {
+    override suspend fun getNext() {
         try {
             withContext(ioDispatcher) {
                 Log.d(TAG, "getNext value: ${nextUrl}")
@@ -78,15 +79,15 @@ class RecipesRepository(
     }
 
 
-    suspend fun insertRecipes(favouriteRecipe: DatabaseRecipe) {
+     override suspend fun insertRecipes(favouriteRecipe: DatabaseRecipe) {
         withContext(ioDispatcher) {
-            database.recipeDao.insertRecipe(favouriteRecipe)
+            recipeDao.insertRecipe(favouriteRecipe)
         }
     }
 
-    suspend fun deleteRecipes(favouriteRecipe: DatabaseRecipe) {
+    override suspend fun deleteRecipes(favouriteRecipe: DatabaseRecipe) {
         withContext(ioDispatcher) {
-            database.recipeDao.deleteRecipe(favouriteRecipe)
+            recipeDao.deleteRecipe(favouriteRecipe)
         }
     }
 }

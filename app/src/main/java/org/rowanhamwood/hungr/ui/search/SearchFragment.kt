@@ -1,5 +1,6 @@
 package org.rowanhamwood.hungr.ui.search
 
+import org.rowanhamwood.hungr.HungrApplication
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.databinding.FragmentSearchBinding
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
+import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 private const val TAG = "SearchFragment"
 
@@ -21,7 +23,12 @@ class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
 
-    private val sharedViewModel: RecipeViewModel by activityViewModels()
+//    private val sharedViewModel: RecipeViewModel by activityViewModels()
+
+    private val sharedViewModel by activityViewModels<RecipeViewModel>() {
+        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository)
+    }
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
