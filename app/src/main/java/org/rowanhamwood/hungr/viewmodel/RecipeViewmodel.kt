@@ -20,10 +20,12 @@ class RecipeViewModel(application: Application):   AndroidViewModel(application)
 
     private val recipesRepository = RecipesRepository(getDatabase(application))
 
-    val favouriteRecipes = recipesRepository.recipes
+    val favouriteRecipes = recipesRepository.favouriteRecipes
 
-    private val _recipes = MutableLiveData<List<RecipeModel>>()
-    val recipes: LiveData<List<RecipeModel>> = _recipes
+//    private val _recipes = MutableLiveData<List<RecipeModel>>()
+//    val recipes: LiveData<List<RecipeModel>> = _recipes
+
+    val recipes = recipesRepository.recipes
 
 //    private val tempRecipeList = ArrayList<DatabaseRecipe>()
 //    private val _favouriteRecipes = MutableLiveData<List<DatabaseRecipe>>()
@@ -40,8 +42,6 @@ class RecipeViewModel(application: Application):   AndroidViewModel(application)
 
     private val _url = MutableLiveData<String?>()
     val url: LiveData<String?> = _url
-
-    private var nextUrl: String? = null
 
 
 
@@ -90,65 +90,26 @@ class RecipeViewModel(application: Application):   AndroidViewModel(application)
         getRecipeData()
     }
 
-//    fun getRecipesData() {
-//        val searchQuery = _search.value
-//        val healthQuery = _health.value
-//        val cuisineQuery = _cuisine.value
-//        viewModelScope.launch {
-//            recipesRepository.getRecipes(searchQuery!!, healthQuery, cuisineQuery)
-//        }
-//    }
-
-
     fun getRecipeData() {
-        Log.d(TAG, "getRecipeData: starts")
+        val searchQuery = _search.value
+        val healthQuery = _health.value
+        val cuisineQuery = _cuisine.value
         viewModelScope.launch {
-            try {
-                Log.d(TAG, "getRecipeData: coroutine try starts")
-                val requestValue = RecipeApi.retrofitService.getRecipes(
-                    searchQuery = _search.value!!,
-                    healthQuery = _health.value,
-                    cuisineQuery = _cuisine.value
-                )
-                Log.d(TAG, "getRecipeData: $requestValue")
-                if (requestValue.recipeList.size > 0)
-                    _recipes.value = requestValue.asRecipeModel()
-                nextUrl = requestValue.nextLink?.next?.href
-                Log.d(TAG, "getRecipeData: ${nextUrl}")
-                Log.d(TAG, "getRecipeData: Success")
-
-            }  catch (e: Exception) {
-                Log.d(TAG, "getRecipeData: $e")
-                Log.d(TAG, "getRecipeData: Failed")
-
+            recipesRepository.getRecipes(searchQuery!!, healthQuery, cuisineQuery)
         }
-        }
-
     }
+
 
     fun getNext() {
-        try {
-            viewModelScope.launch {
-                Log.d(TAG, "getNext value: ${nextUrl}")
-                val requestValue = nextUrl?.let {
-                    RecipeApi.retrofitService.getNext(
-                        it
-
-                    )
-                }
-                _recipes.value = requestValue?.asRecipeModel()
-                nextUrl = requestValue?.nextLink?.next?.href
-
-                Log.d(TAG, "getNext: ${requestValue.toString()}")
-            }
-        } catch (e: Exception) {
-            Log.d(TAG, "getNext: Failed")
+        viewModelScope.launch {
+            recipesRepository.getNext()
         }
+
 
 
     }
 
-    fun maptoDataBaseModel(recipeModel: RecipeModel): DatabaseRecipe {
+    private fun maptoDataBaseModel(recipeModel: RecipeModel): DatabaseRecipe {
         return recipeModel.let {
             DatabaseRecipe(
                 uri = it.uri,
