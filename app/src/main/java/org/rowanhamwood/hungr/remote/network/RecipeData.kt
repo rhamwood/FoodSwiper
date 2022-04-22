@@ -1,4 +1,4 @@
-package org.rowanhamwood.hungr.network
+package org.rowanhamwood.hungr.remote.network
 
 import com.squareup.moshi.Json
 

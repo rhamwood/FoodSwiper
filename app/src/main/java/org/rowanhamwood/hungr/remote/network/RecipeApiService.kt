@@ -1,4 +1,4 @@
-package org.rowanhamwood.hungr.network
+package org.rowanhamwood.hungr.remote.network
 
 import android.util.Log
 import com.squareup.moshi.Moshi

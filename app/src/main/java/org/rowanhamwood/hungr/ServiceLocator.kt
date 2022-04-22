@@ -4,12 +4,15 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.room.Room
 import kotlinx.coroutines.runBlocking
-import org.rowanhamwood.hungr.database.FavouriteRecipesDatabase
+import org.rowanhamwood.hungr.local.BaseLocalDataSource
+import org.rowanhamwood.hungr.local.LocalDataSource
+import org.rowanhamwood.hungr.local.database.FavouriteRecipesDatabase
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 import org.rowanhamwood.hungr.repository.RecipesRepository
 
 
 object ServiceLocator {
+
     private  var INSTANCE: FavouriteRecipesDatabase? = null
 
     @Volatile
@@ -42,9 +45,14 @@ object ServiceLocator {
 
     private fun createRecipesRepository (context: Context) : RecipesRepository {
         val database = INSTANCE ?: createDatabase(context)
-        val newRepo = RecipesRepository(database.recipeDao)
+        val newRepo = RecipesRepository(createLocalDatasource(context))
         baseRecipesRepository = newRepo
         return newRepo
+    }
+
+    private fun createLocalDatasource (context: Context) : BaseLocalDataSource{
+        val database = INSTANCE ?: createDatabase(context)
+        return LocalDataSource(database.recipeDao)
     }
 
 

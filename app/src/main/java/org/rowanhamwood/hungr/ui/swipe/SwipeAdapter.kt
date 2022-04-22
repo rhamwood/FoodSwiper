@@ -7,8 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.rowanhamwood.hungr.databinding.SwipeItemViewBinding
-import org.rowanhamwood.hungr.network.Recipe
-import org.rowanhamwood.hungr.network.RecipeModel
+import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 
 class SwipeAdapter :ListAdapter<RecipeModel,SwipeAdapter.SwipeViewHolder>(DiffCallback) {

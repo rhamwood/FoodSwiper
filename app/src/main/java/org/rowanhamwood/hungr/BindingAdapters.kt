@@ -1,7 +1,6 @@
 package org.rowanhamwood.hungr
 
 import android.util.Log
-import android.webkit.WebView
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
@@ -9,10 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 
 import coil.load
 import com.yuyakaido.android.cardstackview.CardStackView
-import org.rowanhamwood.hungr.network.RecipeModel
+import org.rowanhamwood.hungr.remote.network.RecipeModel
 import org.rowanhamwood.hungr.ui.recipelist.RecipeListAdapter
 import org.rowanhamwood.hungr.ui.swipe.SwipeAdapter
-import java.util.*
 
 private const val TAG = "BindingAdapters"
 

@@ -1,8 +1,8 @@
 package org.rowanhamwood.hungr.repository
 
 import androidx.lifecycle.LiveData
-import org.rowanhamwood.hungr.database.DatabaseRecipe
-import org.rowanhamwood.hungr.network.RecipeModel
+import org.rowanhamwood.hungr.local.database.DatabaseRecipe
+import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 interface BaseRecipesRepository {
 
@@ -17,4 +17,6 @@ interface BaseRecipesRepository {
     suspend fun insertRecipes(favouriteRecipe: DatabaseRecipe)
 
     suspend fun deleteRecipes(favouriteRecipe: DatabaseRecipe)
+
+
 }

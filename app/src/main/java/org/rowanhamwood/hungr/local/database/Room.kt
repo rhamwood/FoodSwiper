@@ -1,9 +1,7 @@
-package org.rowanhamwood.hungr.database
+package org.rowanhamwood.hungr.local.database
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import androidx.viewpager.widget.ViewPager
 
 @Dao
 interface RecipeDao {

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.rowanhamwood.hungr.databinding.RecipeListItemViewBinding
-import org.rowanhamwood.hungr.network.RecipeModel
+import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 
 class RecipeListAdapter(val clickListener: RecipeListListener) : ListAdapter<RecipeModel, RecipeListAdapter.RecipeListViewHolder>(DiffCallback) {

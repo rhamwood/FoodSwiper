@@ -1,17 +1,12 @@
 package org.rowanhamwood.hungr.viewmodel
 
-import android.app.Application
-import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
-import androidx.databinding.BaseObservable
 import androidx.lifecycle.*
 
 import kotlinx.coroutines.launch
-import org.rowanhamwood.hungr.database.DatabaseRecipe
-import org.rowanhamwood.hungr.network.*
+import org.rowanhamwood.hungr.local.database.DatabaseRecipe
+import org.rowanhamwood.hungr.remote.network.*
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
-import org.rowanhamwood.hungr.repository.RecipesRepository
 
 
 private const val TAG = "RecipeViewModel"
@@ -44,30 +39,19 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository):  Vi
     val url: LiveData<String?> = _url
 
 
-
-
-
     fun setSearch(searchText: String) {
         _search.value = searchText
-        Log.d(TAG, "setSearch: search is ${search.value}")
     }
 
     fun setCuisine(cuisineName: String?) {
         _cuisine.value = cuisineName
-        Log.d(
-            TAG,
-            "setCuisine: cuisine is ${cuisine.value}"
-        )
     }
 
     fun setHealth(healthText: String?) {
         _health.value = healthText
-        Log.d(TAG, "setSearch: diet is ${health.value}")
     }
 
     fun setFavouriteRecipes(recipe: RecipeModel) {
-//        recipe?.let { tempRecipeList.add(it) }
-//        _favouriteRecipes.value = tempRecipeList
         val databaseRecipe = maptoDataBaseModel(recipe)
         viewModelScope.launch {
             recipesRepository.insertRecipes(databaseRecipe)
@@ -91,12 +75,18 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository):  Vi
     }
 
     fun getRecipeData() {
+
         val searchQuery = _search.value
-        val healthQuery = _health.value
-        val cuisineQuery = _cuisine.value
-        viewModelScope.launch {
-            recipesRepository.getRecipes(searchQuery!!, healthQuery, cuisineQuery)
+        if (searchQuery!= null) {
+            val healthQuery = _health.value
+            val cuisineQuery = _cuisine.value
+            viewModelScope.launch {
+                recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery)
+            }
+        } else{
+            Log.d(TAG, "getRecipeData: search value is null, cannot get recipe data")
         }
+
     }
 
 

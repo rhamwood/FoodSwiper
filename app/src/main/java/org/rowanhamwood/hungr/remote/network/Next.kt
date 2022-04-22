@@ -1,4 +1,4 @@
-package org.rowanhamwood.hungr.network
+package org.rowanhamwood.hungr.remote.network
 
 data class Next(
     val href : String,

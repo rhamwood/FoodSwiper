@@ -1,11 +1,9 @@
-package org.rowanhamwood.hungr.database
+package org.rowanhamwood.hungr.local.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.rowanhamwood.hungr.network.Recipe
 
-import org.rowanhamwood.hungr.network.RecipeInfo
-import org.rowanhamwood.hungr.network.RecipeModel
+import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 
 /**
