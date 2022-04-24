@@ -1,17 +1,23 @@
 package org.rowanhamwood.hungr.viewmodel
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.provider.Settings.Global.getString
 import android.util.Log
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.*
 
 import kotlinx.coroutines.launch
+import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.*
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 
 
 private const val TAG = "RecipeViewModel"
+private const val CURRENT_SEARCH = "CURRENT_SEARCH"
 
-class RecipeViewModel(private val recipesRepository: BaseRecipesRepository):  ViewModel() {
+class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, private val sharedPreferences: SharedPreferences):  ViewModel() {
 
 
 
@@ -26,7 +32,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository):  Vi
 //    private val _favouriteRecipes = MutableLiveData<List<DatabaseRecipe>>()
 //    val favouriteRecipes: LiveData<List<DatabaseRecipe>> = _favouriteRecipes
 
-    private val _search = MutableLiveData("cake")
+    private val _search = MutableLiveData("Pie")
     val search: LiveData<String> = _search
 
     private val _cuisine = MutableLiveData<String?>()
@@ -71,6 +77,10 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository):  Vi
     }
 
     init {
+        val currentSearch = sharedPreferences.getString(CURRENT_SEARCH, "cake")
+        if(currentSearch != null) {
+            setSearch(currentSearch)
+        }
         getRecipeData()
     }
 
@@ -116,8 +126,9 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository):  Vi
 
 @Suppress("UNCHECKED_CAST")
 class RecipeViewModelFactory (
-    private val baseRecipesRepository: BaseRecipesRepository
+    private val baseRecipesRepository: BaseRecipesRepository,
+    private val sharedPreferences: SharedPreferences
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>) =
-        (RecipeViewModel(baseRecipesRepository) as T)
+        (RecipeViewModel(baseRecipesRepository, sharedPreferences) as T)
 }

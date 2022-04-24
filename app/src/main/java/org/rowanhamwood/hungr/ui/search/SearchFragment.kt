@@ -1,5 +1,7 @@
 package org.rowanhamwood.hungr.ui.search
 
+import android.content.Context
+import android.content.SharedPreferences
 import org.rowanhamwood.hungr.HungrApplication
 import android.os.Bundle
 import android.util.Log
@@ -17,16 +19,20 @@ import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 private const val TAG = "SearchFragment"
+private const val CURRENT_SEARCH = "CURRENT_SEARCH"
 
 class SearchFragment : Fragment() {
 
 
     private var _binding: FragmentSearchBinding? = null
+    private lateinit var sharedPreferences : SharedPreferences
+
 
 //    private val sharedViewModel: RecipeViewModel by activityViewModels()
 
     private val sharedViewModel by activityViewModels<RecipeViewModel>() {
-        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository)
+        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository,
+            (requireContext().applicationContext as HungrApplication).sharedPreferences)
     }
 
 
@@ -45,6 +51,9 @@ class SearchFragment : Fragment() {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
         root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.purple_200))
+
+        //sharedPreference for last search on restart
+        sharedPreferences = requireContext().getSharedPreferences(getString(R.string.preference_file_key),  Context.MODE_PRIVATE)
 
         // search bar
         val searchView = binding.searchView
@@ -94,6 +103,8 @@ class SearchFragment : Fragment() {
                 sharedViewModel.setCuisine((view).text.toString())
             }
         }
+
+
 
         //Diet menu setup
         val healthItems = listOf(
@@ -149,9 +160,11 @@ class SearchFragment : Fragment() {
 
         submitButton.setOnClickListener { view ->
             Log.d(TAG, "onCreateView: submit button clicked")
-            if (searchView.query != "" && searchView.query.length > 0) {
+            val searchQuery = searchView.query
+            if (searchQuery != "" && searchQuery.length > 0) {
                 // TODO:  add null check for search
-                sharedViewModel.setSearch(searchView.query.toString())
+                sharedViewModel.setSearch(searchQuery.toString())
+                sharedPreferences.edit().putString(CURRENT_SEARCH, searchQuery.toString()).apply()
                 sharedViewModel.getRecipeData()
                 goToNextScreen()
 

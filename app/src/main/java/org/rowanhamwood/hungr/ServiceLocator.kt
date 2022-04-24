@@ -1,7 +1,10 @@
 package org.rowanhamwood.hungr
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.provider.Settings.Global.getString
 import androidx.annotation.VisibleForTesting
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.room.Room
 import kotlinx.coroutines.runBlocking
 import org.rowanhamwood.hungr.local.BaseLocalDataSource
@@ -37,6 +40,14 @@ object ServiceLocator {
             baseRecipesRepository = null
         }
     }
+
+    fun provideSharedPreferences(context: Context, preferenceFileKey: String) : SharedPreferences {
+        val sharedPreferences = context.getSharedPreferences(preferenceFileKey, Context.MODE_PRIVATE)
+        return sharedPreferences
+    }
+
+
+
 
     fun provideRecipesRespository (context: Context) : BaseRecipesRepository {
         synchronized(this) {

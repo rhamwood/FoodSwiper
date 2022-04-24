@@ -23,6 +23,8 @@ import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 private const val TAG = "SwipeFragment"
 private const val TOP_CARD = "TOP_CARD"
+private const val CURRENT_SEARCH = "CURRENT_SEARCH"
+private const val PREVIOUS_SEARCH = "PREVIOUS_SEARCH"
 
 class SwipeFragment : Fragment(), CardStackListener {
 
@@ -33,9 +35,13 @@ class SwipeFragment : Fragment(), CardStackListener {
     private lateinit var sharedPreferences : SharedPreferences
 
 
+
     private val sharedViewModel by activityViewModels<RecipeViewModel>() {
-        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository)
+        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository,
+            (requireContext().applicationContext as HungrApplication).sharedPreferences)
     }
+
+
 
 
 
@@ -52,19 +58,23 @@ class SwipeFragment : Fragment(), CardStackListener {
         savedInstanceState: Bundle?
     ): View? {
 
+        sharedPreferences = requireContext().getSharedPreferences(getString(R.string.preference_file_key),  Context.MODE_PRIVATE)
+
+
+
+
         _binding = FragmentSwipeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         adapter = SwipeAdapter()
         cardStackView = binding.cardStackView
         manager = CardStackLayoutManager(requireContext(), this)
-
         cardStackView.layoutManager = manager
         cardStackView.adapter = adapter
         cardStackView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
-        sharedPreferences = requireContext().getSharedPreferences(getString(R.string.preference_file_key),  Context.MODE_PRIVATE)
+
         val cardPosition = sharedPreferences.getInt(TOP_CARD, 0)
         manager.topPosition = cardPosition
-        
+
 
         return root
     }
@@ -79,6 +89,8 @@ class SwipeFragment : Fragment(), CardStackListener {
             swipeFragment = this@SwipeFragment
         }
         Log.d(TAG, "onViewCreated: $sharedViewModel")
+
+
     }
 
 

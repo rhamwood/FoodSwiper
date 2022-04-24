@@ -25,7 +25,8 @@ class RecipeListFragment : Fragment() {
 
     private var _binding: FragmentRecipeListBinding? = null
     private val sharedViewModel by activityViewModels<RecipeViewModel>() {
-        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository)
+        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository,
+            (requireContext().applicationContext as HungrApplication).sharedPreferences)
     }
 
 
