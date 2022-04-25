@@ -1,14 +1,10 @@
 package org.rowanhamwood.hungr.viewmodel
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.provider.Settings.Global.getString
 import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.*
 
 import kotlinx.coroutines.launch
-import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.*
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
@@ -60,14 +56,14 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, priv
     fun setFavouriteRecipes(recipe: RecipeModel) {
         val databaseRecipe = maptoDataBaseModel(recipe)
         viewModelScope.launch {
-            recipesRepository.insertRecipes(databaseRecipe)
+            recipesRepository.insertRecipe(databaseRecipe)
         }
     }
 
     fun deleteFavouriteRecipes(recipe: RecipeModel){
         val databaseRecipe = maptoDataBaseModel(recipe)
         viewModelScope.launch {
-            recipesRepository.deleteRecipes(databaseRecipe)
+            recipesRepository.deleteRecipe(databaseRecipe)
         }
 
     }

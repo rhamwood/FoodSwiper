@@ -94,12 +94,4 @@ class RecipeListFragment : Fragment() {
 
 
 
-//    fun goToNextScreen() {
-////        findNavController().navigate(R.id.action_navigation_recipe_list_to_recipeDetailFragment)
-//
-//    }
-
-
-
-
 }

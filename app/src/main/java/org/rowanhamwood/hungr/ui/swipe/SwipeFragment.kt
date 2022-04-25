@@ -23,8 +23,6 @@ import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 private const val TAG = "SwipeFragment"
 private const val TOP_CARD = "TOP_CARD"
-private const val CURRENT_SEARCH = "CURRENT_SEARCH"
-private const val PREVIOUS_SEARCH = "PREVIOUS_SEARCH"
 
 class SwipeFragment : Fragment(), CardStackListener {
 
@@ -59,8 +57,6 @@ class SwipeFragment : Fragment(), CardStackListener {
     ): View? {
 
         sharedPreferences = requireContext().getSharedPreferences(getString(R.string.preference_file_key),  Context.MODE_PRIVATE)
-
-
 
 
         _binding = FragmentSwipeBinding.inflate(inflater, container, false)

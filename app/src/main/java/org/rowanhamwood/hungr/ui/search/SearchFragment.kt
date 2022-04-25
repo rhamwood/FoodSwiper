@@ -162,7 +162,6 @@ class SearchFragment : Fragment() {
             Log.d(TAG, "onCreateView: submit button clicked")
             val searchQuery = searchView.query
             if (searchQuery != "" && searchQuery.length > 0) {
-                // TODO:  add null check for search
                 sharedViewModel.setSearch(searchQuery.toString())
                 sharedPreferences.edit().putString(CURRENT_SEARCH, searchQuery.toString()).apply()
                 sharedViewModel.getRecipeData()

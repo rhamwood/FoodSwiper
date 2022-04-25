@@ -25,7 +25,6 @@ class RecipesRepository(
             it.asDomainModel()
         }
 
-
     override val recipes: LiveData<List<RecipeModel>> = baseRemoteDataSource.recipes
 
 
@@ -38,15 +37,15 @@ class RecipesRepository(
     }
 
 
-     override suspend fun insertRecipes(favouriteRecipe: DatabaseRecipe) {
+     override suspend fun insertRecipe(favouriteRecipe: DatabaseRecipe) {
         withContext(ioDispatcher) {
-            baseLocalDataSource.insertRecipes(favouriteRecipe)
+            baseLocalDataSource.insertRecipe(favouriteRecipe)
         }
     }
 
-    override suspend fun deleteRecipes(favouriteRecipe: DatabaseRecipe) {
+    override suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe) {
         withContext(ioDispatcher) {
-            baseLocalDataSource.deleteRecipes(favouriteRecipe)
+            baseLocalDataSource.deleteRecipe(favouriteRecipe)
         }
     }
 }

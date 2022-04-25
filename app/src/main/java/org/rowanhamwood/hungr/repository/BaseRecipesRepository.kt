@@ -14,9 +14,9 @@ interface BaseRecipesRepository {
 
     suspend fun getNext()
 
-    suspend fun insertRecipes(favouriteRecipe: DatabaseRecipe)
+    suspend fun insertRecipe(favouriteRecipe: DatabaseRecipe)
 
-    suspend fun deleteRecipes(favouriteRecipe: DatabaseRecipe)
+    suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe)
 
 
 }

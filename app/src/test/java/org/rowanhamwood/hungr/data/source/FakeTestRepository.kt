@@ -23,7 +23,7 @@ class FakeTestRepository : BaseRecipesRepository {
     lateinit var insertedRecipe: DatabaseRecipe
     lateinit var deletedRecipe: DatabaseRecipe
 
-    lateinit var mSearchQuery: String
+    var mSearchQuery: String? = null
     var mHealthQuery: String? = null
     var mCuisineQuery: String? = null
     var nextValue = false
@@ -54,11 +54,11 @@ class FakeTestRepository : BaseRecipesRepository {
 //        val recipeModel3 = RecipeModel("uri", "$searchQuery 2" , "image", "source", "url")
 //
 //        addRecipes(recipeModel1, recipeModel2, recipeModel3)
-        if (searchQuery!= null) {
+
             mSearchQuery = searchQuery
             mHealthQuery = healthQuery
             mCuisineQuery = cuisineQuery
-        }
+
 
 
     }
@@ -67,11 +67,11 @@ class FakeTestRepository : BaseRecipesRepository {
         nextValue = true
     }
 
-    override suspend fun insertRecipes(favouriteRecipe: DatabaseRecipe) {
+    override suspend fun insertRecipe(favouriteRecipe: DatabaseRecipe) {
         insertedRecipe = favouriteRecipe
     }
 
-    override suspend fun deleteRecipes(favouriteRecipe: DatabaseRecipe) {
+    override suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe) {
         deletedRecipe = favouriteRecipe
     }
 }

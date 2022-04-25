@@ -6,9 +6,9 @@ import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 
 interface BaseLocalDataSource {
-    suspend fun insertRecipes(favouriteRecipe: DatabaseRecipe)
+    suspend fun insertRecipe(favouriteRecipe: DatabaseRecipe)
 
-    suspend fun deleteRecipes(favouriteRecipe: DatabaseRecipe)
+    suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe)
 
     fun getRecipes(): LiveData<List<DatabaseRecipe>>
 }

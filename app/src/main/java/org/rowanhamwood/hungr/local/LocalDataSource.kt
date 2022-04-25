@@ -1,5 +1,6 @@
 package org.rowanhamwood.hungr.local
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.CoroutineDispatcher
@@ -10,24 +11,26 @@ import org.rowanhamwood.hungr.local.database.RecipeDao
 import org.rowanhamwood.hungr.local.database.asDomainModel
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 
+private const val TAG = "LocalDataSource"
+
 class LocalDataSource (private val recipeDao: RecipeDao,
                        private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) :
     BaseLocalDataSource {
 
-    override suspend fun insertRecipes(favouriteRecipe: DatabaseRecipe) {
+    override suspend fun insertRecipe(favouriteRecipe: DatabaseRecipe) {
         withContext(ioDispatcher) {
             recipeDao.insertRecipe(favouriteRecipe)
         }
     }
 
-    override suspend fun deleteRecipes(favouriteRecipe: DatabaseRecipe) {
+    override suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe) {
         withContext(ioDispatcher) {
             recipeDao.deleteRecipe(favouriteRecipe)
         }
     }
 
     override fun getRecipes() : LiveData<List<DatabaseRecipe>> {
-        return recipeDao.getRecipes()
+            return recipeDao.getRecipes()
     }
 
 
