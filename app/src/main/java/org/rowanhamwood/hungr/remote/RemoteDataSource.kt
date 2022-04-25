@@ -1,27 +1,23 @@
 package org.rowanhamwood.hungr.remote
 
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.rowanhamwood.hungr.remote.network.Next
+import org.rowanhamwood.hungr.local.database.getNextUrl
+import org.rowanhamwood.hungr.local.database.getNextDao
 import org.rowanhamwood.hungr.remote.network.RecipeApi
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 import org.rowanhamwood.hungr.remote.network.asRecipeModel
 
 private const val TAG = "RemoteDataSource"
 
-class RemoteDataSource(private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) :
+class RemoteDataSource(private val getNextDao: getNextDao, private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) :
     BaseRemoteDataSource {
 
 
-
-
-
-    private var nextUrl: String? = null
 
 
     private val _recipes = MutableLiveData<List<RecipeModel>>()
@@ -44,9 +40,9 @@ class RemoteDataSource(private val ioDispatcher: CoroutineDispatcher = Dispatche
                     )
                     if (requestValue.recipeList.isNotEmpty())
                         _recipes.postValue(requestValue.asRecipeModel())
-                    nextUrl = requestValue.nextLink?.next?.href
+                    val nextUrl = requestValue.nextLink?.next?.href
 
-
+                        getNextDao.insertGetNext(getNextUrl(1, nextUrl!!))
 
 
                 } catch (e: Exception) {
@@ -61,6 +57,7 @@ class RemoteDataSource(private val ioDispatcher: CoroutineDispatcher = Dispatche
             }
         } else {
             try {
+                var nextUrl: String? = getNextDao.getNextById(1).nextUrl
                 withContext(ioDispatcher) {
                     Log.d(TAG, "getNext value: $nextUrl")
                     val requestValue = nextUrl?.let {
@@ -70,7 +67,12 @@ class RemoteDataSource(private val ioDispatcher: CoroutineDispatcher = Dispatche
                         )
                     }
                     _recipes.postValue(requestValue?.asRecipeModel())
+
                     nextUrl = requestValue?.nextLink?.next?.href
+
+                    getNextDao.insertGetNext(getNextUrl(1, nextUrl!!))
+
+
 
                     Log.d(TAG, "getNext: ${requestValue.toString()}")
                 }

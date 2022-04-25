@@ -7,7 +7,7 @@ import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 
 /**
-     * DatabaseVideo represents a recipe entity in the database.
+     * DatabaseRecipe represents a recipe entity in the database.
      */
     @Entity
     data class DatabaseRecipe constructor(
@@ -17,6 +17,15 @@ import org.rowanhamwood.hungr.remote.network.RecipeModel
         val image: String,
         val source: String,
         val url: String)
+
+        @Entity
+        data class getNextUrl constructor(
+            @PrimaryKey val getNextId: Int,
+            val nextUrl: String,
+
+        )
+
+
 
 fun List<DatabaseRecipe>.asDomainModel(): List<RecipeModel> {
     return map {

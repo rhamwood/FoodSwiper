@@ -14,6 +14,7 @@ import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 
 private const val TAG = "RecipeViewModel"
 private const val CURRENT_SEARCH = "CURRENT_SEARCH"
+private const val GET_NEXT = "GET_NEXT"
 
 class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, sharedPreferences: SharedPreferences):  ViewModel() {
 
@@ -101,7 +102,8 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
         if(currentSearch != null) {
             setSearch(currentSearch)
         }
-        getRecipeData(false)
+        val getNext = sharedPreferences.getBoolean(GET_NEXT, false)
+        getRecipeData(getNext)
     }
 
     fun getRecipeData(getNext: Boolean) {

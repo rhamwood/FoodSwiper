@@ -20,6 +20,7 @@ import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 private const val TAG = "SearchFragment"
 private const val CURRENT_SEARCH = "CURRENT_SEARCH"
+private const val GET_NEXT = "GET_NEXT"
 
 class SearchFragment : Fragment() {
 
@@ -165,6 +166,7 @@ class SearchFragment : Fragment() {
                 sharedViewModel.setSearch(searchQuery.toString())
                 sharedPreferences.edit().putString(CURRENT_SEARCH, searchQuery.toString()).apply()
                 sharedViewModel.getRecipeData(false)
+                sharedPreferences.edit().putBoolean(GET_NEXT, false).apply()
                 goToNextScreen()
 
                 Log.d(TAG, "onCreateView: search completed")
