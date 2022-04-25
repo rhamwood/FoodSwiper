@@ -15,7 +15,7 @@ import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 private const val TAG = "RecipeViewModel"
 private const val CURRENT_SEARCH = "CURRENT_SEARCH"
 
-class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, private val sharedPreferences: SharedPreferences):  ViewModel() {
+class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, sharedPreferences: SharedPreferences):  ViewModel() {
 
 
 
@@ -101,29 +101,30 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, priv
         if(currentSearch != null) {
             setSearch(currentSearch)
         }
-        getRecipeData()
+        getRecipeData(false)
     }
 
-    fun getRecipeData() {
+    fun getRecipeData(getNext: Boolean) {
 
         val searchQuery = _search.value
-        if (searchQuery!= null) {
+        if (searchQuery!= null && !getNext) {
             val healthQuery = _health.value
             val cuisineQuery = _cuisine.value
             viewModelScope.launch {
-                recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery)
+                recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext)
             }
-        } else{
+        } else if (searchQuery !=null && getNext){
+            viewModelScope.launch {
+                recipesRepository.getRecipes("", "", "", getNext)
+            }
+        } else {
             Log.d(TAG, "getRecipeData: search value is null, cannot get recipe data")
         }
 
     }
 
 
-    fun getNext() {
-        viewModelScope.launch {
-            recipesRepository.getNext()
-        }
+
 
 
 
@@ -142,7 +143,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, priv
     }
 
 
-}
+
 
 @Suppress("UNCHECKED_CAST")
 class RecipeViewModelFactory (

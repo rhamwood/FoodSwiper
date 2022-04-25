@@ -164,7 +164,7 @@ class SearchFragment : Fragment() {
             if (searchQuery != "" && searchQuery.length > 0) {
                 sharedViewModel.setSearch(searchQuery.toString())
                 sharedPreferences.edit().putString(CURRENT_SEARCH, searchQuery.toString()).apply()
-                sharedViewModel.getRecipeData()
+                sharedViewModel.getRecipeData(false)
                 goToNextScreen()
 
                 Log.d(TAG, "onCreateView: search completed")
