@@ -1,12 +1,13 @@
 package org.rowanhamwood.hungr.repository
 
 import androidx.lifecycle.LiveData
+import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 interface BaseRecipesRepository {
 
-    val favouriteRecipes: LiveData<List<RecipeModel>>
+    val favouriteRecipes: LiveData<Result<List<DatabaseRecipe>>>
 
     val recipes: LiveData<List<RecipeModel>>
 

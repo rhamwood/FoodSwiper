@@ -5,6 +5,7 @@ import androidx.lifecycle.Transformations
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.BaseLocalDataSource
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.local.database.asDomainModel
@@ -20,10 +21,15 @@ class RecipesRepository(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BaseRecipesRepository {
 
-    override val favouriteRecipes: LiveData<List<RecipeModel>> =
-            Transformations.map(baseLocalDataSource.getRecipes()) {
-                it.asDomainModel()
-            }
+    override val favouriteRecipes: LiveData<Result<List<DatabaseRecipe>>> = baseLocalDataSource.getRecipes()
+
+
+
+
+
+//        Transformations.map(baseLocalDataSource.getRecipes()) {
+//                it.asDomainModel()
+//}
 
 
 

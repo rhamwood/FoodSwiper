@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.lifecycle.*
 
 import kotlinx.coroutines.launch
+import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
+import org.rowanhamwood.hungr.local.database.asDomainModel
 import org.rowanhamwood.hungr.remote.network.*
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 
@@ -17,10 +19,32 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, priv
 
 
 
-    val favouriteRecipes = recipesRepository.favouriteRecipes
+    private val favouriteRecipesDatabaseRecipe =
+        recipesRepository.favouriteRecipes.switchMap { filterRecipes(it) }
+
+    val favouriteRecipes = Transformations.map(favouriteRecipesDatabaseRecipe){
+        it.asDomainModel()
+    }
 
 //    private val _recipes = MutableLiveData<List<RecipeModel>>()
 //    val recipes: LiveData<List<RecipeModel>> = _recipes
+
+    fun filterRecipes(recipesResult: Result<List<DatabaseRecipe>>) : LiveData<List<DatabaseRecipe>>{
+
+        val result = MutableLiveData<List<DatabaseRecipe>>()
+
+        if (recipesResult is Result.Success)
+            viewModelScope.launch { result.value = recipesResult.data!! }
+
+        else {
+            result.value = emptyList()
+            Log.d(TAG,"error loading tasks")
+        }
+        return result
+
+    }
+
+
 
     val recipes = recipesRepository.recipes
 
