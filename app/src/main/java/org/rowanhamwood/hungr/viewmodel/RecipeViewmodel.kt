@@ -45,9 +45,8 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
     }
 
-
-
-    val recipes = recipesRepository.recipes
+    private val _recipes: MutableLiveData<List<RecipeModel>>? = null
+    val recipes: LiveData<List<RecipeModel>>? = _recipes
 
 //    private val tempRecipeList = ArrayList<DatabaseRecipe>()
 //    private val _favouriteRecipes = MutableLiveData<List<DatabaseRecipe>>()
@@ -64,6 +63,9 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
     private val _url = MutableLiveData<String?>()
     val url: LiveData<String?> = _url
+
+
+
 
 
     fun setSearch(searchText: String) {
@@ -109,21 +111,40 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
         getRecipeData(getNext, appNewStart)
     }
 
-    fun getRecipeData(getNext: Boolean, appNewStart: Boolean) {
+    fun getRecipeData(getNext: Boolean, appNewStart: Boolean)  {
+
 
         val searchQuery = _search.value
         if (searchQuery!= null && !getNext) {
             val healthQuery = _health.value
             val cuisineQuery = _cuisine.value
             viewModelScope.launch {
-                recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
+            val result =   recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
+                if (result is Result.Success) {
+                    _recipes?.value = result.data.value
+                } else {
+                    Log.d(TAG, "getRecipeData: could not get recipe data")
+                }
+
+
             }
         } else if (searchQuery !=null && getNext){
             viewModelScope.launch {
-                recipesRepository.getRecipes("", "", "", getNext, appNewStart)
+                val result = recipesRepository.getRecipes("", "", "", getNext, appNewStart)
+                if (result is Result.Success) {
+                    _recipes?.value = result.data.value
+                } else {
+                    Log.d(TAG, "getRecipeData: could not get recipe data")
+                }
+
+
             }
-        } else {
-            Log.d(TAG, "getRecipeData: search value is null, cannot get recipe data")
+            }
+         else {
+             Log.d(TAG, "getRecipeData: search value is null, cannot get recipe data")
+
+
+
         }
 
     }
