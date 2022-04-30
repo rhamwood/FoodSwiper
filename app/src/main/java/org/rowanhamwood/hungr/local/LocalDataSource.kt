@@ -3,9 +3,11 @@ package org.rowanhamwood.hungr.local
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.local.database.RecipeDao
 import org.rowanhamwood.hungr.local.database.asDomainModel
@@ -29,8 +31,8 @@ class LocalDataSource (private val recipeDao: RecipeDao,
         }
     }
 
-    override fun getRecipes() : LiveData<List<DatabaseRecipe>> {
-           return recipeDao.getRecipes()
+    override fun getRecipes() : LiveData<Result<List<DatabaseRecipe>>> {
+           return recipeDao.getRecipes().map { Result.Success(it) }
 
     }
 

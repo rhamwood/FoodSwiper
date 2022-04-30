@@ -10,6 +10,7 @@ import kotlinx.coroutines.runBlocking
 import org.rowanhamwood.hungr.local.BaseLocalDataSource
 import org.rowanhamwood.hungr.local.LocalDataSource
 import org.rowanhamwood.hungr.local.database.FavouriteRecipesDatabase
+import org.rowanhamwood.hungr.remote.BaseRemoteDataSource
 import org.rowanhamwood.hungr.remote.RemoteDataSource
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 import org.rowanhamwood.hungr.repository.RecipesRepository
@@ -56,7 +57,7 @@ object ServiceLocator {
     }
 
     private fun createRecipesRepository (context: Context) : RecipesRepository {
-        val newRepo = RecipesRepository(createLocalDatasource(context), RemoteDataSource())
+        val newRepo = RecipesRepository(createLocalDatasource(context), createRemoteDataSource(context))
         baseRecipesRepository = newRepo
         return newRepo
     }
@@ -64,6 +65,11 @@ object ServiceLocator {
     private fun createLocalDatasource (context: Context) : BaseLocalDataSource{
         val database = INSTANCE ?: createDatabase(context)
         return LocalDataSource(database.recipeDao)
+    }
+
+    private fun createRemoteDataSource (context: Context) : BaseRemoteDataSource{
+        val database = INSTANCE ?: createDatabase(context)
+        return RemoteDataSource(database.getNextDao)
     }
 
 

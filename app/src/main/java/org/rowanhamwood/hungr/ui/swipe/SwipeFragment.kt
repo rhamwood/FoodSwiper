@@ -23,6 +23,7 @@ import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 private const val TAG = "SwipeFragment"
 private const val TOP_CARD = "TOP_CARD"
+private const val GET_NEXT = "GET_NEXT"
 
 class SwipeFragment : Fragment(), CardStackListener {
 
@@ -104,10 +105,12 @@ class SwipeFragment : Fragment(), CardStackListener {
 
     override fun onCardSwiped(direction: Direction?) {
         if (manager.topPosition == adapter.itemCount) {
-            sharedViewModel.getNext()
+            sharedViewModel.getRecipeData(true, false)
+            sharedPreferences.edit().putBoolean(GET_NEXT, true).apply()
         }
         val item = manager.topPosition -1
         sharedPreferences.edit().putInt(TOP_CARD, manager.topPosition).apply()
+
 
         if (direction == Direction.Right){
 

@@ -9,19 +9,40 @@ interface RecipeDao {
     fun getRecipes(): LiveData<List<DatabaseRecipe>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertRecipe( recipe: DatabaseRecipe)
+    fun insertRecipe(recipe: DatabaseRecipe)
 
     @Delete
     fun deleteRecipe(recipe: DatabaseRecipe)
 }
 
+@Dao
+interface getNextDao {
+    @Query("SElECT * FROM getNextUrl WHERE getNextId = :getNextId")
+    fun getNextById(getNextId: String): getNextUrl
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertGetNext(getNextUrl: getNextUrl)
+
+    @Delete
+    fun deleteGetNext(getNextUrl: getNextUrl)
+}
+
+
+@Database(
+    entities = [DatabaseRecipe::class, getNextUrl::class],
+    version = 3,
+    exportSchema = true,
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(2, 3)
+    ]
+
+)
 
 
 
 
-    @Database(entities = [DatabaseRecipe::class], version = 1)
-    abstract class FavouriteRecipesDatabase: RoomDatabase() {
-        abstract val recipeDao: RecipeDao
-    }
+abstract class FavouriteRecipesDatabase : RoomDatabase() {
+    abstract val recipeDao: RecipeDao
+    abstract val getNextDao: getNextDao
+}
 
 

@@ -5,22 +5,47 @@ import android.util.Log
 import androidx.lifecycle.*
 
 import kotlinx.coroutines.launch
+import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
+import org.rowanhamwood.hungr.local.database.asDomainModel
 import org.rowanhamwood.hungr.remote.network.*
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 
 
 private const val TAG = "RecipeViewModel"
 private const val CURRENT_SEARCH = "CURRENT_SEARCH"
+private const val GET_NEXT = "GET_NEXT"
 
-class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, private val sharedPreferences: SharedPreferences):  ViewModel() {
+class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, sharedPreferences: SharedPreferences):  ViewModel() {
 
 
 
-    val favouriteRecipes = recipesRepository.favouriteRecipes
+    private val favouriteRecipesDatabaseRecipe =
+        recipesRepository.favouriteRecipes.switchMap { filterRecipes(it) }
+
+    val favouriteRecipes = Transformations.map(favouriteRecipesDatabaseRecipe){
+        it.asDomainModel()
+    }
 
 //    private val _recipes = MutableLiveData<List<RecipeModel>>()
 //    val recipes: LiveData<List<RecipeModel>> = _recipes
+
+    fun filterRecipes(recipesResult: Result<List<DatabaseRecipe>>) : LiveData<List<DatabaseRecipe>>{
+
+        val result = MutableLiveData<List<DatabaseRecipe>>()
+
+        if (recipesResult is Result.Success)
+            viewModelScope.launch { result.value = recipesResult.data!! }
+
+        else {
+            result.value = emptyList()
+            Log.d(TAG,"error loading tasks")
+        }
+        return result
+
+    }
+
+
 
     val recipes = recipesRepository.recipes
 
@@ -74,32 +99,37 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, priv
 
     init {
         val currentSearch = sharedPreferences.getString(CURRENT_SEARCH, "cake")
+        //TODO setup empty welcome screen to be displayed on first opening the app replacing default cake
         if(currentSearch != null) {
             setSearch(currentSearch)
         }
-        getRecipeData()
+        val getNext = sharedPreferences.getBoolean(GET_NEXT, false)
+        Log.d(TAG, "getnext: $getNext ")
+        val appNewStart = true
+        getRecipeData(getNext, appNewStart)
     }
 
-    fun getRecipeData() {
+    fun getRecipeData(getNext: Boolean, appNewStart: Boolean) {
 
         val searchQuery = _search.value
-        if (searchQuery!= null) {
+        if (searchQuery!= null && !getNext) {
             val healthQuery = _health.value
             val cuisineQuery = _cuisine.value
             viewModelScope.launch {
-                recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery)
+                recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
             }
-        } else{
+        } else if (searchQuery !=null && getNext){
+            viewModelScope.launch {
+                recipesRepository.getRecipes("", "", "", getNext, appNewStart)
+            }
+        } else {
             Log.d(TAG, "getRecipeData: search value is null, cannot get recipe data")
         }
 
     }
 
 
-    fun getNext() {
-        viewModelScope.launch {
-            recipesRepository.getNext()
-        }
+
 
 
 
@@ -118,7 +148,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, priv
     }
 
 
-}
+
 
 @Suppress("UNCHECKED_CAST")
 class RecipeViewModelFactory (
