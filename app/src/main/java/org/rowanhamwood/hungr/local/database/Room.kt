@@ -31,9 +31,15 @@ interface getNextDao {
 @Database(
     entities = [DatabaseRecipe::class, getNextUrl::class],
     version = 2,
+    exportSchema = true,
     autoMigrations = [AutoMigration(from = 1, to = 2)
+
+
     ]
 )
+
+
+
 
 abstract class FavouriteRecipesDatabase : RoomDatabase() {
     abstract val recipeDao: RecipeDao

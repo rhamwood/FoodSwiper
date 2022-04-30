@@ -103,6 +103,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
             setSearch(currentSearch)
         }
         val getNext = sharedPreferences.getBoolean(GET_NEXT, false)
+        Log.d(TAG, "getnext: $getNext ")
         getRecipeData(getNext)
     }
 

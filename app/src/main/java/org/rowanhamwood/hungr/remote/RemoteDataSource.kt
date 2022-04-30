@@ -39,10 +39,13 @@ class RemoteDataSource(private val getNextDao: getNextDao, private val ioDispatc
                         cuisineQuery = cuisineQuery
                     )
                     if (requestValue.recipeList.isNotEmpty())
+                        Log.d(TAG, "getRecipes: ${requestValue.recipeList}")
                         _recipes.postValue(requestValue.asRecipeModel())
+                        Log.d(TAG, "getRecipes: _recipes.postvalue called")
                     val nextUrl = requestValue.nextLink?.next?.href
 
                         getNextDao.insertGetNext(getNextUrl(1, nextUrl!!))
+                    Log.d(TAG, "getRecipes: $nextUrl")
 
 
                 } catch (e: Exception) {
@@ -57,8 +60,10 @@ class RemoteDataSource(private val getNextDao: getNextDao, private val ioDispatc
             }
         } else {
             try {
-                var nextUrl: String? = getNextDao.getNextById(1).nextUrl
+
+
                 withContext(ioDispatcher) {
+                    var nextUrl: String? = getNextDao.getNextById(1).nextUrl
                     Log.d(TAG, "getNext value: $nextUrl")
                     val requestValue = nextUrl?.let {
                         RecipeApi.retrofitService.getNext(
@@ -77,7 +82,7 @@ class RemoteDataSource(private val getNextDao: getNextDao, private val ioDispatc
                     Log.d(TAG, "getNext: ${requestValue.toString()}")
                 }
             } catch (e: Exception) {
-                Log.d(TAG, "getNext: Failed")
+                Log.d(TAG, "getNext: Failed with exception $e")
             }
 
         }
