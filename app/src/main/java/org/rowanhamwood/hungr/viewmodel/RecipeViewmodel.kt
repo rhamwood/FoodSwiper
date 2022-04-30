@@ -99,26 +99,28 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
     init {
         val currentSearch = sharedPreferences.getString(CURRENT_SEARCH, "cake")
+        //TODO setup empty welcome screen to be displayed on first opening the app replacing default cake
         if(currentSearch != null) {
             setSearch(currentSearch)
         }
         val getNext = sharedPreferences.getBoolean(GET_NEXT, false)
         Log.d(TAG, "getnext: $getNext ")
-        getRecipeData(getNext)
+        val appNewStart = true
+        getRecipeData(getNext, appNewStart)
     }
 
-    fun getRecipeData(getNext: Boolean) {
+    fun getRecipeData(getNext: Boolean, appNewStart: Boolean) {
 
         val searchQuery = _search.value
         if (searchQuery!= null && !getNext) {
             val healthQuery = _health.value
             val cuisineQuery = _cuisine.value
             viewModelScope.launch {
-                recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext)
+                recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
             }
         } else if (searchQuery !=null && getNext){
             viewModelScope.launch {
-                recipesRepository.getRecipes("", "", "", getNext)
+                recipesRepository.getRecipes("", "", "", getNext, appNewStart)
             }
         } else {
             Log.d(TAG, "getRecipeData: search value is null, cannot get recipe data")

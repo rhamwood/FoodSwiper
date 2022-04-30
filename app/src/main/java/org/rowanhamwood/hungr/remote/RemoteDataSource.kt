@@ -23,11 +23,14 @@ class RemoteDataSource(private val getNextDao: getNextDao, private val ioDispatc
     private val _recipes = MutableLiveData<List<RecipeModel>>()
     override val recipes: LiveData<List<RecipeModel>> = _recipes
 
+    private var oldNextUrl :String? = null
+
     override suspend fun getRecipes(
         searchQuery: String?,
         healthQuery: String?,
         cuisineQuery: String?,
-        getNext: Boolean
+        getNext: Boolean,
+        appNewStart: Boolean
     ) {
         if (!getNext) {
             if (searchQuery != null){
@@ -44,7 +47,7 @@ class RemoteDataSource(private val getNextDao: getNextDao, private val ioDispatc
                         Log.d(TAG, "getRecipes: _recipes.postvalue called")
                     val nextUrl = requestValue.nextLink?.next?.href
 
-                        getNextDao.insertGetNext(getNextUrl(1, nextUrl!!))
+                        getNextDao.insertGetNext(getNextUrl("NEXT", nextUrl!!))
                     Log.d(TAG, "getRecipes: $nextUrl")
 
 
@@ -59,13 +62,16 @@ class RemoteDataSource(private val getNextDao: getNextDao, private val ioDispatc
                 Log.d(TAG, "search query is null")
             }
         } else {
+
             try {
 
-
-                withContext(ioDispatcher) {
-                    var nextUrl: String? = getNextDao.getNextById(1).nextUrl
-                    Log.d(TAG, "getNext value: $nextUrl")
-                    val requestValue = nextUrl?.let {
+                withContext(ioDispatcher) { if (appNewStart) {
+                    oldNextUrl = getNextDao.getNextById("PREVIOUS").nextUrl
+                } else {
+                    oldNextUrl= getNextDao.getNextById("NEXT").nextUrl
+                }
+                    Log.d(TAG, "getNext value: $oldNextUrl")
+                    val requestValue = oldNextUrl?.let {
                         RecipeApi.retrofitService.getNext(
                             it
 
@@ -73,9 +79,13 @@ class RemoteDataSource(private val getNextDao: getNextDao, private val ioDispatc
                     }
                     _recipes.postValue(requestValue?.asRecipeModel())
 
-                    nextUrl = requestValue?.nextLink?.next?.href
 
-                    getNextDao.insertGetNext(getNextUrl(1, nextUrl!!))
+                    val nextUrl = requestValue?.nextLink?.next?.href
+
+                    getNextDao.insertGetNext(getNextUrl("PREVIOUS", oldNextUrl!!))
+                    getNextDao.insertGetNext(getNextUrl("NEXT", nextUrl!!))
+
+
 
 
 

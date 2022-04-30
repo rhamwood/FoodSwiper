@@ -105,7 +105,7 @@ class SwipeFragment : Fragment(), CardStackListener {
 
     override fun onCardSwiped(direction: Direction?) {
         if (manager.topPosition == adapter.itemCount) {
-            sharedViewModel.getRecipeData(true)
+            sharedViewModel.getRecipeData(true, false)
             sharedPreferences.edit().putBoolean(GET_NEXT, true).apply()
         }
         val item = manager.topPosition -1

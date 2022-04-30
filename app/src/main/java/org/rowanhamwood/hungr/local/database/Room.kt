@@ -18,7 +18,7 @@ interface RecipeDao {
 @Dao
 interface getNextDao {
     @Query("SElECT * FROM getNextUrl WHERE getNextId = :getNextId")
-    fun getNextById(getNextId: Int): getNextUrl
+    fun getNextById(getNextId: String): getNextUrl
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertGetNext(getNextUrl: getNextUrl)
@@ -30,12 +30,11 @@ interface getNextDao {
 
 @Database(
     entities = [DatabaseRecipe::class, getNextUrl::class],
-    version = 2,
+    version = 3,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2)
-
-
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(2, 3)
     ]
+
 )
 
 

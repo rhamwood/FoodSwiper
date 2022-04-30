@@ -20,7 +20,7 @@ import org.rowanhamwood.hungr.remote.network.RecipeModel
 
         @Entity
         data class getNextUrl constructor(
-            @PrimaryKey val getNextId: Int,
+            @PrimaryKey val getNextId: String,
             val nextUrl: String,
 
         )
