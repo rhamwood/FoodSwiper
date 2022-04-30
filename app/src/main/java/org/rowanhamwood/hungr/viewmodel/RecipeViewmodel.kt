@@ -45,8 +45,8 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
     }
 
-    private val _recipes: MutableLiveData<List<RecipeModel>>? = null
-    val recipes: LiveData<List<RecipeModel>>? = _recipes
+    private val _recipes: MutableLiveData<List<RecipeModel>> = MutableLiveData(emptyList())
+    val recipes: LiveData<List<RecipeModel>> = _recipes
 
 //    private val tempRecipeList = ArrayList<DatabaseRecipe>()
 //    private val _favouriteRecipes = MutableLiveData<List<DatabaseRecipe>>()
@@ -121,7 +121,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
             viewModelScope.launch {
             val result =   recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
                 if (result is Result.Success) {
-                    _recipes?.value = result.data.value
+                    _recipes.value = result.data.value
                 } else {
                     Log.d(TAG, "getRecipeData: could not get recipe data")
                 }
@@ -132,7 +132,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
             viewModelScope.launch {
                 val result = recipesRepository.getRecipes("", "", "", getNext, appNewStart)
                 if (result is Result.Success) {
-                    _recipes?.value = result.data.value
+                    _recipes.value = result.data.value
                 } else {
                     Log.d(TAG, "getRecipeData: could not get recipe data")
                 }
