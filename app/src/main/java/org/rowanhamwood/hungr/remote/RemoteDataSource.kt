@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.getNextUrl
 import org.rowanhamwood.hungr.local.database.getNextDao
 import org.rowanhamwood.hungr.remote.network.RecipeApi
@@ -20,8 +21,8 @@ class RemoteDataSource(private val getNextDao: getNextDao, private val ioDispatc
 
 
 
-    private val _recipes = MutableLiveData<List<RecipeModel>>()
-    override val recipes: LiveData<List<RecipeModel>> = _recipes
+
+//    override val recipes: LiveData<List<RecipeModel>> = _recipes
 
     private var oldNextUrl :String? = null
 
@@ -31,7 +32,9 @@ class RemoteDataSource(private val getNextDao: getNextDao, private val ioDispatc
         cuisineQuery: String?,
         getNext: Boolean,
         appNewStart: Boolean
-    ) {
+    ) : Result<LiveData<List<RecipeModel>>> {
+
+        val _recipes = MutableLiveData<List<RecipeModel>>()
         if (!getNext) {
             if (searchQuery != null){
             withContext(ioDispatcher) {
@@ -46,56 +49,60 @@ class RemoteDataSource(private val getNextDao: getNextDao, private val ioDispatc
                         _recipes.postValue(requestValue.asRecipeModel())
                         Log.d(TAG, "getRecipes: _recipes.postvalue called")
                     val nextUrl = requestValue.nextLink?.next?.href
-
                         getNextDao.insertGetNext(getNextUrl("NEXT", nextUrl!!))
                     Log.d(TAG, "getRecipes: $nextUrl")
 
+                    return@withContext Result.Success(_recipes)
 
                 } catch (e: Exception) {
                     Log.d(TAG, "getRecipeData: $e")
                     Log.d(TAG, "getRecipeData: Failed")
-
+                    return@withContext Result.Error(e)
                 }
             }
+
 
             } else {
                 Log.d(TAG, "search query is null")
+
+                return Result.Error(Exception("search query is null"))
             }
         } else {
+            withContext(ioDispatcher) {
+                    try {
+                        if (appNewStart) {
+                            oldNextUrl = getNextDao.getNextById("PREVIOUS").nextUrl
+                        } else {
+                            oldNextUrl = getNextDao.getNextById("NEXT").nextUrl
+                        }
+                        Log.d(TAG, "getNext value: $oldNextUrl")
+                        val requestValue = oldNextUrl?.let {
+                            RecipeApi.retrofitService.getNext(
+                                it
 
-            try {
+                            )
+                        }
+                        _recipes.postValue(requestValue?.asRecipeModel())
 
-                withContext(ioDispatcher) { if (appNewStart) {
-                    oldNextUrl = getNextDao.getNextById("PREVIOUS").nextUrl
-                } else {
-                    oldNextUrl= getNextDao.getNextById("NEXT").nextUrl
+
+                        val nextUrl = requestValue?.nextLink?.next?.href
+
+                        getNextDao.insertGetNext(getNextUrl("PREVIOUS", oldNextUrl!!))
+                        getNextDao.insertGetNext(getNextUrl("NEXT", nextUrl!!))
+
+                        Log.d(TAG, "getNext: ${requestValue.toString()}")
+
+                        return@withContext Result.Success(_recipes)
+
+                } catch (e: Exception) {
+                    Log.d(TAG, "getNext: Failed with exception $e")
+                    return@withContext Result.Error(e)
                 }
-                    Log.d(TAG, "getNext value: $oldNextUrl")
-                    val requestValue = oldNextUrl?.let {
-                        RecipeApi.retrofitService.getNext(
-                            it
-
-                        )
-                    }
-                    _recipes.postValue(requestValue?.asRecipeModel())
-
-
-                    val nextUrl = requestValue?.nextLink?.next?.href
-
-                    getNextDao.insertGetNext(getNextUrl("PREVIOUS", oldNextUrl!!))
-                    getNextDao.insertGetNext(getNextUrl("NEXT", nextUrl!!))
-
-
-
-
-
-                    Log.d(TAG, "getNext: ${requestValue.toString()}")
-                }
-            } catch (e: Exception) {
-                Log.d(TAG, "getNext: Failed with exception $e")
             }
 
+
         }
+        return Result.Error(Exception("get recipes failed"))
 
     }
 

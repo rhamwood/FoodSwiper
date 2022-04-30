@@ -11,7 +11,7 @@ interface BaseRecipesRepository {
 
     val recipes: LiveData<List<RecipeModel>>
 
-    suspend fun getRecipes(searchQuery: String?, healthQuery: String?, cuisineQuery: String?, getNext: Boolean, appNewStart: Boolean)
+    suspend fun getRecipes(searchQuery: String?, healthQuery: String?, cuisineQuery: String?, getNext: Boolean, appNewStart: Boolean) : Result<LiveData<List<RecipeModel>>>
 
     suspend fun insertRecipe(favouriteRecipe: DatabaseRecipe)
 

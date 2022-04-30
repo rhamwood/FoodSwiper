@@ -35,11 +35,11 @@ class RecipesRepository(
 
 
 
-    override val recipes: LiveData<List<RecipeModel>> = baseRemoteDataSource.recipes
+//    override val recipes: LiveData<List<RecipeModel>> = baseRemoteDataSource
 
 
-    override suspend fun getRecipes(searchQuery: String?, healthQuery: String?, cuisineQuery: String?, getNext: Boolean, appNewStart: Boolean) {
-       baseRemoteDataSource.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
+    override suspend fun getRecipes(searchQuery: String?, healthQuery: String?, cuisineQuery: String?, getNext: Boolean, appNewStart: Boolean) : Result<LiveData<List<RecipeModel>>> {
+       return baseRemoteDataSource.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
     }
 
 
