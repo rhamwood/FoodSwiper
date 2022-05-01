@@ -21,21 +21,20 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
 
     private val favouriteRecipesDatabaseRecipe =
-        recipesRepository.favouriteRecipes.switchMap { filterRecipes(it) }
+        recipesRepository.favouriteRecipes.switchMap { recipesResults(it) }
 
     val favouriteRecipes = Transformations.map(favouriteRecipesDatabaseRecipe){
         it.asDomainModel()
     }
 
-//    private val _recipes = MutableLiveData<List<RecipeModel>>()
-//    val recipes: LiveData<List<RecipeModel>> = _recipes
 
-    fun filterRecipes(recipesResult: Result<List<DatabaseRecipe>>) : LiveData<List<DatabaseRecipe>>{
+    fun recipesResults(recipesResult: Result<List<DatabaseRecipe>>) : LiveData<List<DatabaseRecipe>>{
 
         val result = MutableLiveData<List<DatabaseRecipe>>()
 
         if (recipesResult is Result.Success)
             viewModelScope.launch { result.value = recipesResult.data!! }
+
 
         else {
             result.value = emptyList()
@@ -48,10 +47,6 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
     private val _recipes: MutableLiveData<List<RecipeModel>> = MutableLiveData(emptyList())
     val recipes: LiveData<List<RecipeModel>> = _recipes
 
-//    private val tempRecipeList = ArrayList<DatabaseRecipe>()
-//    private val _favouriteRecipes = MutableLiveData<List<DatabaseRecipe>>()
-//    val favouriteRecipes: LiveData<List<DatabaseRecipe>> = _favouriteRecipes
-
     private val _search = MutableLiveData("Pie")
     val search: LiveData<String> = _search
 
@@ -63,9 +58,6 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
     private val _url = MutableLiveData<String?>()
     val url: LiveData<String?> = _url
-
-
-
 
 
     fun setSearch(searchText: String) {
@@ -120,6 +112,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
             val cuisineQuery = _cuisine.value
             viewModelScope.launch {
             val result =   recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
+                Log.d(TAG, "getRecipeData: $result")
                 if (result is Result.Success) {
                     _recipes.value = result.data.value
                 } else {
@@ -131,6 +124,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
         } else if (searchQuery !=null && getNext){
             viewModelScope.launch {
                 val result = recipesRepository.getRecipes("", "", "", getNext, appNewStart)
+                Log.d(TAG, "getRecipeData: $result")
                 if (result is Result.Success) {
                     _recipes.value = result.data.value
                 } else {

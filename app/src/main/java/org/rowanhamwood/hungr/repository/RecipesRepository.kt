@@ -39,7 +39,8 @@ class RecipesRepository(
 
 
     override suspend fun getRecipes(searchQuery: String?, healthQuery: String?, cuisineQuery: String?, getNext: Boolean, appNewStart: Boolean) : Result<LiveData<List<RecipeModel>>> {
-       return baseRemoteDataSource.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
+
+        return baseRemoteDataSource.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
     }
 
 

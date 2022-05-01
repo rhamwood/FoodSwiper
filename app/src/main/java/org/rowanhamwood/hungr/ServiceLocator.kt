@@ -48,8 +48,6 @@ object ServiceLocator {
     }
 
 
-
-
     fun provideRecipesRespository (context: Context) : BaseRecipesRepository {
         synchronized(this) {
             return baseRecipesRepository?: createRecipesRepository(context)
