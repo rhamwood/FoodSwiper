@@ -44,6 +44,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
     }
 
+
     private val _recipes: MutableLiveData<List<RecipeModel>> = MutableLiveData(emptyList())
     val recipes: LiveData<List<RecipeModel>> = _recipes
 

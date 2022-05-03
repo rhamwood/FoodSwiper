@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 //
 //        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-        navView.setBackgroundColor(ContextCompat.getColor(this, R.color.teal_700))
+//        navView.setBackgroundColor(ContextCompat.getColor(this, R.color.teal_700))
 
 
     }

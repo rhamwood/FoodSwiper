@@ -48,7 +48,7 @@ class RecipeListFragment : Fragment() {
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
         recyclerView.layoutManager = linearLayoutManager
-        recyclerView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
+//        recyclerView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
 
         val adapter =
             RecipeListAdapter(RecipeListAdapter.RecipeListListener { recipeUrl ->

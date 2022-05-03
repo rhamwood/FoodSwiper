@@ -67,7 +67,7 @@ class SwipeFragment : Fragment(), CardStackListener {
         manager = CardStackLayoutManager(requireContext(), this)
         cardStackView.layoutManager = manager
         cardStackView.adapter = adapter
-        cardStackView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
+//        cardStackView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
 
         val cardPosition = sharedPreferences.getInt(TOP_CARD, 0)
         manager.topPosition = cardPosition

@@ -2,17 +2,18 @@ package org.rowanhamwood.hungr.ui.search
 
 import android.content.Context
 import android.content.SharedPreferences
-import org.rowanhamwood.hungr.HungrApplication
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import org.rowanhamwood.hungr.HungrApplication
 import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.databinding.FragmentSearchBinding
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
@@ -51,7 +52,7 @@ class SearchFragment : Fragment() {
 
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.purple_200))
+//        root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.purple_200))
 
         //sharedPreference for last search on restart
         sharedPreferences = requireContext().getSharedPreferences(getString(R.string.preference_file_key),  Context.MODE_PRIVATE)
@@ -59,15 +60,15 @@ class SearchFragment : Fragment() {
         // search bar
         val searchView = binding.searchView
         val submitButton = binding.submitButton
-        submitButton.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
+        submitButton.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.light_green_500))
         // cuisine selection menu
         val cuisineMenu = binding.cuisineMenu
         val cuisineTextView = binding.cuisineTextView
-        cuisineTextView.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
+//        cuisineTextView.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
         // diet selection menu
         val healthMenu = binding.dietMenu
         val healthTextView = binding.dietTextView
-        healthTextView.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
+//        healthTextView.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
 
 
         //cuisineMenu setup
@@ -155,28 +156,44 @@ class SearchFragment : Fragment() {
             }
         }
 
+        searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.d("onQueryTextChange", "called");
+                return false
+            }
 
+            override fun onQueryTextSubmit(query: String?): Boolean {
+
+                val searchQuery = query
+                if (searchQuery != null) {
+                    if (searchQuery != "" && searchQuery.isNotEmpty()) {
+                        sharedViewModel.setSearch(searchQuery.toString())
+                        sharedPreferences.edit().putString(CURRENT_SEARCH, searchQuery.toString()).apply()
+                        sharedViewModel.getRecipeData(false, false)
+                        sharedPreferences.edit().putBoolean(GET_NEXT, false).apply()
+                        goToNextScreen()
+
+                        Log.d(TAG, "onCreateView: search completed")
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "please fill in the search field",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+
+                return false
+            }
+        })
 
 
 
         submitButton.setOnClickListener { view ->
             Log.d(TAG, "onCreateView: submit button clicked")
-            val searchQuery = searchView.query
-            if (searchQuery != "" && searchQuery.length > 0) {
-                sharedViewModel.setSearch(searchQuery.toString())
-                sharedPreferences.edit().putString(CURRENT_SEARCH, searchQuery.toString()).apply()
-                sharedViewModel.getRecipeData(false, false)
-                sharedPreferences.edit().putBoolean(GET_NEXT, false).apply()
-                goToNextScreen()
+            searchView.setQuery(searchView.query, true)
 
-                Log.d(TAG, "onCreateView: search completed")
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    "please fill in the search field",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
         }
 
         return root
