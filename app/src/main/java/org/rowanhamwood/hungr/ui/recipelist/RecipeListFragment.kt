@@ -16,13 +16,14 @@ import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 
 class RecipeListFragment : Fragment() {
 
 
-
+    private lateinit var recyclerView: RecyclerView
     private var _binding: FragmentRecipeListBinding? = null
     private val sharedViewModel by activityViewModels<RecipeViewModel>() {
         RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository,
@@ -43,7 +44,7 @@ class RecipeListFragment : Fragment() {
 
         _binding = FragmentRecipeListBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val recyclerView = binding.recyclerview
+        recyclerView = binding.recyclerview
         val linearLayoutManager = LinearLayoutManager(requireContext())
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
@@ -84,6 +85,20 @@ class RecipeListFragment : Fragment() {
                     lifecycleOwner = viewLifecycleOwner
 
                 }
+
+            val errorTextView = binding.recipeListErrorTextView
+            val errorImageView = binding.recipeListErrorImageView
+
+            if (sharedViewModel.favouriteRecipes.value.isNullOrEmpty()){
+                recyclerView.visibility = View.GONE
+                errorTextView.visibility = View.VISIBLE
+                errorImageView.visibility = View.VISIBLE
+
+            } else{
+                recyclerView.visibility = View.VISIBLE
+                errorTextView.visibility = View.GONE
+                errorImageView.visibility = View.GONE
+            }
 
             }
 

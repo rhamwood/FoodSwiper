@@ -106,8 +106,6 @@ class SearchFragment : Fragment() {
             }
         }
 
-
-
         //Diet menu setup
         val healthItems = listOf(
                     "None",
@@ -165,8 +163,9 @@ class SearchFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
 
                 val searchQuery = query
+
                 if (searchQuery != null) {
-                    if (searchQuery != "" && searchQuery.isNotEmpty()) {
+
                         sharedViewModel.setSearch(searchQuery.toString())
                         sharedPreferences.edit().putString(CURRENT_SEARCH, searchQuery.toString()).apply()
                         sharedViewModel.getRecipeData(false, false)
@@ -174,24 +173,26 @@ class SearchFragment : Fragment() {
                         goToNextScreen()
 
                         Log.d(TAG, "onCreateView: search completed")
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "please fill in the search field",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+
+
                 }
 
 
-                return false
+                return true
             }
         })
 
 
-
         submitButton.setOnClickListener { view ->
             Log.d(TAG, "onCreateView: submit button clicked")
+            if (searchView.query.isEmpty()){
+                Log.d(TAG, "onQueryTextSubmit: show search empty toast")
+                Toast.makeText(
+                    requireContext(),
+                    "please fill in the search field",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
             searchView.setQuery(searchView.query, true)
 
         }
@@ -206,6 +207,8 @@ class SearchFragment : Fragment() {
             viewModel = sharedViewModel
             lifecycleOwner = viewLifecycleOwner
         }
+
+
     }
 
     override fun onDestroyView() {
