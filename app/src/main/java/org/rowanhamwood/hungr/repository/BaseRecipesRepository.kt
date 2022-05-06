@@ -15,7 +15,7 @@ interface BaseRecipesRepository {
 
     suspend fun insertRecipe(favouriteRecipe: RecipeModel)
 
-    suspend fun deleteRecipe(favouriteRecipe: RecipeModel)
+    suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe)
 
 
 }

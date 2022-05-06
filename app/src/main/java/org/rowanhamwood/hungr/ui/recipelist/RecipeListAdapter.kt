@@ -6,14 +6,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.rowanhamwood.hungr.databinding.RecipeListItemViewBinding
-import org.rowanhamwood.hungr.remote.network.RecipeModel
+import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 
 
-class RecipeListAdapter(val clickListener: RecipeListListener) : ListAdapter<RecipeModel, RecipeListAdapter.RecipeListViewHolder>(DiffCallback) {
+class RecipeListAdapter(val clickListener: RecipeListListener) : ListAdapter<DatabaseRecipe, RecipeListAdapter.RecipeListViewHolder>(DiffCallback) {
 
     class RecipeListViewHolder(private var binding: RecipeListItemViewBinding ) : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(recipe: RecipeModel, clickListener: RecipeListListener){
+        fun bind(recipe: DatabaseRecipe, clickListener: RecipeListListener){
             binding.recipe = recipe
             binding.clickListener = clickListener
             binding.executePendingBindings()
@@ -37,18 +37,18 @@ class RecipeListAdapter(val clickListener: RecipeListListener) : ListAdapter<Rec
     }
 
 
-    companion object DiffCallback : DiffUtil.ItemCallback<RecipeModel>() {
-        override fun areItemsTheSame(oldItem: RecipeModel, newItem: RecipeModel): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<DatabaseRecipe>() {
+        override fun areItemsTheSame(oldItem: DatabaseRecipe, newItem: DatabaseRecipe): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: RecipeModel, newItem: RecipeModel): Boolean {
+        override fun areContentsTheSame(oldItem: DatabaseRecipe, newItem: DatabaseRecipe): Boolean {
             return oldItem.uri == newItem.uri
         }
     }
 
     class RecipeListListener(val clickListener: (recipeUrl: String) -> Unit) {
-        fun onClick(recipe: RecipeModel) = clickListener(recipe.url)
+        fun onClick(recipe: DatabaseRecipe) = clickListener(recipe.url)
     }
 
 

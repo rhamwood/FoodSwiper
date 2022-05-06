@@ -1,6 +1,5 @@
 package org.rowanhamwood.hungr.repository
 
-import android.R.attr.bitmap
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -39,30 +38,32 @@ class RecipesRepository(
         return baseRemoteDataSource.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
     }
 
+     private fun recipeImageDirectory(): String = context.filesDir.absolutePath
 
-     override suspend fun insertRecipe(favouriteRecipe: RecipeModel) {
-         val recipeBitmap = getBitmapFile(favouriteRecipe.image)
-         val imageId = UUID.randomUUID().toString()
-         saveFavouriteRecipeFile(recipeBitmap, imageId)
+     override suspend fun insertRecipe(favouriteRecipe: RecipeModel) = withContext(ioDispatcher) {
 
-         val file = File(recipeImageDirectory(), imageId)
-         val path  = file.absolutePath
-         favouriteRecipe.image = path
+             val recipeBitmap = getBitmapFile(favouriteRecipe.image)
+             val imageId = UUID.randomUUID().toString()
+             saveFavouriteRecipeFile(recipeBitmap, imageId)
 
-         val databaseRecipe = maptoDataBaseModel(favouriteRecipe)
-         withContext(ioDispatcher) {
+             val path = File(recipeImageDirectory(), imageId).absolutePath
+             favouriteRecipe.image = path
+
+             val databaseRecipe = maptoDataBaseModel(favouriteRecipe)
              baseLocalDataSource.insertRecipe(databaseRecipe)
-         }
+
      }
 
-    override suspend fun deleteRecipe(favouriteRecipe: RecipeModel) {
-        val databaseRecipe = maptoDataBaseModel(favouriteRecipe)
+
+
+    override suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe) {
         withContext(ioDispatcher) {
-            baseLocalDataSource.deleteRecipe(databaseRecipe)
+            File(favouriteRecipe.image).delete()
+            baseLocalDataSource.deleteRecipe(favouriteRecipe)
         }
     }
 
-    private suspend fun getBitmapFile(imgUrl: String) : Bitmap = withContext(ioDispatcher){
+    private suspend fun getBitmapFile(imgUrl: String) : Bitmap {
 
         val loader = ImageLoader(context)
         val request = ImageRequest.Builder(context)
@@ -73,11 +74,11 @@ class RecipesRepository(
         val result = (loader.execute(request) as SuccessResult).drawable
         val bitmap = (result as BitmapDrawable).bitmap
 
-        return@withContext bitmap
+        return bitmap
     }
 
 
-    private fun saveFavouriteRecipeFile(recipeBitmap: Bitmap, fileName: String ){
+    private fun saveFavouriteRecipeFile(recipeBitmap: Bitmap, fileName: String )  {
         try {
             val fileOutputStream: FileOutputStream =
                 context.openFileOutput(fileName, Context.MODE_PRIVATE)
@@ -93,9 +94,6 @@ class RecipesRepository(
 
 
 
-    private fun recipeImageFile(fileName: String): File = File(recipeImageDirectory(), fileName)
-
-    private fun recipeImageDirectory(): String = context.filesDir.absolutePath
 
 
     private fun maptoDataBaseModel(recipeModel: RecipeModel): DatabaseRecipe {

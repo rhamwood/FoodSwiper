@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 import coil.load
 import com.yuyakaido.android.cardstackview.CardStackView
+import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 import org.rowanhamwood.hungr.ui.recipelist.RecipeListAdapter
 import org.rowanhamwood.hungr.ui.swipe.SwipeAdapter
@@ -31,11 +32,11 @@ fun bindRecipeImage(imgView: ImageView, imgUrl: String) {
 }
 
 @BindingAdapter("favouriteImageUrl")
-fun bindFavImage(imgView: ImageView, imgUrl: String) {
-    Log.d(TAG, "bindFavImage: $imgUrl")
+fun bindFavImage(imgView: ImageView, imgFilePath: String) {
+    Log.d(TAG, "bindFavImage: $imgFilePath")
 
-    imgUrl.let {
-        val imgFile = File(imgUrl)
+    imgFilePath.let {
+        val imgFile = File(imgFilePath)
         imgView.load(imgFile) {
             placeholder(R.drawable.loading_animation)
             error(R.drawable.ic_broken_image)
@@ -57,7 +58,7 @@ fun bindCardStackView(
 @BindingAdapter("listFavouriteRecipes")
 fun bindRecyclerView(
     recyclerView: RecyclerView,
-    data: List<RecipeModel>?
+    data: List<DatabaseRecipe>?
 ) {
     val adapter = recyclerView.adapter as RecipeListAdapter
     adapter.submitList(data)

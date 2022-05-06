@@ -7,7 +7,7 @@
 
         <variable
             name="recipe"
-            type="org.rowanhamwood.hungr.remote.network.RecipeModel" />
+            type="org.rowanhamwood.hungr.local.database.DatabaseRecipe" />
 
         <import type="android.view.View" />
 

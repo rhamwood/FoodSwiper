@@ -25,12 +25,13 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
 
 
-    private val favouriteRecipesDatabaseRecipe =
+    private val _favouriteRecipes =
         recipesRepository.favouriteRecipes.switchMap { recipesResults(it) }
+    val favouriteRecipes = _favouriteRecipes
 
-    val favouriteRecipes = Transformations.map(favouriteRecipesDatabaseRecipe){
-        it.asDomainModel()
-    }
+
+
+
 
 
     fun recipesResults(recipesResult: Result<List<DatabaseRecipe>>) : LiveData<List<DatabaseRecipe>>{
@@ -80,20 +81,15 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
     fun setFavouriteRecipes(recipe: RecipeModel) {
 
-
-
-
         viewModelScope.launch {
             recipesRepository.insertRecipe(recipe)
         }
     }
 
-    fun deleteFavouriteRecipes(recipe: RecipeModel){
-
+    fun deleteFavouriteRecipes(recipe: DatabaseRecipe){
         viewModelScope.launch {
             recipesRepository.deleteRecipe(recipe)
         }
-
     }
 
     fun setUrl(url: String?) {
