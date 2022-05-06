@@ -11,6 +11,7 @@ import com.yuyakaido.android.cardstackview.CardStackView
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 import org.rowanhamwood.hungr.ui.recipelist.RecipeListAdapter
 import org.rowanhamwood.hungr.ui.swipe.SwipeAdapter
+import java.io.File
 
 private const val TAG = "BindingAdapters"
 
@@ -34,8 +35,8 @@ fun bindFavImage(imgView: ImageView, imgUrl: String) {
     Log.d(TAG, "bindFavImage: $imgUrl")
 
     imgUrl.let {
-        val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
-        imgView.load(imgUri) {
+        val imgFile = File(imgUrl)
+        imgView.load(imgFile) {
             placeholder(R.drawable.loading_animation)
             error(R.drawable.ic_broken_image)
         }

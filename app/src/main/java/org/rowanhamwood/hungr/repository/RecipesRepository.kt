@@ -44,10 +44,10 @@ class RecipesRepository(
          val recipeBitmap = getBitmapFile(favouriteRecipe.image)
          val imageId = UUID.randomUUID().toString()
          saveFavouriteRecipeFile(recipeBitmap, imageId)
-         favouriteRecipe.image = imageId
 
-         val file = File(recipeImageDirectory(), "hello")
-         file.toString()
+         val file = File(recipeImageDirectory(), imageId)
+         val path  = file.absolutePath
+         favouriteRecipe.image = path
 
          val databaseRecipe = maptoDataBaseModel(favouriteRecipe)
          withContext(ioDispatcher) {
