@@ -1,15 +1,20 @@
 package org.rowanhamwood.hungr.viewmodel
 
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.*
-
 import kotlinx.coroutines.launch
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.local.database.asDomainModel
 import org.rowanhamwood.hungr.remote.network.*
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 private const val TAG = "RecipeViewModel"
@@ -74,16 +79,19 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
     }
 
     fun setFavouriteRecipes(recipe: RecipeModel) {
-        val databaseRecipe = maptoDataBaseModel(recipe)
+
+
+
+
         viewModelScope.launch {
-            recipesRepository.insertRecipe(databaseRecipe)
+            recipesRepository.insertRecipe(recipe)
         }
     }
 
     fun deleteFavouriteRecipes(recipe: RecipeModel){
-        val databaseRecipe = maptoDataBaseModel(recipe)
+
         viewModelScope.launch {
-            recipesRepository.deleteRecipe(databaseRecipe)
+            recipesRepository.deleteRecipe(recipe)
         }
 
     }
@@ -104,8 +112,15 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
         getRecipeData(getNext, appNewStart)
     }
 
-    fun getRecipeData(getNext: Boolean, appNewStart: Boolean)  {
 
+
+
+
+
+
+
+
+    fun getRecipeData(getNext: Boolean, appNewStart: Boolean)  {
 
         val searchQuery = _search.value
         if (searchQuery!= null && !getNext) {
@@ -116,6 +131,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
                 Log.d(TAG, "getRecipeData: $result")
                 if (result is Result.Success) {
                     _recipes.value = result.data.value
+                    Log.d(TAG, "${recipes.value}")
                 } else {
                     Log.d(TAG, "getRecipeData: could not get recipe data")
                 }
@@ -128,8 +144,10 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
                 Log.d(TAG, "getRecipeData: $result")
                 if (result is Result.Success) {
                     _recipes.value = result.data.value
+                    Log.d(TAG, "${recipes.value}")
                 } else {
                     Log.d(TAG, "getRecipeData: could not get recipe data")
+                    Log.d(TAG, "${recipes.value}")
                 }
 
 
@@ -151,17 +169,12 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
     }
 
-    private fun maptoDataBaseModel(recipeModel: RecipeModel): DatabaseRecipe {
-        return recipeModel.let {
-            DatabaseRecipe(
-                uri = it.uri,
-                label = it.label,
-                image = it.image,
-                source = it.source,
-                url = it.url
-            )
-        }
-    }
+
+
+
+
+
+
 
 
 

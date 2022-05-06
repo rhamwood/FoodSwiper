@@ -58,22 +58,14 @@ class SwipeFragment : Fragment(), CardStackListener {
         savedInstanceState: Bundle?
     ): View? {
 
-        sharedPreferences = requireContext().getSharedPreferences(getString(R.string.preference_file_key),  Context.MODE_PRIVATE)
+
 
 
         _binding = FragmentSwipeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        adapter = SwipeAdapter()
-        cardStackView = binding.cardStackView
-        manager = CardStackLayoutManager(requireContext(), this)
-        cardStackView.layoutManager = manager
-        cardStackView.adapter = adapter
-//        cardStackView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
 
 
-        val cardPosition = sharedPreferences.getInt(TOP_CARD, 0)
-        manager.topPosition = cardPosition
-
+        Log.d(TAG, "onCreateView: ${sharedViewModel.recipes.value}")
 
         return root
     }
@@ -87,27 +79,41 @@ class SwipeFragment : Fragment(), CardStackListener {
             lifecycleOwner = viewLifecycleOwner
             swipeFragment = this@SwipeFragment
         }
-        Log.d(TAG, "onViewCreated: $sharedViewModel")
 
-//        val errorTextView = binding.swipeErrorText
-//        val errorImageView = binding.swipeErrorImage
+        sharedPreferences = requireContext().getSharedPreferences(getString(R.string.preference_file_key),  Context.MODE_PRIVATE)
 
-        Log.d(TAG, "onViewCreated: ${sharedViewModel.recipes.value}")
+        adapter = SwipeAdapter()
+        cardStackView = binding.cardStackView
+        Log.d(TAG, "onViewCreated: cardstackview $cardStackView")
+        manager = CardStackLayoutManager(requireContext(), this)
+        cardStackView.layoutManager = manager
+        cardStackView.adapter = adapter
+//        cardStackView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
 
-//        if (sharedViewModel.recipes.value.isNullOrEmpty()){
-//            cardStackView.visibility = View.GONE
-//            errorTextView.visibility = View.VISIBLE
-//            errorImageView.visibility = View.VISIBLE
-//
-//
-//        } else{
-//            cardStackView.visibility = View.VISIBLE
-//            errorTextView.visibility = View.GONE
-//            errorImageView.visibility = View.GONE
-//        }
 
-//            errorTextView.visibility = View.GONE
-//            errorImageView.visibility = View.GONE
+        val cardPosition = sharedPreferences.getInt(TOP_CARD, 0)
+        Log.d(TAG, "onViewCreated: card position $cardPosition")
+        manager.topPosition = cardPosition
+
+        val errorTextView = binding.swipeErrorText
+        val errorImageView = binding.swipeErrorImage
+
+        Log.d(TAG, "onViewCreated: recipes value ${sharedViewModel.recipes.value}")
+
+        if (sharedViewModel.recipes.value.isNullOrEmpty()){
+            cardStackView.visibility = View.GONE
+            errorTextView.visibility = View.VISIBLE
+            errorImageView.visibility = View.VISIBLE
+
+
+        } else{
+            cardStackView.visibility = View.VISIBLE
+            errorTextView.visibility = View.GONE
+            errorImageView.visibility = View.GONE
+        }
+
+            errorTextView.visibility = View.GONE
+            errorImageView.visibility = View.GONE
 
 
 
@@ -120,6 +126,7 @@ class SwipeFragment : Fragment(), CardStackListener {
 
 
     override fun onDestroyView() {
+        sharedPreferences.edit().putInt(TOP_CARD, manager.topPosition).apply()
         super.onDestroyView()
         _binding = null
 

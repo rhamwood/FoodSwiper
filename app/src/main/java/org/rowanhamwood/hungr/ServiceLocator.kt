@@ -55,7 +55,7 @@ object ServiceLocator {
     }
 
     private fun createRecipesRepository (context: Context) : RecipesRepository {
-        val newRepo = RecipesRepository(createLocalDatasource(context), createRemoteDataSource(context))
+        val newRepo = RecipesRepository(createLocalDatasource(context), createRemoteDataSource(context), context)
         baseRecipesRepository = newRepo
         return newRepo
     }

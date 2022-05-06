@@ -31,6 +31,7 @@ fun bindRecipeImage(imgView: ImageView, imgUrl: String) {
 
 @BindingAdapter("favouriteImageUrl")
 fun bindFavImage(imgView: ImageView, imgUrl: String) {
+    Log.d(TAG, "bindFavImage: $imgUrl")
 
     imgUrl.let {
         val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()

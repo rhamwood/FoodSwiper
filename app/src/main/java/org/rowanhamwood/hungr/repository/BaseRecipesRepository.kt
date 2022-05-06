@@ -13,9 +13,9 @@ interface BaseRecipesRepository {
 
     suspend fun getRecipes(searchQuery: String?, healthQuery: String?, cuisineQuery: String?, getNext: Boolean, appNewStart: Boolean) : Result<LiveData<List<RecipeModel>>>
 
-    suspend fun insertRecipe(favouriteRecipe: DatabaseRecipe)
+    suspend fun insertRecipe(favouriteRecipe: RecipeModel)
 
-    suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe)
+    suspend fun deleteRecipe(favouriteRecipe: RecipeModel)
 
 
 }
