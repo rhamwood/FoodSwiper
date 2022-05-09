@@ -89,16 +89,19 @@ class RecipeListFragment : Fragment() {
             val errorTextView = binding.recipeListErrorTextView
             val errorImageView = binding.recipeListErrorImageView
 
-            if (sharedViewModel.favouriteRecipes.value.isNullOrEmpty()){
-                recyclerView.visibility = View.GONE
-                errorTextView.visibility = View.VISIBLE
-                errorImageView.visibility = View.VISIBLE
+//            if (sharedViewModel.favouriteRecipes.value.isNullOrEmpty()){
+//                recyclerView.visibility = View.GONE
+//                errorTextView.visibility = View.VISIBLE
+//                errorImageView.visibility = View.VISIBLE
+//
+//            } else{
+//                recyclerView.visibility = View.VISIBLE
+//                errorTextView.visibility = View.GONE
+//                errorImageView.visibility = View.GONE
+//            }
 
-            } else{
-                recyclerView.visibility = View.VISIBLE
                 errorTextView.visibility = View.GONE
                 errorImageView.visibility = View.GONE
-            }
 
             }
 

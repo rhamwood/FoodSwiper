@@ -100,17 +100,17 @@ class SwipeFragment : Fragment(), CardStackListener {
 
         Log.d(TAG, "onViewCreated: recipes value ${sharedViewModel.recipes.value}")
 
-        if (sharedViewModel.recipes.value.isNullOrEmpty()){
-            cardStackView.visibility = View.GONE
-            errorTextView.visibility = View.VISIBLE
-            errorImageView.visibility = View.VISIBLE
-
-
-        } else{
-            cardStackView.visibility = View.VISIBLE
-            errorTextView.visibility = View.GONE
-            errorImageView.visibility = View.GONE
-        }
+//        if (sharedViewModel.recipes.value.isNullOrEmpty()){
+//            cardStackView.visibility = View.GONE
+//            errorTextView.visibility = View.VISIBLE
+//            errorImageView.visibility = View.VISIBLE
+//
+//
+//        } else{
+//            cardStackView.visibility = View.VISIBLE
+//            errorTextView.visibility = View.GONE
+//            errorImageView.visibility = View.GONE
+//        }
 
             errorTextView.visibility = View.GONE
             errorImageView.visibility = View.GONE
