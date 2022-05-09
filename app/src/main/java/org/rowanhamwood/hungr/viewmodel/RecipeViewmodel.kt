@@ -16,8 +16,10 @@ private const val TAG = "RecipeViewModel"
 private const val CURRENT_SEARCH = "CURRENT_SEARCH"
 private const val GET_NEXT = "GET_NEXT"
 
-class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, sharedPreferences: SharedPreferences):  ViewModel() {
-
+class RecipeViewModel(
+    private val recipesRepository: BaseRecipesRepository,
+    sharedPreferences: SharedPreferences
+) : ViewModel() {
 
 
     private val _favouriteRecipes =
@@ -33,26 +35,22 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
     val recipesUiState: LiveData<ResultState> = _recipesUiState
 
 
-
     @SuppressLint("NullSafeMutableLiveData")
-    fun recipesResults(recipesResult: Result<List<DatabaseRecipe>>) : LiveData<List<DatabaseRecipe>>{
+    fun recipesResults(recipesResult: Result<List<DatabaseRecipe>>): LiveData<List<DatabaseRecipe>> {
 
         val result = MutableLiveData<List<DatabaseRecipe>>()
 
 
         if (recipesResult is Result.Success)
 
-                if (recipesResult.data.isNotEmpty()) {
-                    viewModelScope.launch {
-                        result.value = recipesResult.data
-                        _favRecipeUiState.value = ResultState.Success
-                    }
-                } else {
-                    _favRecipeUiState.value = ResultState.Failure("Oops, nothing here yet!")
+            if (recipesResult.data.isNotEmpty()) {
+                viewModelScope.launch {
+                    result.value = recipesResult.data
+                    _favRecipeUiState.value = ResultState.Success
                 }
-
-
-
+            } else {
+                _favRecipeUiState.value = ResultState.Failure("Oops, nothing here yet!")
+            }
         else {
             result.value = emptyList()
             _favRecipeUiState.value = ResultState.Failure("Oops, something went wrong!")
@@ -62,12 +60,10 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
     }
 
 
-
-
     private val _recipes: MutableLiveData<List<RecipeModel>> = MutableLiveData(emptyList())
     val recipes: LiveData<List<RecipeModel>> = _recipes
 
-    private val _search = MutableLiveData("Pie")
+    private val _search = MutableLiveData<String>()
     val search: LiveData<String> = _search
 
     private val _cuisine = MutableLiveData<String?>()
@@ -99,7 +95,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
         }
     }
 
-    fun deleteFavouriteRecipes(recipe: DatabaseRecipe){
+    fun deleteFavouriteRecipes(recipe: DatabaseRecipe) {
         viewModelScope.launch {
             recipesRepository.deleteRecipe(recipe)
         }
@@ -110,9 +106,9 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
     }
 
     init {
-        val currentSearch = sharedPreferences.getString(CURRENT_SEARCH, "cake")
+        val currentSearch = sharedPreferences.getString(CURRENT_SEARCH, null)
         //TODO setup empty welcome screen to be displayed on first opening the app replacing default cake
-        if(currentSearch != null) {
+        if (currentSearch != null) {
             setSearch(currentSearch)
         }
         val getNext = sharedPreferences.getBoolean(GET_NEXT, false)
@@ -122,26 +118,27 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
     }
 
 
-
-
-
-
-
-
-
-    fun getRecipeData(getNext: Boolean, appNewStart: Boolean)  {
+    fun getRecipeData(getNext: Boolean, appNewStart: Boolean) {
 
         val searchQuery = _search.value
-        if (searchQuery!= null && !getNext) {
+        if (searchQuery != null && !getNext) {
             val healthQuery = _health.value
             val cuisineQuery = _cuisine.value
             viewModelScope.launch {
-            val result =   recipesRepository.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
+                val result = recipesRepository.getRecipes(
+                    searchQuery,
+                    healthQuery,
+                    cuisineQuery,
+                    getNext,
+                    appNewStart
+                )
                 Log.d(TAG, "getRecipeData: $result")
                 if (result is Result.Success) {
+
                     _recipes.value = result.data.value
                     Log.d(TAG, "${recipes.value}")
                     _recipesUiState.value = ResultState.Success
+
 
                 } else {
                     _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
@@ -150,7 +147,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
 
             }
-        } else if (searchQuery !=null && getNext){
+        } else if (searchQuery != null && getNext) {
             viewModelScope.launch {
                 val result = recipesRepository.getRecipes("", "", "", getNext, appNewStart)
                 Log.d(TAG, "getRecipeData: $result")
@@ -166,11 +163,10 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
 
 
             }
-            }
-         else {
-             _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
-             Log.d(TAG, "getRecipeData: search value is null, cannot get recipe data")
-
+        } else {
+            _recipesUiState.value =
+                ResultState.Failure("Nothing here yet, try searching for something!")
+            Log.d(TAG, "getRecipeData: search value is null, cannot get recipe data")
 
 
         }
@@ -178,24 +174,11 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
     }
 
 
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
+}
 
 
 @Suppress("UNCHECKED_CAST")
-class RecipeViewModelFactory (
+class RecipeViewModelFactory(
     private val baseRecipesRepository: BaseRecipesRepository,
     private val sharedPreferences: SharedPreferences
 ) : ViewModelProvider.NewInstanceFactory() {
