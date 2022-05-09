@@ -3,6 +3,7 @@ package org.rowanhamwood.hungr.ui.recipelist
 import org.rowanhamwood.hungr.HungrApplication
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +18,10 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import org.rowanhamwood.hungr.ResultState
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
+
+private const val TAG = "RecipeListFragment"
 
 
 class RecipeListFragment : Fragment() {
@@ -26,8 +30,10 @@ class RecipeListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var _binding: FragmentRecipeListBinding? = null
     private val sharedViewModel by activityViewModels<RecipeViewModel>() {
-        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository,
-            (requireContext().applicationContext as HungrApplication).sharedPreferences)
+        RecipeViewModelFactory(
+            (requireContext().applicationContext as HungrApplication).recipesRepository,
+            (requireContext().applicationContext as HungrApplication).sharedPreferences
+        )
     }
 
 
@@ -49,20 +55,19 @@ class RecipeListFragment : Fragment() {
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
         recyclerView.layoutManager = linearLayoutManager
-//        recyclerView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
 
         val adapter =
             RecipeListAdapter(RecipeListAdapter.RecipeListListener { recipeUrl ->
-            sharedViewModel.setUrl(recipeUrl)
+                sharedViewModel.setUrl(recipeUrl)
 
-            val builder = CustomTabsIntent.Builder()
-            val defaultColors = CustomTabColorSchemeParams.Builder()
-                .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.purple_500))
-                .build()
-            builder.setDefaultColorSchemeParams(defaultColors)
-            val customTabsIntent = builder.build()
-            customTabsIntent.launchUrl(requireContext(), Uri.parse(recipeUrl))
-        })
+                val builder = CustomTabsIntent.Builder()
+                val defaultColors = CustomTabColorSchemeParams.Builder()
+                    .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.purple_500))
+                    .build()
+                builder.setDefaultColorSchemeParams(defaultColors)
+                val customTabsIntent = builder.build()
+                customTabsIntent.launchUrl(requireContext(), Uri.parse(recipeUrl))
+            })
 
         recyclerView.adapter = adapter
 
@@ -73,43 +78,53 @@ class RecipeListFragment : Fragment() {
 
 
 
-            return root
+        return root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        _binding?.apply {
+            viewModel = sharedViewModel
+            lifecycleOwner = viewLifecycleOwner
+
         }
 
+        val errorTextView = binding.recipeListErrorTextView
+        val errorImageView = binding.recipeListErrorImageView
 
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-                super.onViewCreated(view, savedInstanceState)
+        errorTextView.visibility = View.GONE
+        errorImageView.visibility = View.GONE
 
-                _binding?.apply {
-                    viewModel = sharedViewModel
-                    lifecycleOwner = viewLifecycleOwner
+        sharedViewModel.favRecipeUiState.observe(viewLifecycleOwner) { state ->
+
+            when (state) {
+                is ResultState.Success -> { /* show success in UI */
+                    Log.d(TAG, "onViewCreated: resultstate success")
+                    recyclerView.visibility = View.VISIBLE
+                    errorTextView.visibility = View.GONE
+                    errorImageView.visibility = View.GONE
+
 
                 }
+                is ResultState.Failure -> { /* show error in UI with state.message variable */
+                    Log.d(TAG, "onViewCreated: resultstate failure")
+                    errorTextView.text = state.message
+                    recyclerView.visibility = View.GONE
+                    errorTextView.visibility = View.VISIBLE
+                    errorImageView.visibility = View.VISIBLE
 
-            val errorTextView = binding.recipeListErrorTextView
-            val errorImageView = binding.recipeListErrorImageView
-
-//            if (sharedViewModel.favouriteRecipes.value.isNullOrEmpty()){
-//                recyclerView.visibility = View.GONE
-//                errorTextView.visibility = View.VISIBLE
-//                errorImageView.visibility = View.VISIBLE
-//
-//            } else{
-//                recyclerView.visibility = View.VISIBLE
-//                errorTextView.visibility = View.GONE
-//                errorImageView.visibility = View.GONE
-//            }
-
-                errorTextView.visibility = View.GONE
-                errorImageView.visibility = View.GONE
-
+                }
             }
+        }
 
-            override fun onDestroyView() {
-                super.onDestroyView()
-                _binding = null
-            }
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
 
 }

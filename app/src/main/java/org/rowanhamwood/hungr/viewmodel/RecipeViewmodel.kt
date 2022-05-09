@@ -1,20 +1,15 @@
 package org.rowanhamwood.hungr.viewmodel
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import org.rowanhamwood.hungr.Result
+import org.rowanhamwood.hungr.ResultState
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
-import org.rowanhamwood.hungr.local.database.asDomainModel
 import org.rowanhamwood.hungr.remote.network.*
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
-import java.io.IOException
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 
 private const val TAG = "RecipeViewModel"
@@ -30,25 +25,43 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
     val favouriteRecipes = _favouriteRecipes
 
 
+    private val _favRecipeUiState = MutableLiveData<ResultState>()
+    val favRecipeUiState: LiveData<ResultState> = _favRecipeUiState
+
+
+    private val _recipesUiState = MutableLiveData<ResultState>()
+    val recipesUiState: LiveData<ResultState> = _recipesUiState
 
 
 
-
+    @SuppressLint("NullSafeMutableLiveData")
     fun recipesResults(recipesResult: Result<List<DatabaseRecipe>>) : LiveData<List<DatabaseRecipe>>{
 
         val result = MutableLiveData<List<DatabaseRecipe>>()
 
+
         if (recipesResult is Result.Success)
-            viewModelScope.launch { result.value = recipesResult.data!! }
+
+                if (recipesResult.data.isNotEmpty()) {
+                    viewModelScope.launch {
+                        result.value = recipesResult.data
+                        _favRecipeUiState.value = ResultState.Success
+                    }
+                } else {
+                    _favRecipeUiState.value = ResultState.Failure("Oops, nothing here yet!")
+                }
+
 
 
         else {
             result.value = emptyList()
-            Log.d(TAG,"error loading tasks")
+            _favRecipeUiState.value = ResultState.Failure("Oops, something went wrong!")
         }
         return result
 
     }
+
+
 
 
     private val _recipes: MutableLiveData<List<RecipeModel>> = MutableLiveData(emptyList())
@@ -128,7 +141,10 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
                 if (result is Result.Success) {
                     _recipes.value = result.data.value
                     Log.d(TAG, "${recipes.value}")
+                    _recipesUiState.value = ResultState.Success
+
                 } else {
+                    _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
                     Log.d(TAG, "getRecipeData: could not get recipe data")
                 }
 
@@ -141,7 +157,9 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
                 if (result is Result.Success) {
                     _recipes.value = result.data.value
                     Log.d(TAG, "${recipes.value}")
+                    _recipesUiState.value = ResultState.Success
                 } else {
+                    _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
                     Log.d(TAG, "getRecipeData: could not get recipe data")
                     Log.d(TAG, "${recipes.value}")
                 }
@@ -150,6 +168,7 @@ class RecipeViewModel(private val recipesRepository: BaseRecipesRepository, shar
             }
             }
          else {
+             _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
              Log.d(TAG, "getRecipeData: search value is null, cannot get recipe data")
 
 

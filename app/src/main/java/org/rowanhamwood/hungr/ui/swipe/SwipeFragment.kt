@@ -12,11 +12,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import com.yuyakaido.android.cardstackview.CardStackListener
 import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.Direction
 import org.rowanhamwood.hungr.R
+import org.rowanhamwood.hungr.ResultState
 
 import org.rowanhamwood.hungr.databinding.FragmentSwipeBinding
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
@@ -98,26 +100,33 @@ class SwipeFragment : Fragment(), CardStackListener {
         val errorTextView = binding.swipeErrorText
         val errorImageView = binding.swipeErrorImage
 
+        errorTextView.visibility = View.GONE
+        errorImageView.visibility = View.GONE
+
         Log.d(TAG, "onViewCreated: recipes value ${sharedViewModel.recipes.value}")
 
-//        if (sharedViewModel.recipes.value.isNullOrEmpty()){
-//            cardStackView.visibility = View.GONE
-//            errorTextView.visibility = View.VISIBLE
-//            errorImageView.visibility = View.VISIBLE
-//
-//
-//        } else{
-//            cardStackView.visibility = View.VISIBLE
-//            errorTextView.visibility = View.GONE
-//            errorImageView.visibility = View.GONE
-//        }
 
-            errorTextView.visibility = View.GONE
-            errorImageView.visibility = View.GONE
+        sharedViewModel.recipesUiState.observe(viewLifecycleOwner) { state ->
+
+            when (state) {
+                is ResultState.Success -> { /* show success in UI */
+                    Log.d(TAG, "onViewCreated: resultstate success")
+                    cardStackView.visibility = View.VISIBLE
+                    errorTextView.visibility = View.GONE
+                    errorImageView.visibility = View.GONE
 
 
+                }
+                is ResultState.Failure -> { /* show error in UI with state.message variable */
+                    Log.d(TAG, "onViewCreated: resultstate failure")
+                    errorTextView.text = state.message
+                    cardStackView.visibility = View.GONE
+                    errorTextView.visibility = View.VISIBLE
+                    errorImageView.visibility = View.VISIBLE
 
-
+                }
+            }
+        }
 
 
     }
