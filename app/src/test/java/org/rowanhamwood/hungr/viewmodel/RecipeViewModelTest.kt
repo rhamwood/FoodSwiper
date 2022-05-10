@@ -189,7 +189,7 @@ class RecipeViewModelTest {
     fun getNext_repositoryFunctionCalled() {
 
         //When getNext is called
-        recipeViewModel.getNext()
+        recipeViewModel.get
 
         // getNext is set to true
         assertThat(recipesRepository.nextValue, `is`(true))

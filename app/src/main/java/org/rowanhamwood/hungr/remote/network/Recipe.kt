@@ -13,8 +13,28 @@ data class Recipe(
     val uri: String,
     val label: String,
     val image: String,
+    val images: images,
     val source: String,
     val url: String
+
+
+
+)
+
+data class images(
+    @Json(name = "THUMBNAIL") val thumbnailInfo: ImageAttr,
+    @Json(name = "SMALL") val smallInfo: ImageAttr,
+    @Json(name = "REGULAR") val regularInfo: ImageAttr,
+    @Json(name = "LARGE") val largeInfo: ImageAttr
+
+
+
+)
+
+data class ImageAttr(
+    val url: String,
+    val width: Int,
+    val height: Int
 
 )
 

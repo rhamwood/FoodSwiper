@@ -10,7 +10,6 @@ import kotlinx.coroutines.withContext
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.local.database.RecipeDao
-import org.rowanhamwood.hungr.local.database.asDomainModel
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 private const val TAG = "LocalDataSource"

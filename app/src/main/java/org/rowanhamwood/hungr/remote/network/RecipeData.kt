@@ -17,10 +17,12 @@ fun RecipeData.asRecipeModel(): List<RecipeModel> {
         RecipeModel(
             uri = it.recipeInfo.uri,
             label = it.recipeInfo.label,
-            image = it.recipeInfo.image,
+            largeImage = it.recipeInfo.images.largeInfo.url,
+            smallImage = it.recipeInfo.images.smallInfo.url,
             source = it.recipeInfo.source,
-            url = it.recipeInfo.url
-        )
+            url = it.recipeInfo.url,
+
+            )
     }
 
 

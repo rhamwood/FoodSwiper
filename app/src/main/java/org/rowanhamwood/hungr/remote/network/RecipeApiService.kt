@@ -55,11 +55,13 @@ interface RecipeApiService {
         @Query("q") searchQuery: String,
         @Query("health") healthQuery: String?,
         @Query("cuisineType") cuisineQuery: String?,
+        @Query("imageSize") imageSize: String = "LARGE",
         @Query("field") uri : String = "uri",
         @Query("field") label : String = "label",
         @Query("field") image : String = "image",
         @Query("field") source : String = "source",
-        @Query("field") url : String = "url"
+        @Query("field") url : String = "url",
+        @Query("field") images : String = "images"
 
     )
             : RecipeData

@@ -42,12 +42,12 @@ class RecipesRepository(
 
      override suspend fun insertRecipe(favouriteRecipe: RecipeModel) = withContext(ioDispatcher) {
 
-             val recipeBitmap = getBitmapFile(favouriteRecipe.image)
+             val recipeBitmap = getBitmapFile(favouriteRecipe.largeImage)
              val imageId = UUID.randomUUID().toString()
              saveFavouriteRecipeFile(recipeBitmap, imageId)
 
              val path = File(recipeImageDirectory(), imageId).absolutePath
-             favouriteRecipe.image = path
+             favouriteRecipe.largeImage = path
 
              val databaseRecipe = maptoDataBaseModel(favouriteRecipe)
              baseLocalDataSource.insertRecipe(databaseRecipe)
@@ -101,7 +101,7 @@ class RecipesRepository(
             DatabaseRecipe(
                 uri = it.uri,
                 label = it.label,
-                image = it.image,
+                image = it.largeImage,
                 source = it.source,
                 url = it.url
             )

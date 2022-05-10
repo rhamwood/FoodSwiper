@@ -27,17 +27,17 @@ import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 
 
-fun List<DatabaseRecipe>.asDomainModel(): List<RecipeModel> {
-    return map {
-        RecipeModel(
-            uri = it.uri,
-            label = it.label,
-            image = it.image,
-            source = it.source,
-            url = it.url)
-    }
-
-
-
-}
+//fun List<DatabaseRecipe>.asDomainModel(): List<RecipeModel> {
+//    return map {
+//        RecipeModel(
+//            uri = it.uri,
+//            label = it.label,
+//            smallImage = it.image,
+//            source = it.source,
+//            url = it.url)
+//    }
+//
+//
+//
+//}
 
