@@ -62,9 +62,7 @@ fun bindRecyclerView(
 ) {
     val adapter = recyclerView.adapter as RecipeListAdapter
     adapter.submitList(data)
+
 }
 
-//@BindingAdapter("loadUrl")
-//fun loadUrl(webView: WebView, url: String) {
-//    webView.loadUrl(url)
-//}
+

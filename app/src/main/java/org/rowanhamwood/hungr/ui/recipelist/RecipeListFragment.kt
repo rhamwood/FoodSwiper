@@ -50,6 +50,20 @@ class RecipeListFragment : Fragment() {
 
         _binding = FragmentRecipeListBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        return root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        _binding?.apply {
+            viewModel = sharedViewModel
+            lifecycleOwner = viewLifecycleOwner
+
+        }
+
         recyclerView = binding.recyclerview
         val linearLayoutManager = LinearLayoutManager(requireContext())
         linearLayoutManager.reverseLayout = true
@@ -76,20 +90,7 @@ class RecipeListFragment : Fragment() {
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
-
-
-        return root
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        _binding?.apply {
-            viewModel = sharedViewModel
-            lifecycleOwner = viewLifecycleOwner
-
-        }
+        sharedViewModel.setFavRecipesResultStateLoading()
 
         val errorTextView = binding.recipeListErrorTextView
         val errorImageView = binding.recipeListErrorImageView
@@ -114,6 +115,12 @@ class RecipeListFragment : Fragment() {
                     recyclerView.visibility = View.GONE
                     errorTextView.visibility = View.VISIBLE
                     errorImageView.visibility = View.VISIBLE
+
+                }
+                is ResultState.Loading -> {
+                    recyclerView.visibility = View.GONE
+                    errorTextView.visibility = View.GONE
+                    errorImageView.visibility = View.GONE
 
                 }
             }

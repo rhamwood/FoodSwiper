@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -22,19 +21,22 @@ import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 private const val TAG = "SearchFragment"
 private const val CURRENT_SEARCH = "CURRENT_SEARCH"
 private const val GET_NEXT = "GET_NEXT"
+private const val TOP_CARD = "TOP_CARD"
 
 class SearchFragment : Fragment() {
 
 
     private var _binding: FragmentSearchBinding? = null
-    private lateinit var sharedPreferences : SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
 
 //    private val sharedViewModel: RecipeViewModel by activityViewModels()
 
     private val sharedViewModel by activityViewModels<RecipeViewModel>() {
-        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository,
-            (requireContext().applicationContext as HungrApplication).sharedPreferences)
+        RecipeViewModelFactory(
+            (requireContext().applicationContext as HungrApplication).recipesRepository,
+            (requireContext().applicationContext as HungrApplication).sharedPreferences
+        )
     }
 
 
@@ -47,20 +49,27 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        dashboardViewModel =
-//            ViewModelProvider(this).get(DashboardViewModel::class.java)
+
 
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
-//        root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.purple_200))
+
 
         //sharedPreference for last search on restart
-        sharedPreferences = requireContext().getSharedPreferences(getString(R.string.preference_file_key),  Context.MODE_PRIVATE)
+        sharedPreferences = requireContext().getSharedPreferences(
+            getString(R.string.preference_file_key),
+            Context.MODE_PRIVATE
+        )
 
         // search bar
         val searchView = binding.searchView
         val submitButton = binding.submitButton
-        submitButton.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.light_green_500))
+        submitButton.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.light_green_500
+            )
+        )
         // cuisine selection menu
         val cuisineMenu = binding.cuisineMenu
         val cuisineTextView = binding.cuisineTextView
@@ -108,37 +117,37 @@ class SearchFragment : Fragment() {
 
         //Diet menu setup
         val healthItems = listOf(
-                    "None",
-                    "Alcohol-Free",
-                    "Celery-Free",
-                    "Crustacean-Free",
-                    "Dairy-Free",
-                    "Egg-Free",
-                    "Fish-Free",
-                    "FODMAP-Free",
-                    "Gluten-Free",
-                    "Immuno-Supportive",
-                    "Keto-Friendly",
-                    "Kidney-Friendly",
-                    "Kosher",
-                    "Lupine-Free",
-                    "Mediterranean",
-                    "Mollusk-Free",
-                    "Mustard-Free",
-                    "Paleo",
-                    "Peanut-Free",
-                    "Pescatarian",
-                    "Pork-Free",
-                    "Red-Meat-Free",
-                    "Sesame-Free",
-                    "Shellfish-Free",
-                    "Soy-Free",
-                    "Sugar-Conscious",
-                    "Sulfite-Free",
-                    "Tree-Nut-Free",
-                    "Vegan",
-                    "Vegetarian",
-                    "Wheat-Free"
+            "None",
+            "Alcohol-Free",
+            "Celery-Free",
+            "Crustacean-Free",
+            "Dairy-Free",
+            "Egg-Free",
+            "Fish-Free",
+            "FODMAP-Free",
+            "Gluten-Free",
+            "Immuno-Supportive",
+            "Keto-Friendly",
+            "Kidney-Friendly",
+            "Kosher",
+            "Lupine-Free",
+            "Mediterranean",
+            "Mollusk-Free",
+            "Mustard-Free",
+            "Paleo",
+            "Peanut-Free",
+            "Pescatarian",
+            "Pork-Free",
+            "Red-Meat-Free",
+            "Sesame-Free",
+            "Shellfish-Free",
+            "Soy-Free",
+            "Sugar-Conscious",
+            "Sulfite-Free",
+            "Tree-Nut-Free",
+            "Vegan",
+            "Vegetarian",
+            "Wheat-Free"
 
 
         )
@@ -166,13 +175,18 @@ class SearchFragment : Fragment() {
 
                 if (searchQuery != null) {
 
-                        sharedViewModel.setSearch(searchQuery.toString())
-                        sharedPreferences.edit().putString(CURRENT_SEARCH, searchQuery.toString()).apply()
-                        sharedViewModel.getRecipeData(false, false)
-                        sharedPreferences.edit().putBoolean(GET_NEXT, false).apply()
-                        goToNextScreen()
+                    sharedViewModel.setSearch(searchQuery.toString())
+                    sharedPreferences.edit().putString(CURRENT_SEARCH, searchQuery.toString())
+                        .apply()
+                    sharedViewModel.clearRecipes()
+                    sharedPreferences.edit().putInt(TOP_CARD, 0).apply()
+                    sharedViewModel.getRecipeData(false, false)
+                    sharedPreferences.edit().putBoolean(GET_NEXT, false).apply()
+                    sharedViewModel.setRecipesResultStateLoading()
+                    goToNextScreen()
 
-                        Log.d(TAG, "onCreateView: search completed")
+
+                    Log.d(TAG, "onCreateView: search completed")
 
 
                 }
@@ -185,7 +199,7 @@ class SearchFragment : Fragment() {
 
         submitButton.setOnClickListener { view ->
             Log.d(TAG, "onCreateView: submit button clicked")
-            if (searchView.query.isEmpty()){
+            if (searchView.query.isEmpty()) {
                 Log.d(TAG, "onQueryTextSubmit: show search empty toast")
                 Toast.makeText(
                     requireContext(),
@@ -219,8 +233,6 @@ class SearchFragment : Fragment() {
     fun goToNextScreen() {
         findNavController().navigate(R.id.action_navigation_search_to_navigation_swipe)
     }
-
-
 
 
 }

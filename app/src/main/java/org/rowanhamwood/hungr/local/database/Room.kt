@@ -38,8 +38,6 @@ interface getNextDao {
 )
 
 
-
-
 abstract class FavouriteRecipesDatabase : RoomDatabase() {
     abstract val recipeDao: RecipeDao
     abstract val getNextDao: getNextDao

@@ -10,7 +10,10 @@ class HungrApplication : Application() {
     val recipesRepository: BaseRecipesRepository
         get() = ServiceLocator.provideRecipesRespository(this)
 
-    val sharedPreferences : SharedPreferences
-        get() = ServiceLocator.provideSharedPreferences(this, getString(R.string.preference_file_key))
+    val sharedPreferences: SharedPreferences
+        get() = ServiceLocator.provideSharedPreferences(
+            this,
+            getString(R.string.preference_file_key)
+        )
 
 }

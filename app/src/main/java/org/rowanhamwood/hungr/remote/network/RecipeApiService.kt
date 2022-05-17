@@ -56,12 +56,11 @@ interface RecipeApiService {
         @Query("health") healthQuery: String?,
         @Query("cuisineType") cuisineQuery: String?,
         @Query("imageSize") imageSize: String = "LARGE",
-        @Query("field") uri : String = "uri",
-        @Query("field") label : String = "label",
-        @Query("field") image : String = "image",
-        @Query("field") source : String = "source",
-        @Query("field") url : String = "url",
-        @Query("field") images : String = "images"
+        @Query("field") uri: String = "uri",
+        @Query("field") label: String = "label",
+        @Query("field") source: String = "source",
+        @Query("field") url: String = "url",
+        @Query("field") images: String = "images"
 
     )
             : RecipeData
@@ -69,9 +68,8 @@ interface RecipeApiService {
     @GET
     suspend fun getNext(
         @Url url: String
-    ) : RecipeData
+    ): RecipeData
 }
-
 
 
 object RecipeApi {

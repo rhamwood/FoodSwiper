@@ -9,11 +9,13 @@ import org.rowanhamwood.hungr.databinding.RecipeListItemViewBinding
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 
 
-class RecipeListAdapter(val clickListener: RecipeListListener) : ListAdapter<DatabaseRecipe, RecipeListAdapter.RecipeListViewHolder>(DiffCallback) {
+class RecipeListAdapter(val clickListener: RecipeListListener) :
+    ListAdapter<DatabaseRecipe, RecipeListAdapter.RecipeListViewHolder>(DiffCallback) {
 
-    class RecipeListViewHolder(private var binding: RecipeListItemViewBinding ) : RecyclerView.ViewHolder(binding.root){
+    class RecipeListViewHolder(private var binding: RecipeListItemViewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(recipe: DatabaseRecipe, clickListener: RecipeListListener){
+        fun bind(recipe: DatabaseRecipe, clickListener: RecipeListListener) {
             binding.recipe = recipe
             binding.clickListener = clickListener
             binding.executePendingBindings()
@@ -25,9 +27,10 @@ class RecipeListAdapter(val clickListener: RecipeListListener) : ListAdapter<Dat
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeListViewHolder {
         return RecipeListViewHolder(
             RecipeListItemViewBinding.inflate(
-            LayoutInflater.from(parent.context)))
+                LayoutInflater.from(parent.context)
+            )
+        )
     }
-
 
 
     override fun onBindViewHolder(holder: RecipeListViewHolder, position: Int) {
@@ -50,7 +53,6 @@ class RecipeListAdapter(val clickListener: RecipeListListener) : ListAdapter<Dat
     class RecipeListListener(val clickListener: (recipeUrl: String) -> Unit) {
         fun onClick(recipe: DatabaseRecipe) = clickListener(recipe.url)
     }
-
 
 
 }

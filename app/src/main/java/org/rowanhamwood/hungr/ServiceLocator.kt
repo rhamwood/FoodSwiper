@@ -18,7 +18,7 @@ import org.rowanhamwood.hungr.repository.RecipesRepository
 
 object ServiceLocator {
 
-    private  var INSTANCE: FavouriteRecipesDatabase? = null
+    private var INSTANCE: FavouriteRecipesDatabase? = null
 
     @Volatile
     var baseRecipesRepository: BaseRecipesRepository? = null
@@ -30,8 +30,8 @@ object ServiceLocator {
     fun resetRepository() {
         synchronized(lock) {
             runBlocking {
-//                TasksRemoteDataSource.deleteAllTasks()
-           }
+                //TODO add delete all for recipe data
+            }
             // Clear all data to avoid test pollution.
             INSTANCE?.apply {
                 clearAllTables()
@@ -42,30 +42,35 @@ object ServiceLocator {
         }
     }
 
-    fun provideSharedPreferences(context: Context, preferenceFileKey: String) : SharedPreferences {
-        val sharedPreferences = context.getSharedPreferences(preferenceFileKey, Context.MODE_PRIVATE)
+    fun provideSharedPreferences(context: Context, preferenceFileKey: String): SharedPreferences {
+        val sharedPreferences =
+            context.getSharedPreferences(preferenceFileKey, Context.MODE_PRIVATE)
         return sharedPreferences
     }
 
 
-    fun provideRecipesRespository (context: Context) : BaseRecipesRepository {
+    fun provideRecipesRespository(context: Context): BaseRecipesRepository {
         synchronized(this) {
-            return baseRecipesRepository?: createRecipesRepository(context)
+            return baseRecipesRepository ?: createRecipesRepository(context)
         }
     }
 
-    private fun createRecipesRepository (context: Context) : RecipesRepository {
-        val newRepo = RecipesRepository(createLocalDatasource(context), createRemoteDataSource(context), context)
+    private fun createRecipesRepository(context: Context): RecipesRepository {
+        val newRepo = RecipesRepository(
+            createLocalDatasource(context),
+            createRemoteDataSource(context),
+            context
+        )
         baseRecipesRepository = newRepo
         return newRepo
     }
 
-    private fun createLocalDatasource (context: Context) : BaseLocalDataSource{
+    private fun createLocalDatasource(context: Context): BaseLocalDataSource {
         val database = INSTANCE ?: createDatabase(context)
         return LocalDataSource(database.recipeDao)
     }
 
-    private fun createRemoteDataSource (context: Context) : BaseRemoteDataSource{
+    private fun createRemoteDataSource(context: Context): BaseRemoteDataSource {
         val database = INSTANCE ?: createDatabase(context)
         return RemoteDataSource(database.getNextDao)
     }
@@ -74,10 +79,12 @@ object ServiceLocator {
     fun createDatabase(context: Context): FavouriteRecipesDatabase {
         synchronized(FavouriteRecipesDatabase::class.java) {
 
-           val result = Room.databaseBuilder(context.applicationContext,
-                    FavouriteRecipesDatabase::class.java,
-                    "recipes").build()
-           INSTANCE = result
+            val result = Room.databaseBuilder(
+                context.applicationContext,
+                FavouriteRecipesDatabase::class.java,
+                "recipes"
+            ).build()
+            INSTANCE = result
             return result
         }
 

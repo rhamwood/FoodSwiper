@@ -18,7 +18,7 @@ private const val GET_NEXT = "GET_NEXT"
 
 class RecipeViewModel(
     private val recipesRepository: BaseRecipesRepository,
-    sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
 
@@ -30,9 +30,21 @@ class RecipeViewModel(
     private val _favRecipeUiState = MutableLiveData<ResultState>()
     val favRecipeUiState: LiveData<ResultState> = _favRecipeUiState
 
+    fun setFavRecipesResultStateLoading() {
+        _favRecipeUiState.value = ResultState.Loading
+    }
+
+
+
 
     private val _recipesUiState = MutableLiveData<ResultState>()
     val recipesUiState: LiveData<ResultState> = _recipesUiState
+
+    fun setRecipesResultStateLoading() {
+        _recipesUiState.value = ResultState.Loading
+    }
+
+
 
 
     @SuppressLint("NullSafeMutableLiveData")
@@ -59,6 +71,17 @@ class RecipeViewModel(
 
     }
 
+//    fun refreshRecipes() {
+//        val currentTimeHrs = System.currentTimeMillis() / 1000 / 60 / 60
+//        val lastStartupTimeHrs = sharedPreferences.getLong(CURRENT_TIME_HRS, currentTimeHrs)
+//
+//        if ((lastStartupTimeHrs -1 ) < currentTimeHrs) {
+//            val getNext = sharedPreferences.getBoolean(GET_NEXT, false)
+//            getRecipeData(getNext, true)
+//
+//        }
+//    }
+
 
     private val _recipes: MutableLiveData<List<RecipeModel>> = MutableLiveData(emptyList())
     val recipes: LiveData<List<RecipeModel>> = _recipes
@@ -74,6 +97,10 @@ class RecipeViewModel(
 
     private val _url = MutableLiveData<String?>()
     val url: LiveData<String?> = _url
+
+    fun clearRecipes(){
+        _recipes.value = emptyList()
+    }
 
 
     fun setSearch(searchText: String) {
@@ -115,6 +142,7 @@ class RecipeViewModel(
         Log.d(TAG, "getnext: $getNext ")
         val appNewStart = true
         getRecipeData(getNext, appNewStart)
+        Log.d(TAG, ": called from viewmodel")
     }
 
 
@@ -135,14 +163,20 @@ class RecipeViewModel(
                 Log.d(TAG, "getRecipeData: $result")
                 if (result is Result.Success) {
 
+
                     _recipes.value = result.data.value
                     Log.d(TAG, "${recipes.value}")
                     _recipesUiState.value = ResultState.Success
 
 
                 } else {
-                    _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
-                    Log.d(TAG, "getRecipeData: could not get recipe data")
+                    if (appNewStart) {
+                        _recipesUiState.value = ResultState.Failure("Nothing here yet, try searching!")
+                        Log.d(TAG, "getRecipeData: could not get recipe data")
+                    } else {
+                        _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
+                        Log.d(TAG, "getRecipeData: could not get recipe data")
+                    }
                 }
 
 

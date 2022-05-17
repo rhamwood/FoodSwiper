@@ -1,6 +1,6 @@
 package org.rowanhamwood.hungr
 
-
+//TODO add loading animation on loading
 
 sealed class Result<out R> {
 

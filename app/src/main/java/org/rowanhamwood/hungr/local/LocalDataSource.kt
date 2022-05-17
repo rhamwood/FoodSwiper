@@ -10,12 +10,13 @@ import kotlinx.coroutines.withContext
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.local.database.RecipeDao
-import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 private const val TAG = "LocalDataSource"
 
-class LocalDataSource (private val recipeDao: RecipeDao,
-                       private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) :
+class LocalDataSource(
+    private val recipeDao: RecipeDao,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+) :
     BaseLocalDataSource {
 
     override suspend fun insertRecipe(favouriteRecipe: DatabaseRecipe) {
@@ -30,8 +31,8 @@ class LocalDataSource (private val recipeDao: RecipeDao,
         }
     }
 
-    override fun getRecipes() : LiveData<Result<List<DatabaseRecipe>>> {
-           return recipeDao.getRecipes().map { Result.Success(it) }
+    override fun getRecipes(): LiveData<Result<List<DatabaseRecipe>>> {
+        return recipeDao.getRecipes().map { Result.Success(it) }
 
     }
 

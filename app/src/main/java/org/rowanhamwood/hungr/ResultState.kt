@@ -1,6 +1,7 @@
 package org.rowanhamwood.hungr
 
 sealed class ResultState {
-    object Success: ResultState() // this is object because I added no params
+    object Success: ResultState()
     data class Failure(val message: String): ResultState()
+    object Loading: ResultState()
 }

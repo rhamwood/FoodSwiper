@@ -10,11 +10,12 @@ import org.rowanhamwood.hungr.databinding.SwipeItemViewBinding
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 
-class SwipeAdapter :ListAdapter<RecipeModel,SwipeAdapter.SwipeViewHolder>(DiffCallback) {
+class SwipeAdapter : ListAdapter<RecipeModel, SwipeAdapter.SwipeViewHolder>(DiffCallback) {
 
-    class SwipeViewHolder(private var binding: SwipeItemViewBinding) : RecyclerView.ViewHolder(binding.root){
+    class SwipeViewHolder(private var binding: SwipeItemViewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(recipe: RecipeModel){
+        fun bind(recipe: RecipeModel) {
             binding.recipe = recipe
             binding.executePendingBindings()
 
@@ -23,12 +24,13 @@ class SwipeAdapter :ListAdapter<RecipeModel,SwipeAdapter.SwipeViewHolder>(DiffCa
     }
 
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SwipeViewHolder {
-        return SwipeViewHolder(SwipeItemViewBinding.inflate(
-            LayoutInflater.from(parent.context)))
+        return SwipeViewHolder(
+            SwipeItemViewBinding.inflate(
+                LayoutInflater.from(parent.context)
+            )
+        )
     }
-
 
 
     override fun onBindViewHolder(holder: SwipeViewHolder, position: Int) {
@@ -36,9 +38,6 @@ class SwipeAdapter :ListAdapter<RecipeModel,SwipeAdapter.SwipeViewHolder>(DiffCa
         holder.bind(recipe)
 
     }
-
-
-
 
 
     companion object DiffCallback : DiffUtil.ItemCallback<RecipeModel>() {

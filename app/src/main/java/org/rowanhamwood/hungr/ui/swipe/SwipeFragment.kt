@@ -8,18 +8,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import com.yuyakaido.android.cardstackview.CardStackListener
 import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.Direction
 import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.ResultState
-
 import org.rowanhamwood.hungr.databinding.FragmentSwipeBinding
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
@@ -27,6 +23,7 @@ import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 private const val TAG = "SwipeFragment"
 private const val TOP_CARD = "TOP_CARD"
 private const val GET_NEXT = "GET_NEXT"
+private const val CURRENT_TIME_HRS = "CURRENT_TIME_HRS"
 
 class SwipeFragment : Fragment(), CardStackListener {
 
@@ -34,17 +31,15 @@ class SwipeFragment : Fragment(), CardStackListener {
     private lateinit var manager: CardStackLayoutManager
     private lateinit var adapter: SwipeAdapter
     private lateinit var cardStackView: CardStackView
-    private lateinit var sharedPreferences : SharedPreferences
-
+    private lateinit var sharedPreferences: SharedPreferences
 
 
     private val sharedViewModel by activityViewModels<RecipeViewModel>() {
-        RecipeViewModelFactory((requireContext().applicationContext as HungrApplication).recipesRepository,
-            (requireContext().applicationContext as HungrApplication).sharedPreferences)
+        RecipeViewModelFactory(
+            (requireContext().applicationContext as HungrApplication).recipesRepository,
+            (requireContext().applicationContext as HungrApplication).sharedPreferences
+        )
     }
-
-
-
 
 
     private var _binding: FragmentSwipeBinding? = null
@@ -59,9 +54,6 @@ class SwipeFragment : Fragment(), CardStackListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
-
 
         _binding = FragmentSwipeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -82,7 +74,14 @@ class SwipeFragment : Fragment(), CardStackListener {
             swipeFragment = this@SwipeFragment
         }
 
-        sharedPreferences = requireContext().getSharedPreferences(getString(R.string.preference_file_key),  Context.MODE_PRIVATE)
+        sharedPreferences = requireContext().getSharedPreferences(
+            getString(R.string.preference_file_key),
+            Context.MODE_PRIVATE
+        )
+
+
+
+
 
         adapter = SwipeAdapter()
         cardStackView = binding.cardStackView
@@ -90,12 +89,26 @@ class SwipeFragment : Fragment(), CardStackListener {
         manager = CardStackLayoutManager(requireContext(), this)
         cardStackView.layoutManager = manager
         cardStackView.adapter = adapter
-//        cardStackView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
-
 
         val cardPosition = sharedPreferences.getInt(TOP_CARD, 0)
         Log.d(TAG, "onViewCreated: card position $cardPosition")
         manager.topPosition = cardPosition
+
+
+
+
+
+
+
+        val currentTimeHrs = System.currentTimeMillis() / 1000 / 60 / 60
+        val lastStartupTimeHrs = sharedPreferences.getLong(CURRENT_TIME_HRS, currentTimeHrs)
+
+        if ((lastStartupTimeHrs +3 ) < currentTimeHrs) {
+            sharedViewModel.clearRecipes()
+            val getNext = sharedPreferences.getBoolean(GET_NEXT, false)
+            sharedViewModel.getRecipeData(getNext, true)
+
+        }
 
         val errorTextView = binding.swipeErrorText
         val errorImageView = binding.swipeErrorImage
@@ -116,6 +129,7 @@ class SwipeFragment : Fragment(), CardStackListener {
                     errorImageView.visibility = View.GONE
 
 
+
                 }
                 is ResultState.Failure -> { /* show error in UI with state.message variable */
                     Log.d(TAG, "onViewCreated: resultstate failure")
@@ -123,6 +137,13 @@ class SwipeFragment : Fragment(), CardStackListener {
                     cardStackView.visibility = View.GONE
                     errorTextView.visibility = View.VISIBLE
                     errorImageView.visibility = View.VISIBLE
+
+                }
+                is ResultState.Loading -> {
+                    //do something with loading
+                    cardStackView.visibility = View.GONE
+                    errorTextView.visibility = View.GONE
+                    errorImageView.visibility = View.GONE
 
                 }
             }
@@ -134,12 +155,26 @@ class SwipeFragment : Fragment(), CardStackListener {
 
 
 
-    override fun onDestroyView() {
+    override fun onStop() {
+        Log.d(TAG, "onStop: called")
         sharedPreferences.edit().putInt(TOP_CARD, manager.topPosition).apply()
+        Log.d(TAG, "onStop: card position ${manager.topPosition}")
+        val currentTimeHours = System.currentTimeMillis() / 1000 / 60 / 60
+        sharedPreferences.edit().putLong(CURRENT_TIME_HRS, currentTimeHours).apply()
+        super.onStop()
+    }
+
+    
+
+    
+
+    override fun onDestroyView() {
+        Log.d(TAG, "onDestroyView: called")
         super.onDestroyView()
         _binding = null
 
     }
+
 
     override fun onCardDragging(direction: Direction?, ratio: Float) {
         Log.d(TAG, "onCardDragging: starts")
@@ -150,16 +185,16 @@ class SwipeFragment : Fragment(), CardStackListener {
             sharedViewModel.getRecipeData(true, false)
             sharedPreferences.edit().putBoolean(GET_NEXT, true).apply()
         }
-        val item = manager.topPosition -1
+        val item = manager.topPosition - 1
         sharedPreferences.edit().putInt(TOP_CARD, manager.topPosition).apply()
 
 
-        if (direction == Direction.Right){
+        if (direction == Direction.Right) {
 
             Log.d(TAG, "onCardSwiped: $item")
-            val recipe =  sharedViewModel.recipes.value?.get(item)
+            val recipe = sharedViewModel.recipes.value?.get(item)
 
-            if (recipe!= null) {
+            if (recipe != null) {
                 sharedViewModel.setFavouriteRecipes(recipe)
 
             }

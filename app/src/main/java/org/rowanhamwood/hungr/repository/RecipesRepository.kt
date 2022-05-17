@@ -31,29 +31,41 @@ class RecipesRepository(
 
 ) : BaseRecipesRepository {
 
-    override val favouriteRecipes: LiveData<Result<List<DatabaseRecipe>>> = baseLocalDataSource.getRecipes()
+    override val favouriteRecipes: LiveData<Result<List<DatabaseRecipe>>> =
+        baseLocalDataSource.getRecipes()
 
 
-    override suspend fun getRecipes(searchQuery: String?, healthQuery: String?, cuisineQuery: String?, getNext: Boolean, appNewStart: Boolean) : Result<LiveData<List<RecipeModel>>> {
-        return baseRemoteDataSource.getRecipes(searchQuery, healthQuery, cuisineQuery, getNext, appNewStart)
+    override suspend fun getRecipes(
+        searchQuery: String?,
+        healthQuery: String?,
+        cuisineQuery: String?,
+        getNext: Boolean,
+        appNewStart: Boolean
+    ): Result<LiveData<List<RecipeModel>>> {
+        return baseRemoteDataSource.getRecipes(
+            searchQuery,
+            healthQuery,
+            cuisineQuery,
+            getNext,
+            appNewStart
+        )
     }
 
-     private fun recipeImageDirectory(): String = context.filesDir.absolutePath
+    private fun recipeImageDirectory(): String = context.filesDir.absolutePath
 
-     override suspend fun insertRecipe(favouriteRecipe: RecipeModel) = withContext(ioDispatcher) {
+    override suspend fun insertRecipe(favouriteRecipe: RecipeModel) = withContext(ioDispatcher) {
 
-             val recipeBitmap = getBitmapFile(favouriteRecipe.largeImage)
-             val imageId = UUID.randomUUID().toString()
-             saveFavouriteRecipeFile(recipeBitmap, imageId)
+        val recipeBitmap = getBitmapFile(favouriteRecipe.smallImage)
+        val imageId = UUID.randomUUID().toString()
+        saveFavouriteRecipeFile(recipeBitmap, imageId)
 
-             val path = File(recipeImageDirectory(), imageId).absolutePath
-             favouriteRecipe.largeImage = path
+        val path = File(recipeImageDirectory(), imageId).absolutePath
+        favouriteRecipe.smallImage = path
 
-             val databaseRecipe = maptoDataBaseModel(favouriteRecipe)
-             baseLocalDataSource.insertRecipe(databaseRecipe)
+        val databaseRecipe = maptoDataBaseModel(favouriteRecipe)
+        baseLocalDataSource.insertRecipe(databaseRecipe)
 
-     }
-
+    }
 
 
     override suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe) {
@@ -63,7 +75,7 @@ class RecipesRepository(
         }
     }
 
-    private suspend fun getBitmapFile(imgUrl: String) : Bitmap {
+    private suspend fun getBitmapFile(imgUrl: String): Bitmap {
 
         val loader = ImageLoader(context)
         val request = ImageRequest.Builder(context)
@@ -78,7 +90,7 @@ class RecipesRepository(
     }
 
 
-    private fun saveFavouriteRecipeFile(recipeBitmap: Bitmap, fileName: String )  {
+    private fun saveFavouriteRecipeFile(recipeBitmap: Bitmap, fileName: String) {
         try {
             val fileOutputStream: FileOutputStream =
                 context.openFileOutput(fileName, Context.MODE_PRIVATE)
@@ -89,26 +101,17 @@ class RecipesRepository(
         }
     }
 
-
-
-
-
-
-
-
     private fun maptoDataBaseModel(recipeModel: RecipeModel): DatabaseRecipe {
         return recipeModel.let {
             DatabaseRecipe(
                 uri = it.uri,
                 label = it.label,
-                image = it.largeImage,
+                image = it.smallImage,
                 source = it.source,
                 url = it.url
             )
         }
     }
-
-
 
 
 }
