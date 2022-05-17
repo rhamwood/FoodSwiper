@@ -47,7 +47,6 @@ class RecipeListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-
         _binding = FragmentRecipeListBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -64,12 +63,16 @@ class RecipeListFragment : Fragment() {
 
         }
 
+
+
+        //Initialize recyclerView and layoutManager
         recyclerView = binding.recyclerview
         val linearLayoutManager = LinearLayoutManager(requireContext())
         linearLayoutManager.reverseLayout = true
         linearLayoutManager.stackFromEnd = true
         recyclerView.layoutManager = linearLayoutManager
 
+        //Initialize adapter and onclickListener with Custom Tabs Intent
         val adapter =
             RecipeListAdapter(RecipeListAdapter.RecipeListListener { recipeUrl ->
                 sharedViewModel.setUrl(recipeUrl)
@@ -86,21 +89,30 @@ class RecipeListFragment : Fragment() {
         recyclerView.adapter = adapter
 
 
+        //Initialize itemTouchHelper for swipe to delete
         val swipeHandler = ItemSwipeHandler(requireContext(), sharedViewModel)
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
-        sharedViewModel.setFavRecipesResultStateLoading()
 
+        // error screen setup
         val errorTextView = binding.recipeListErrorTextView
         val errorImageView = binding.recipeListErrorImageView
 
         errorTextView.visibility = View.GONE
         errorImageView.visibility = View.GONE
 
+        //uiState listener for favourite recipe data
         sharedViewModel.favRecipeUiState.observe(viewLifecycleOwner) { state ->
 
             when (state) {
+                is ResultState.Loading -> {
+                    recyclerView.visibility = View.GONE
+                    errorTextView.visibility = View.GONE
+                    errorImageView.visibility = View.GONE
+
+                }
+
                 is ResultState.Success -> { /* show success in UI */
                     Log.d(TAG, "onViewCreated: resultstate success")
                     recyclerView.visibility = View.VISIBLE
@@ -109,20 +121,17 @@ class RecipeListFragment : Fragment() {
 
 
                 }
+
                 is ResultState.Failure -> { /* show error in UI with state.message variable */
-                    Log.d(TAG, "onViewCreated: resultstate failure")
+                    Log.d(TAG, "onViewCreated: resultState failure")
                     errorTextView.text = state.message
                     recyclerView.visibility = View.GONE
                     errorTextView.visibility = View.VISIBLE
                     errorImageView.visibility = View.VISIBLE
 
-                }
-                is ResultState.Loading -> {
-                    recyclerView.visibility = View.GONE
-                    errorTextView.visibility = View.GONE
-                    errorImageView.visibility = View.GONE
 
                 }
+
             }
         }
 

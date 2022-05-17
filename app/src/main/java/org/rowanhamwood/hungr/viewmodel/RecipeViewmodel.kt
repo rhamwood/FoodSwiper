@@ -52,6 +52,7 @@ class RecipeViewModel(
 
         val result = MutableLiveData<List<DatabaseRecipe>>()
 
+        _favRecipeUiState.value = ResultState.Loading
 
         if (recipesResult is Result.Success)
 
@@ -71,16 +72,6 @@ class RecipeViewModel(
 
     }
 
-//    fun refreshRecipes() {
-//        val currentTimeHrs = System.currentTimeMillis() / 1000 / 60 / 60
-//        val lastStartupTimeHrs = sharedPreferences.getLong(CURRENT_TIME_HRS, currentTimeHrs)
-//
-//        if ((lastStartupTimeHrs -1 ) < currentTimeHrs) {
-//            val getNext = sharedPreferences.getBoolean(GET_NEXT, false)
-//            getRecipeData(getNext, true)
-//
-//        }
-//    }
 
 
     private val _recipes: MutableLiveData<List<RecipeModel>> = MutableLiveData(emptyList())

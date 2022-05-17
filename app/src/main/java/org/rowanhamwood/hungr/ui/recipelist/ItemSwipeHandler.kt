@@ -32,11 +32,10 @@ class ItemSwipeHandler(
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        val item = viewHolder.layoutPosition
 
-        Log.d(TAG, "onSwiped: " + item)
+        //delete recipe from database when swiped
+        val item = viewHolder.layoutPosition
         val recipe = sharedViewModel.favouriteRecipes.value?.get(item)
-        Log.d(TAG, "onSwiped: " + recipe.toString())
         if (recipe != null) {
             sharedViewModel.deleteFavouriteRecipes(recipe)
 

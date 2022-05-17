@@ -196,6 +196,7 @@ class SwipeFragment : Fragment(), CardStackListener {
 
             if (recipe != null) {
                 sharedViewModel.setFavouriteRecipes(recipe)
+                sharedViewModel.setFavRecipesResultStateLoading()
 
             }
 
