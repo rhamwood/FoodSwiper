@@ -14,17 +14,18 @@ import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import com.yuyakaido.android.cardstackview.CardStackListener
 import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.Direction
+import dagger.hilt.android.AndroidEntryPoint
 import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.ResultState
 import org.rowanhamwood.hungr.databinding.FragmentSwipeBinding
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
-import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 private const val TAG = "SwipeFragment"
 private const val TOP_CARD = "TOP_CARD"
 private const val GET_NEXT = "GET_NEXT"
 private const val CURRENT_TIME_HRS = "CURRENT_TIME_HRS"
 
+@AndroidEntryPoint
 class SwipeFragment : Fragment(), CardStackListener {
 
 
@@ -34,12 +35,8 @@ class SwipeFragment : Fragment(), CardStackListener {
     private lateinit var sharedPreferences: SharedPreferences
 
 
-    private val sharedViewModel by activityViewModels<RecipeViewModel>() {
-        RecipeViewModelFactory(
-            (requireContext().applicationContext as HungrApplication).recipesRepository,
-            (requireContext().applicationContext as HungrApplication).sharedPreferences
-        )
-    }
+    private val sharedViewModel by activityViewModels<RecipeViewModel>()
+
 
 
     private var _binding: FragmentSwipeBinding? = null
@@ -78,6 +75,7 @@ class SwipeFragment : Fragment(), CardStackListener {
             getString(R.string.preference_file_key),
             Context.MODE_PRIVATE
         )
+
 
 
 

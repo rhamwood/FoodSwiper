@@ -1,25 +1,35 @@
 package org.rowanhamwood.hungr.viewmodel
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
+import android.provider.Settings.Secure.getString
 import android.util.Log
 import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
+import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.ResultState
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.*
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 
 
 private const val TAG = "RecipeViewModel"
 private const val CURRENT_SEARCH = "CURRENT_SEARCH"
 private const val GET_NEXT = "GET_NEXT"
 
-class RecipeViewModel(
+@HiltViewModel
+class RecipeViewModel @Inject constructor(
     private val recipesRepository: BaseRecipesRepository,
-    private val sharedPreferences: SharedPreferences
+    sharedPreferences: SharedPreferences
 ) : ViewModel() {
+
 
 
     private val _favouriteRecipes =
@@ -195,11 +205,11 @@ class RecipeViewModel(
 }
 
 
-@Suppress("UNCHECKED_CAST")
-class RecipeViewModelFactory(
-    private val baseRecipesRepository: BaseRecipesRepository,
-    private val sharedPreferences: SharedPreferences
-) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel> create(modelClass: Class<T>) =
-        (RecipeViewModel(baseRecipesRepository, sharedPreferences) as T)
-}
+//@Suppress("UNCHECKED_CAST")
+//class RecipeViewModelFactory(
+//    private val baseRecipesRepository: BaseRecipesRepository,
+//    private val sharedPreferences: SharedPreferences
+//) : ViewModelProvider.NewInstanceFactory() {
+//    override fun <T : ViewModel> create(modelClass: Class<T>) =
+//        (RecipeViewModel(baseRecipesRepository, sharedPreferences) as T)
+//}

@@ -18,23 +18,18 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import org.rowanhamwood.hungr.ResultState
-import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 private const val TAG = "RecipeListFragment"
 
-
+@AndroidEntryPoint
 class RecipeListFragment : Fragment() {
 
 
     private lateinit var recyclerView: RecyclerView
     private var _binding: FragmentRecipeListBinding? = null
-    private val sharedViewModel by activityViewModels<RecipeViewModel>() {
-        RecipeViewModelFactory(
-            (requireContext().applicationContext as HungrApplication).recipesRepository,
-            (requireContext().applicationContext as HungrApplication).sharedPreferences
-        )
-    }
+    private val sharedViewModel by activityViewModels<RecipeViewModel>()
 
 
     // This property is only valid between onCreateView and

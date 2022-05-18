@@ -12,17 +12,18 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import org.rowanhamwood.hungr.HungrApplication
 import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.databinding.FragmentSearchBinding
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
-import org.rowanhamwood.hungr.viewmodel.RecipeViewModelFactory
 
 private const val TAG = "SearchFragment"
 private const val CURRENT_SEARCH = "CURRENT_SEARCH"
 private const val GET_NEXT = "GET_NEXT"
 private const val TOP_CARD = "TOP_CARD"
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
 
 
@@ -32,12 +33,7 @@ class SearchFragment : Fragment() {
 
 //    private val sharedViewModel: RecipeViewModel by activityViewModels()
 
-    private val sharedViewModel by activityViewModels<RecipeViewModel>() {
-        RecipeViewModelFactory(
-            (requireContext().applicationContext as HungrApplication).recipesRepository,
-            (requireContext().applicationContext as HungrApplication).sharedPreferences
-        )
-    }
+    private val sharedViewModel by activityViewModels<RecipeViewModel>()
 
 
     // This property is only valid between onCreateView and
