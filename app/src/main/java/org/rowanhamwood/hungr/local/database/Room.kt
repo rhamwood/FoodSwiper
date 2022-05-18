@@ -30,10 +30,9 @@ interface getNextDao {
 
 @Database(
     entities = [DatabaseRecipe::class, getNextUrl::class],
-    version = 3,
-    exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(2, 3)
-    ]
+    version = 1,
+    exportSchema = false
+
 
 )
 
