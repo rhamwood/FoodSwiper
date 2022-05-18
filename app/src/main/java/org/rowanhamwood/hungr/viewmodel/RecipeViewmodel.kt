@@ -127,15 +127,12 @@ class RecipeViewModel @Inject constructor(
 
     init {
         val currentSearch = sharedPreferences.getString(CURRENT_SEARCH, null)
-        //TODO setup empty welcome screen to be displayed on first opening the app replacing default cake
         if (currentSearch != null) {
             setSearch(currentSearch)
         }
         val getNext = sharedPreferences.getBoolean(GET_NEXT, false)
-        Log.d(TAG, "getnext: $getNext ")
         val appNewStart = true
         getRecipeData(getNext, appNewStart)
-        Log.d(TAG, ": called from viewmodel")
     }
 
 
@@ -153,7 +150,7 @@ class RecipeViewModel @Inject constructor(
                     getNext,
                     appNewStart
                 )
-                Log.d(TAG, "getRecipeData: $result")
+
                 if (result is Result.Success) {
 
 
@@ -166,10 +163,9 @@ class RecipeViewModel @Inject constructor(
                     if (appNewStart) {
                         _recipesUiState.value =
                             ResultState.Failure("Nothing here yet, try searching!")
-                        Log.d(TAG, "getRecipeData: could not get recipe data")
                     } else {
                         _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
-                        Log.d(TAG, "getRecipeData: could not get recipe data")
+
                     }
                 }
 
@@ -178,14 +174,12 @@ class RecipeViewModel @Inject constructor(
         } else if (searchQuery != null && getNext) {
             viewModelScope.launch {
                 val result = recipesRepository.getRecipes("", "", "", getNext, appNewStart)
-                Log.d(TAG, "getRecipeData: $result")
                 if (result is Result.Success) {
                     _recipes.value = result.data.value
                     Log.d(TAG, "${recipes.value}")
                     _recipesUiState.value = ResultState.Success
                 } else {
                     _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
-                    Log.d(TAG, "getRecipeData: could not get recipe data")
                     Log.d(TAG, "${recipes.value}")
                 }
 
@@ -194,9 +188,6 @@ class RecipeViewModel @Inject constructor(
         } else {
             _recipesUiState.value =
                 ResultState.Failure("Nothing here yet, try searching for something!")
-            Log.d(TAG, "getRecipeData: search value is null, cannot get recipe data")
-
-
         }
 
     }
@@ -205,11 +196,3 @@ class RecipeViewModel @Inject constructor(
 }
 
 
-//@Suppress("UNCHECKED_CAST")
-//class RecipeViewModelFactory(
-//    private val baseRecipesRepository: BaseRecipesRepository,
-//    private val sharedPreferences: SharedPreferences
-//) : ViewModelProvider.NewInstanceFactory() {
-//    override fun <T : ViewModel> create(modelClass: Class<T>) =
-//        (RecipeViewModel(baseRecipesRepository, sharedPreferences) as T)
-//}

@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import org.rowanhamwood.hungr.ResultState
 
-private const val TAG = "RecipeListFragment"
 
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {

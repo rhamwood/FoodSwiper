@@ -54,10 +54,6 @@ class SwipeFragment : Fragment(), CardStackListener {
 
         _binding = FragmentSwipeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-
-        Log.d(TAG, "onCreateView: ${sharedViewModel.recipes.value}")
-
         return root
     }
 
@@ -83,13 +79,11 @@ class SwipeFragment : Fragment(), CardStackListener {
 
         adapter = SwipeAdapter()
         cardStackView = binding.cardStackView
-        Log.d(TAG, "onViewCreated: cardstackview $cardStackView")
         manager = CardStackLayoutManager(requireContext(), this)
         cardStackView.layoutManager = manager
         cardStackView.adapter = adapter
 
         val cardPosition = sharedPreferences.getInt(TOP_CARD, 0)
-        Log.d(TAG, "onViewCreated: card position $cardPosition")
         manager.topPosition = cardPosition
 
 
@@ -116,14 +110,11 @@ class SwipeFragment : Fragment(), CardStackListener {
         errorImageView.visibility = View.GONE
         loadingimage.visibility = View.GONE
 
-        Log.d(TAG, "onViewCreated: recipes value ${sharedViewModel.recipes.value}")
-
 
         sharedViewModel.recipesUiState.observe(viewLifecycleOwner) { state ->
 
             when (state) {
                 is ResultState.Success -> { /* show success in UI */
-                    Log.d(TAG, "onViewCreated: resultstate success")
                     cardStackView.visibility = View.VISIBLE
                     errorTextView.visibility = View.GONE
                     errorImageView.visibility = View.GONE
@@ -131,7 +122,6 @@ class SwipeFragment : Fragment(), CardStackListener {
 
                 }
                 is ResultState.Failure -> { /* show error in UI with state.message variable */
-                    Log.d(TAG, "onViewCreated: resultstate failure")
                     errorTextView.text = state.message
                     cardStackView.visibility = View.GONE
                     loadingimage.visibility = View.GONE
@@ -157,9 +147,7 @@ class SwipeFragment : Fragment(), CardStackListener {
 
 
     override fun onStop() {
-        Log.d(TAG, "onStop: called")
         sharedPreferences.edit().putInt(TOP_CARD, manager.topPosition).apply()
-        Log.d(TAG, "onStop: card position ${manager.topPosition}")
         val currentTimeHours = System.currentTimeMillis() / 1000 / 60 / 60
         sharedPreferences.edit().putLong(CURRENT_TIME_HRS, currentTimeHours).apply()
         super.onStop()
@@ -170,7 +158,6 @@ class SwipeFragment : Fragment(), CardStackListener {
     
 
     override fun onDestroyView() {
-        Log.d(TAG, "onDestroyView: called")
         super.onDestroyView()
         _binding = null
 
@@ -178,7 +165,6 @@ class SwipeFragment : Fragment(), CardStackListener {
 
 
     override fun onCardDragging(direction: Direction?, ratio: Float) {
-        Log.d(TAG, "onCardDragging: starts")
     }
 
     override fun onCardSwiped(direction: Direction?) {
@@ -191,8 +177,6 @@ class SwipeFragment : Fragment(), CardStackListener {
 
 
         if (direction == Direction.Right) {
-
-            Log.d(TAG, "onCardSwiped: $item")
             val recipe = sharedViewModel.recipes.value?.get(item)
 
             if (recipe != null) {
@@ -206,18 +190,14 @@ class SwipeFragment : Fragment(), CardStackListener {
     }
 
     override fun onCardRewound() {
-        Log.d(TAG, "onCardRewound: starts")
     }
 
     override fun onCardCanceled() {
-        Log.d(TAG, "onCardCanceled: starts")
     }
 
     override fun onCardAppeared(view: View?, position: Int) {
-        Log.d(TAG, "onCardAppeared: starts")
     }
 
     override fun onCardDisappeared(view: View?, position: Int) {
-        Log.d(TAG, "onCardDisappeared: starts")
     }
 }
