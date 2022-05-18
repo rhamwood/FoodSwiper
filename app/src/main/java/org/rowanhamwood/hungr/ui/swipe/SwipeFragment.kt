@@ -112,9 +112,11 @@ class SwipeFragment : Fragment(), CardStackListener {
 
         val errorTextView = binding.swipeErrorText
         val errorImageView = binding.swipeErrorImage
+        val loadingimage = binding.loadingImage
 
         errorTextView.visibility = View.GONE
         errorImageView.visibility = View.GONE
+        loadingimage.visibility = View.GONE
 
         Log.d(TAG, "onViewCreated: recipes value ${sharedViewModel.recipes.value}")
 
@@ -127,20 +129,21 @@ class SwipeFragment : Fragment(), CardStackListener {
                     cardStackView.visibility = View.VISIBLE
                     errorTextView.visibility = View.GONE
                     errorImageView.visibility = View.GONE
-
-
+                    loadingimage.visibility = View.GONE
 
                 }
                 is ResultState.Failure -> { /* show error in UI with state.message variable */
                     Log.d(TAG, "onViewCreated: resultstate failure")
                     errorTextView.text = state.message
                     cardStackView.visibility = View.GONE
+                    loadingimage.visibility = View.GONE
                     errorTextView.visibility = View.VISIBLE
                     errorImageView.visibility = View.VISIBLE
 
                 }
                 is ResultState.Loading -> {
                     //do something with loading
+                    loadingimage.visibility = View.VISIBLE
                     cardStackView.visibility = View.GONE
                     errorTextView.visibility = View.GONE
                     errorImageView.visibility = View.GONE

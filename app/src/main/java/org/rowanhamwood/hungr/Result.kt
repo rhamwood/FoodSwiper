@@ -1,6 +1,5 @@
 package org.rowanhamwood.hungr
 
-//TODO add loading animation on loading
 
 sealed class Result<out R> {
 
@@ -14,6 +13,7 @@ sealed class Result<out R> {
             is Error -> "Error[exception=$exception]"
 //            Loading -> "Loading"
         }
+
     }
 }
 

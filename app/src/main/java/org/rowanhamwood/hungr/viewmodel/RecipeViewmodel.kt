@@ -26,7 +26,6 @@ class RecipeViewModel(
         recipesRepository.favouriteRecipes.switchMap { recipesResults(it) }
     val favouriteRecipes = _favouriteRecipes
 
-
     private val _favRecipeUiState = MutableLiveData<ResultState>()
     val favRecipeUiState: LiveData<ResultState> = _favRecipeUiState
 
@@ -34,17 +33,12 @@ class RecipeViewModel(
         _favRecipeUiState.value = ResultState.Loading
     }
 
-
-
-
     private val _recipesUiState = MutableLiveData<ResultState>()
     val recipesUiState: LiveData<ResultState> = _recipesUiState
 
     fun setRecipesResultStateLoading() {
         _recipesUiState.value = ResultState.Loading
     }
-
-
 
 
     @SuppressLint("NullSafeMutableLiveData")
@@ -73,7 +67,6 @@ class RecipeViewModel(
     }
 
 
-
     private val _recipes: MutableLiveData<List<RecipeModel>> = MutableLiveData(emptyList())
     val recipes: LiveData<List<RecipeModel>> = _recipes
 
@@ -89,10 +82,9 @@ class RecipeViewModel(
     private val _url = MutableLiveData<String?>()
     val url: LiveData<String?> = _url
 
-    fun clearRecipes(){
+    fun clearRecipes() {
         _recipes.value = emptyList()
     }
-
 
     fun setSearch(searchText: String) {
         _search.value = searchText
@@ -162,7 +154,8 @@ class RecipeViewModel(
 
                 } else {
                     if (appNewStart) {
-                        _recipesUiState.value = ResultState.Failure("Nothing here yet, try searching!")
+                        _recipesUiState.value =
+                            ResultState.Failure("Nothing here yet, try searching!")
                         Log.d(TAG, "getRecipeData: could not get recipe data")
                     } else {
                         _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")

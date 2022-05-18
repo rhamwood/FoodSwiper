@@ -98,18 +98,22 @@ class RecipeListFragment : Fragment() {
         // error screen setup
         val errorTextView = binding.recipeListErrorTextView
         val errorImageView = binding.recipeListErrorImageView
+        val loadingImage = binding.recipeListLoadingImage
 
         errorTextView.visibility = View.GONE
         errorImageView.visibility = View.GONE
+        loadingImage.visibility = View.GONE
 
         //uiState listener for favourite recipe data
         sharedViewModel.favRecipeUiState.observe(viewLifecycleOwner) { state ->
 
             when (state) {
                 is ResultState.Loading -> {
+                    loadingImage.visibility = View.VISIBLE
                     recyclerView.visibility = View.GONE
                     errorTextView.visibility = View.GONE
                     errorImageView.visibility = View.GONE
+
 
                 }
 
@@ -118,6 +122,7 @@ class RecipeListFragment : Fragment() {
                     recyclerView.visibility = View.VISIBLE
                     errorTextView.visibility = View.GONE
                     errorImageView.visibility = View.GONE
+                    loadingImage.visibility = View.GONE
 
 
                 }
@@ -126,6 +131,7 @@ class RecipeListFragment : Fragment() {
                     Log.d(TAG, "onViewCreated: resultState failure")
                     errorTextView.text = state.message
                     recyclerView.visibility = View.GONE
+                    loadingImage.visibility = View.GONE
                     errorTextView.visibility = View.VISIBLE
                     errorImageView.visibility = View.VISIBLE
 

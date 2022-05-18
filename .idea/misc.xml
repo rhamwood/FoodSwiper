@@ -11,8 +11,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-v24/ic_broken_image.xml" value="0.1" />
         <entry key="app/src/main/res/drawable-v24/loading_img.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/custom_tab_icon.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/gradation_black.xml" value="0.221" />
+        <entry key="app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/cuisine_list_item.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_recipe_detail.xml" value="0.24954710144927536" />
