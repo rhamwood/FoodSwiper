@@ -22,21 +22,12 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @Qualifier
-    @Retention(AnnotationRetention.RUNTIME)
-    annotation class RemoteDataSource
-
-    @Qualifier
-    @Retention(AnnotationRetention.RUNTIME)
-    annotation class LocalDataSource
 
     @Singleton
-    @RemoteDataSource
     @Provides
     fun provideRemoteDataSource(
         database: FavouriteRecipesDatabase,
@@ -48,7 +39,6 @@ object AppModule {
     }
 
     @Singleton
-    @LocalDataSource
     @Provides
     fun provideLocalDataSource(
         database: FavouriteRecipesDatabase,
@@ -76,7 +66,10 @@ object AppModule {
     @Singleton
     @Provides
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
-        return context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        return context.getSharedPreferences(
+            context.getString(R.string.preference_file_key),
+            Context.MODE_PRIVATE
+        )
 
     }
 
@@ -93,8 +86,8 @@ object RecipesRepositoryModule {
     @Singleton
     @Provides
     fun provideRecipesRepository(
-        @AppModule.RemoteDataSource remoteDataSource: BaseRemoteDataSource,
-        @AppModule.LocalDataSource localDataSource: BaseLocalDataSource,
+        remoteDataSource: BaseRemoteDataSource,
+        localDataSource: BaseLocalDataSource,
         @ApplicationContext context: Context,
         ioDispatcher: CoroutineDispatcher
     ): BaseRecipesRepository {
