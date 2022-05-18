@@ -13,7 +13,6 @@ import org.rowanhamwood.hungr.remote.network.RecipeApi
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 import org.rowanhamwood.hungr.remote.network.asRecipeModel
 
-private const val TAG = "RemoteDataSource"
 
 class RemoteDataSource(
     private val getNextDao: getNextDao,
@@ -43,24 +42,20 @@ class RemoteDataSource(
                         cuisineQuery = cuisineQuery
                     )
                     if (requestValue.recipeList.isNotEmpty())
-                        Log.d(TAG, "getRecipes: ${requestValue.recipeList}")
-                    _recipes.postValue(requestValue.asRecipeModel())
-                    Log.d(TAG, "getRecipes: _recipes.postvalue called")
+                        _recipes.postValue(requestValue.asRecipeModel())
                     val nextUrl = requestValue.nextLink?.next?.href
                     getNextDao.insertGetNext(getNextUrl("NEXT", nextUrl!!))
-                    Log.d(TAG, "getRecipes: $nextUrl")
+
 
                     return@withContext Result.Success(_recipes)
 
                 } catch (e: Exception) {
-                    Log.d(TAG, "getRecipeData: $e")
-                    Log.d(TAG, "getRecipeData: Failed")
                     return@withContext Result.Error(e)
                 }
 
 
             } else {
-                Log.d(TAG, "search query is null")
+
 
                 return@withContext Result.Error(Exception("search query is null"))
             }
@@ -72,7 +67,7 @@ class RemoteDataSource(
                 } else {
                     oldNextUrl = getNextDao.getNextById("NEXT").nextUrl
                 }
-                Log.d(TAG, "getNext value: $oldNextUrl")
+
                 val requestValue = oldNextUrl?.let {
                     RecipeApi.retrofitService.getNext(
                         it
@@ -87,12 +82,10 @@ class RemoteDataSource(
                 getNextDao.insertGetNext(getNextUrl("PREVIOUS", oldNextUrl!!))
                 getNextDao.insertGetNext(getNextUrl("NEXT", nextUrl!!))
 
-                Log.d(TAG, "getNext: ${requestValue.toString()}")
 
                 return@withContext Result.Success(_recipes)
 
             } catch (e: Exception) {
-                Log.d(TAG, "getNext: Failed with exception $e")
                 return@withContext Result.Error(e)
             }
         }

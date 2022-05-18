@@ -11,7 +11,6 @@ import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.local.database.RecipeDao
 
-private const val TAG = "LocalDataSource"
 
 class LocalDataSource(
     private val recipeDao: RecipeDao,

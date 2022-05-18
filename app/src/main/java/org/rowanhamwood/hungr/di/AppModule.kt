@@ -18,7 +18,6 @@ import org.rowanhamwood.hungr.remote.BaseRemoteDataSource
 import org.rowanhamwood.hungr.remote.RemoteDataSource
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 import org.rowanhamwood.hungr.repository.RecipesRepository
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 

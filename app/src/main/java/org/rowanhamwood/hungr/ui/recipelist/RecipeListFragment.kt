@@ -113,7 +113,6 @@ class RecipeListFragment : Fragment() {
                 }
 
                 is ResultState.Success -> { /* show success in UI */
-                    Log.d(TAG, "onViewCreated: resultstate success")
                     recyclerView.visibility = View.VISIBLE
                     errorTextView.visibility = View.GONE
                     errorImageView.visibility = View.GONE
@@ -123,7 +122,6 @@ class RecipeListFragment : Fragment() {
                 }
 
                 is ResultState.Failure -> { /* show error in UI with state.message variable */
-                    Log.d(TAG, "onViewCreated: resultState failure")
                     errorTextView.text = state.message
                     recyclerView.visibility = View.GONE
                     loadingImage.visibility = View.GONE

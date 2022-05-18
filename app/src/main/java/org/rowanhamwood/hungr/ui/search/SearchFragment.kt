@@ -69,11 +69,10 @@ class SearchFragment : Fragment() {
         // cuisine selection menu
         val cuisineMenu = binding.cuisineMenu
         val cuisineTextView = binding.cuisineTextView
-//        cuisineTextView.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
+
         // diet selection menu
         val healthMenu = binding.dietMenu
         val healthTextView = binding.dietTextView
-//        healthTextView.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_200))
 
 
         //cuisineMenu setup
@@ -161,7 +160,6 @@ class SearchFragment : Fragment() {
 
         searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
-                Log.d("onQueryTextChange", "called");
                 return false
             }
 
@@ -180,11 +178,6 @@ class SearchFragment : Fragment() {
                     sharedPreferences.edit().putBoolean(GET_NEXT, false).apply()
                     sharedViewModel.setRecipesResultStateLoading()
                     goToNextScreen()
-
-
-                    Log.d(TAG, "onCreateView: search completed")
-
-
                 }
 
 
@@ -194,9 +187,7 @@ class SearchFragment : Fragment() {
 
 
         submitButton.setOnClickListener { view ->
-            Log.d(TAG, "onCreateView: submit button clicked")
             if (searchView.query.isEmpty()) {
-                Log.d(TAG, "onQueryTextSubmit: show search empty toast")
                 Toast.makeText(
                     requireContext(),
                     "please fill in the search field",

@@ -12,7 +12,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Url
 
-private const val TAG = "RecipeApiService"
 
 
 private const val BASE_URL = "https://api.edamam.com/api/"
@@ -41,7 +40,6 @@ private fun addApiKeyToRequests(chain: Interceptor.Chain): Response {
         .addQueryParameter("app_id", APP_ID)
         .addQueryParameter("app_key", API_KEY)
         .build()
-    Log.d(TAG, "addApiKeyToRequests: $newUrl")
     request.url(newUrl)
     return chain.proceed(request.build())
 }
