@@ -2,7 +2,9 @@ package org.rowanhamwood.hungr.repository
 
 import androidx.lifecycle.LiveData
 import org.rowanhamwood.hungr.Result
+import org.rowanhamwood.hungr.ResultState
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
+import org.rowanhamwood.hungr.remote.network.Recipe
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 interface BaseRecipesRepository {
@@ -17,7 +19,7 @@ interface BaseRecipesRepository {
         appNewStart: Boolean
     ): Result<LiveData<List<RecipeModel>>>
 
-    suspend fun insertRecipe(favouriteRecipe: RecipeModel)
+    suspend fun insertRecipe(favouriteRecipe: RecipeModel) : Boolean
 
     suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe)
 

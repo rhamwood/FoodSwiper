@@ -1,8 +1,7 @@
 package org.rowanhamwood.hungr.local
 
-import android.util.Log
+
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.map
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

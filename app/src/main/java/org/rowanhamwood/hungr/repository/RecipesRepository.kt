@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.rowanhamwood.hungr.Result
+import org.rowanhamwood.hungr.ResultState
 import org.rowanhamwood.hungr.local.BaseLocalDataSource
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.BaseRemoteDataSource
@@ -20,7 +21,6 @@ import java.io.FileOutputStream
 import java.util.*
 
 
-private const val TAG = "RecipesRepository"
 
 
 class RecipesRepository(
@@ -53,17 +53,23 @@ class RecipesRepository(
 
     private fun recipeImageDirectory(): String = context.filesDir.absolutePath
 
-    override suspend fun insertRecipe(favouriteRecipe: RecipeModel) = withContext(ioDispatcher) {
+    override suspend fun insertRecipe(favouriteRecipe: RecipeModel): Boolean = withContext(ioDispatcher)  {
 
-        val recipeBitmap = getBitmapFile(favouriteRecipe.smallImage)
-        val imageId = UUID.randomUUID().toString()
-        saveFavouriteRecipeFile(recipeBitmap, imageId)
+            try {
+                val recipeBitmap = getBitmapFile(favouriteRecipe.smallImage)
+                val imageId = UUID.randomUUID().toString()
+                saveFavouriteRecipeFile(recipeBitmap, imageId)
 
-        val path = File(recipeImageDirectory(), imageId).absolutePath
-        favouriteRecipe.smallImage = path
+                val path = File(recipeImageDirectory(), imageId).absolutePath
+                favouriteRecipe.smallImage = path
 
-        val databaseRecipe = maptoDataBaseModel(favouriteRecipe)
-        baseLocalDataSource.insertRecipe(databaseRecipe)
+                val databaseRecipe = maptoDataBaseModel(favouriteRecipe)
+                baseLocalDataSource.insertRecipe(databaseRecipe)
+                return@withContext true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@withContext false
+            }
 
     }
 
@@ -76,15 +82,16 @@ class RecipesRepository(
     }
 
     private suspend fun getBitmapFile(imgUrl: String): Bitmap {
-
         val loader = ImageLoader(context)
         val request = ImageRequest.Builder(context)
             .data(imgUrl)
-            .allowHardware(false) // Disable hardware bitmaps.
+            .allowHardware(false)
+            // Disable hardware bitmaps.
             .build()
 
-        val result = (loader.execute(request) as SuccessResult).drawable
-        val bitmap = (result as BitmapDrawable).bitmap
+            val result = (loader.execute(request) as SuccessResult).drawable
+            val bitmap = (result as BitmapDrawable).bitmap
+
 
         return bitmap
     }

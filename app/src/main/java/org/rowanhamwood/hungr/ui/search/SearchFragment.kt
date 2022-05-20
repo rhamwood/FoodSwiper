@@ -3,7 +3,6 @@ package org.rowanhamwood.hungr.ui.search
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import org.rowanhamwood.hungr.HungrApplication
 import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.databinding.FragmentSearchBinding
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
@@ -29,10 +27,6 @@ class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private lateinit var sharedPreferences: SharedPreferences
-
-
-//    private val sharedViewModel: RecipeViewModel by activityViewModels()
-
     private val sharedViewModel by activityViewModels<RecipeViewModel>()
 
 
@@ -50,6 +44,19 @@ class SearchFragment : Fragment() {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+
+
+
+        return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        _binding?.apply {
+            viewModel = sharedViewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
 
         //sharedPreference for last search on restart
         sharedPreferences = requireContext().getSharedPreferences(
@@ -74,29 +81,7 @@ class SearchFragment : Fragment() {
         val healthMenu = binding.dietMenu
         val healthTextView = binding.dietTextView
 
-
-        //cuisineMenu setup
-        val cuisineItems = listOf(
-            "None",
-            "American",
-            "Asian",
-            "British",
-            "Caribbean",
-            "Central Europe",
-            "Chinese",
-            "Eastern Europe",
-            "French",
-            "Indian",
-            "Italian",
-            "Japanese",
-            "Kosher",
-            "Mediterranean",
-            "Mexican",
-            "Middle Eastern",
-            "Nordic",
-            "South American",
-            "South East Asian"
-        )
+        //setup cuisine selection menu
         val cuisineAdapter =
             ArrayAdapter(requireContext(), R.layout.cuisine_list_item, cuisineItems)
         (cuisineMenu.editText as? AutoCompleteTextView)?.setAdapter(cuisineAdapter)
@@ -110,42 +95,7 @@ class SearchFragment : Fragment() {
             }
         }
 
-        //Diet menu setup
-        val healthItems = listOf(
-            "None",
-            "Alcohol-Free",
-            "Celery-Free",
-            "Crustacean-Free",
-            "Dairy-Free",
-            "Egg-Free",
-            "Fish-Free",
-            "FODMAP-Free",
-            "Gluten-Free",
-            "Immuno-Supportive",
-            "Keto-Friendly",
-            "Kidney-Friendly",
-            "Kosher",
-            "Lupine-Free",
-            "Mediterranean",
-            "Mollusk-Free",
-            "Mustard-Free",
-            "Paleo",
-            "Peanut-Free",
-            "Pescatarian",
-            "Pork-Free",
-            "Red-Meat-Free",
-            "Sesame-Free",
-            "Shellfish-Free",
-            "Soy-Free",
-            "Sugar-Conscious",
-            "Sulfite-Free",
-            "Tree-Nut-Free",
-            "Vegan",
-            "Vegetarian",
-            "Wheat-Free"
-
-
-        )
+        //setup diet selection menu
         val healthAdapter = ArrayAdapter(requireContext(), R.layout.health_list_item, healthItems)
         (healthMenu.editText as? AutoCompleteTextView)?.setAdapter(healthAdapter)
         healthTextView.setText(sharedViewModel.health.value, false)
@@ -158,6 +108,7 @@ class SearchFragment : Fragment() {
             }
         }
 
+        //setup searchView
         searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 return false
@@ -186,6 +137,7 @@ class SearchFragment : Fragment() {
         })
 
 
+        //setup submit button for search view
         submitButton.setOnClickListener { view ->
             if (searchView.query.isEmpty()) {
                 Toast.makeText(
@@ -196,17 +148,6 @@ class SearchFragment : Fragment() {
             }
             searchView.setQuery(searchView.query, true)
 
-        }
-
-        return root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        _binding?.apply {
-            viewModel = sharedViewModel
-            lifecycleOwner = viewLifecycleOwner
         }
 
 

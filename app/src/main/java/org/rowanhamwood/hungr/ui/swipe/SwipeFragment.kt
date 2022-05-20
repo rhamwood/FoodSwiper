@@ -1,13 +1,16 @@
 package org.rowanhamwood.hungr.ui.swipe
 
-import org.rowanhamwood.hungr.HungrApplication
+
 import android.content.Context
+import android.content.Context.CONNECTIVITY_SERVICE
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
@@ -19,6 +22,7 @@ import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.ResultState
 import org.rowanhamwood.hungr.databinding.FragmentSwipeBinding
 import org.rowanhamwood.hungr.viewmodel.RecipeViewModel
+
 
 private const val TAG = "SwipeFragment"
 private const val TOP_CARD = "TOP_CARD"
@@ -36,9 +40,6 @@ class SwipeFragment : Fragment(), CardStackListener {
 
 
     private val sharedViewModel by activityViewModels<RecipeViewModel>()
-
-
-
     private var _binding: FragmentSwipeBinding? = null
 
     // This property is only valid between onCreateView and
@@ -140,6 +141,15 @@ class SwipeFragment : Fragment(), CardStackListener {
             }
         }
 
+        sharedViewModel.recipeImageLoadingState.observe(viewLifecycleOwner){ state ->
+            if (state == false) {
+                Toast.makeText(requireContext(), "could not find image", Toast.LENGTH_SHORT).show()
+                sharedViewModel.setRecipeImageLoadingState(true)
+                sharedViewModel.setFavRecipesResultStateSuccess()
+            }
+
+        }
+
 
     }
 
@@ -162,6 +172,7 @@ class SwipeFragment : Fragment(), CardStackListener {
         _binding = null
 
     }
+
 
 
     override fun onCardDragging(direction: Direction?, ratio: Float) {

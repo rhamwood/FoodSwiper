@@ -43,12 +43,24 @@ class RecipeViewModel @Inject constructor(
         _favRecipeUiState.value = ResultState.Loading
     }
 
+    fun setFavRecipesResultStateSuccess() {
+        _favRecipeUiState.value = ResultState.Success
+    }
+
     private val _recipesUiState = MutableLiveData<ResultState>()
     val recipesUiState: LiveData<ResultState> = _recipesUiState
 
     fun setRecipesResultStateLoading() {
         _recipesUiState.value = ResultState.Loading
     }
+
+    private val _recipeImageLoadingState = MutableLiveData<Boolean>()
+    val recipeImageLoadingState: LiveData<Boolean> = _recipeImageLoadingState
+
+    fun setRecipeImageLoadingState(state: Boolean){
+        _recipeImageLoadingState.value = state
+    }
+
 
 
     @SuppressLint("NullSafeMutableLiveData")
@@ -111,13 +123,14 @@ class RecipeViewModel @Inject constructor(
     fun setFavouriteRecipes(recipe: RecipeModel) {
 
         viewModelScope.launch {
-            recipesRepository.insertRecipe(recipe)
+            _recipeImageLoadingState.value = recipesRepository.insertRecipe(recipe)
         }
     }
 
     fun deleteFavouriteRecipes(recipe: DatabaseRecipe) {
         viewModelScope.launch {
             recipesRepository.deleteRecipe(recipe)
+
         }
     }
 
