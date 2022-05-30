@@ -1,77 +1,134 @@
 package org.rowanhamwood.hungr.data.source
 
+import android.accounts.NetworkErrorException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.runBlocking
+import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
+import java.lang.NullPointerException
+
 
 class FakeTestRepository : BaseRecipesRepository {
 
 
-    var favouriteRecipesTestData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
+    private val _favouriteRecipes: MutableLiveData<Result<List<DatabaseRecipe>>> = MutableLiveData()
+    override val favouriteRecipes: LiveData<Result<List<DatabaseRecipe>>> = _favouriteRecipes
 
-    private val _favouriteRecipes = MutableLiveData<List<RecipeModel>>()
-    override val favouriteRecipes: LiveData<List<RecipeModel>> = _favouriteRecipes
 
-    var recipesTestData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
+    var recipesServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
+    var recipesSecondPageServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
+    var recipesThirdPageServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
+    var favRecipesServiceData: LinkedHashMap<String, DatabaseRecipe> = LinkedHashMap()
 
-    private val _recipes = MutableLiveData<List<RecipeModel>>()
-    override val recipes: LiveData<List<RecipeModel>> = _recipes
 
-    lateinit var insertedRecipe: DatabaseRecipe
+    val recipesLiveData = MutableLiveData<List<RecipeModel>>()
+
+    var searchSuccess: Boolean = true
+    var favRecipesSuccess: Boolean = true
     lateinit var deletedRecipe: DatabaseRecipe
-
-    var mSearchQuery: String? = null
-    var mHealthQuery: String? = null
-    var mCuisineQuery: String? = null
-    var nextValue = false
-
-
-    fun addRecipes(vararg recipeModels: RecipeModel) {
-        for (recipeModel in recipeModels) {
-            recipesTestData[recipeModel.uri] = recipeModel
-        }
-        runBlocking { _recipes.value = recipesTestData.values.toList() }
-    }
-
-    fun addFavouriteRecipes(vararg recipeModels: RecipeModel) {
-        for (recipeModel in recipeModels) {
-            favouriteRecipesTestData[recipeModel.uri] = recipeModel
-        }
-        runBlocking { _recipes.value = recipesTestData.values.toList() }
-    }
 
 
     override suspend fun getRecipes(
-        searchQuery: String,
+        searchQuery: String?,
         healthQuery: String?,
-        cuisineQuery: String?
-    ) {
-//        val recipeModel1 = RecipeModel("uri", "$searchQuery 1" , "image", "source", "url")
-//        val recipeModel2 = RecipeModel("uri", "$searchQuery 2" , "image", "source", "url")
-//        val recipeModel3 = RecipeModel("uri", "$searchQuery 2" , "image", "source", "url")
-//
-//        addRecipes(recipeModel1, recipeModel2, recipeModel3)
 
-            mSearchQuery = searchQuery
-            mHealthQuery = healthQuery
-            mCuisineQuery = cuisineQuery
+        cuisineQuery: String?,
+        getNext: Boolean,
+        appNewStart: Boolean
+    ): Result<LiveData<List<RecipeModel>>> {
+        if (searchQuery != null && getNext && appNewStart) {
 
+            if (searchSuccess) {
+                recipesLiveData.value = recipesSecondPageServiceData.values.toList()
+                return Result.Success(recipesLiveData)
+            } else
+            {
+                return Result.Error(NetworkErrorException())
+            }
 
+        } else if (searchQuery != null && getNext) {
+
+            if (searchSuccess) {
+                recipesLiveData.value = recipesThirdPageServiceData.values.toList()
+                return Result.Success(recipesLiveData)
+            } else
+            {
+                return Result.Error(NetworkErrorException())
+            }
+
+        } else if (searchQuery != null && appNewStart) {
+            if (searchSuccess) {
+                recipesLiveData.value = recipesServiceData.values.toList()
+                return Result.Success(recipesLiveData)
+            } else
+            {
+                return Result.Error(NetworkErrorException())
+            }
+
+        } else if (searchQuery != null) {
+            if(searchSuccess) {
+                recipesLiveData.value = recipesServiceData.values.toList()
+                return Result.Success(recipesLiveData)
+            } else
+            {
+                return Result.Error(NetworkErrorException())
+            }
+
+        } else {
+
+            return Result.Error(NullPointerException())
+        }
 
     }
 
-    override suspend fun getNext() {
-        nextValue = true
+    fun addRecipes(vararg recipeModels: RecipeModel) {
+        for (recipemodel in recipeModels) {
+            recipesServiceData[recipemodel.label] = recipemodel
+        }
     }
 
-    override suspend fun insertRecipe(favouriteRecipe: DatabaseRecipe) {
-        insertedRecipe = favouriteRecipe
+    fun addSecondPageRecipes(vararg recipeModels: RecipeModel) {
+        for (recipemodel in recipeModels) {
+            recipesSecondPageServiceData[recipemodel.label] = recipemodel
+        }
+    }
+
+    fun addThirdPageRecipes(vararg recipeModels: RecipeModel) {
+        for (recipemodel in recipeModels) {
+            recipesThirdPageServiceData[recipemodel.label] = recipemodel
+        }
+    }
+
+    fun addFavRecipes(vararg databaseRecipes: DatabaseRecipe) {
+        for (databaserecipe in databaseRecipes) {
+            favRecipesServiceData[databaserecipe.label] = databaserecipe
+        }
+
+    }
+
+    fun setFavRecipes() {
+        if (favRecipesSuccess) {
+            _favouriteRecipes.value = Result.Success(favRecipesServiceData.values.toList())
+        } else {
+            _favouriteRecipes.value = Result.Error(NetworkErrorException())
+        }
+    }
+
+
+    override suspend fun insertRecipe(favouriteRecipe: RecipeModel): Boolean {
+
+        if (favouriteRecipe.smallImage == "validSmallImage") {
+            return true
+        }
+        return false
+
+
     }
 
     override suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe) {
         deletedRecipe = favouriteRecipe
+
     }
 }

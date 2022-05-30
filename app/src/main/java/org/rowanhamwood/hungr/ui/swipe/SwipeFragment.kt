@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import com.yuyakaido.android.cardstackview.CardStackListener
 import com.yuyakaido.android.cardstackview.CardStackView
@@ -73,11 +74,6 @@ class SwipeFragment : Fragment(), CardStackListener {
             Context.MODE_PRIVATE
         )
 
-
-
-
-
-
         adapter = SwipeAdapter()
         cardStackView = binding.cardStackView
         manager = CardStackLayoutManager(requireContext(), this)
@@ -86,12 +82,6 @@ class SwipeFragment : Fragment(), CardStackListener {
 
         val cardPosition = sharedPreferences.getInt(TOP_CARD, 0)
         manager.topPosition = cardPosition
-
-
-
-
-
-
 
         val currentTimeHrs = System.currentTimeMillis() / 1000 / 60 / 60
         val lastStartupTimeHrs = sharedPreferences.getLong(CURRENT_TIME_HRS, currentTimeHrs)
@@ -128,6 +118,13 @@ class SwipeFragment : Fragment(), CardStackListener {
                     loadingimage.visibility = View.GONE
                     errorTextView.visibility = View.VISIBLE
                     errorImageView.visibility = View.VISIBLE
+                    Snackbar.make(cardStackView, getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG)
+                        .setAction("Retry") {
+                            sharedViewModel.getRecipeData(false, false)
+                        }
+                        .setAnchorView(R.id.nav_view)
+                        .show()
+
 
                 }
                 is ResultState.Loading -> {
@@ -143,7 +140,13 @@ class SwipeFragment : Fragment(), CardStackListener {
 
         sharedViewModel.recipeImageLoadingState.observe(viewLifecycleOwner){ state ->
             if (state == false) {
-                Toast.makeText(requireContext(), "could not find image", Toast.LENGTH_SHORT).show()
+                Snackbar.make(cardStackView, getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG)
+                    .setAction("Retry") {
+                        sharedViewModel.getRecipeData(false, false)
+
+                    }
+                    .setAnchorView(R.id.nav_view)
+                    .show()
                 sharedViewModel.setRecipeImageLoadingState(true)
                 sharedViewModel.setFavRecipesResultStateSuccess()
             }

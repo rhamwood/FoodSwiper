@@ -30,8 +30,6 @@ class RecipeViewModel @Inject constructor(
     sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
-
-
     private val _favouriteRecipes =
         recipesRepository.favouriteRecipes.switchMap { recipesResults(it) }
     val favouriteRecipes = _favouriteRecipes
@@ -60,34 +58,6 @@ class RecipeViewModel @Inject constructor(
     fun setRecipeImageLoadingState(state: Boolean){
         _recipeImageLoadingState.value = state
     }
-
-
-
-    @SuppressLint("NullSafeMutableLiveData")
-    fun recipesResults(recipesResult: Result<List<DatabaseRecipe>>): LiveData<List<DatabaseRecipe>> {
-
-        val result = MutableLiveData<List<DatabaseRecipe>>()
-
-        _favRecipeUiState.value = ResultState.Loading
-
-        if (recipesResult is Result.Success)
-
-            if (recipesResult.data.isNotEmpty()) {
-                viewModelScope.launch {
-                    result.value = recipesResult.data
-                    _favRecipeUiState.value = ResultState.Success
-                }
-            } else {
-                _favRecipeUiState.value = ResultState.Failure("Oops, nothing here yet!")
-            }
-        else {
-            result.value = emptyList()
-            _favRecipeUiState.value = ResultState.Failure("Oops, something went wrong!")
-        }
-        return result
-
-    }
-
 
     private val _recipes: MutableLiveData<List<RecipeModel>> = MutableLiveData(emptyList())
     val recipes: LiveData<List<RecipeModel>> = _recipes
@@ -148,6 +118,31 @@ class RecipeViewModel @Inject constructor(
         getRecipeData(getNext, appNewStart)
     }
 
+    @SuppressLint("NullSafeMutableLiveData")
+    fun recipesResults(recipesResult: Result<List<DatabaseRecipe>>): LiveData<List<DatabaseRecipe>> {
+
+        val result = MutableLiveData<List<DatabaseRecipe>>()
+
+        _favRecipeUiState.value = ResultState.Loading
+
+        if (recipesResult is Result.Success)
+
+            if (recipesResult.data.isNotEmpty()) {
+                viewModelScope.launch {
+                    result.value = recipesResult.data
+                    _favRecipeUiState.value = ResultState.Success
+                }
+            } else {
+                _favRecipeUiState.value = ResultState.Failure("Oops, nothing here yet!")
+            }
+        else {
+            result.value = emptyList()
+            _favRecipeUiState.value = ResultState.Failure("Oops, something went wrong!")
+        }
+        return result
+
+    }
+
 
     fun getRecipeData(getNext: Boolean, appNewStart: Boolean) {
 
@@ -165,7 +160,6 @@ class RecipeViewModel @Inject constructor(
                 )
 
                 if (result is Result.Success) {
-
 
                     _recipes.value = result.data.value
                     Log.d(TAG, "${recipes.value}")
