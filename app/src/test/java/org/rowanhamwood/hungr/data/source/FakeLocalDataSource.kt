@@ -6,21 +6,22 @@ import androidx.lifecycle.MutableLiveData
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.BaseLocalDataSource
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
-import org.rowanhamwood.hungr.remote.BaseRemoteDataSource
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 class FakeLocalDataSource: BaseLocalDataSource {
 
     lateinit var deletedRecipe: DatabaseRecipe
-    lateinit var insertedRecipe: DatabaseRecipe
+    lateinit var insertedRecipe: RecipeModel
     var favRecipesServiceData: LinkedHashMap<String, DatabaseRecipe> = LinkedHashMap()
     var favRecipesSuccess: Boolean = true
     val _favouriteRecipes: MutableLiveData<Result<List<DatabaseRecipe>>> = MutableLiveData()
 
     // set inserted recipe to check if input if correctly received
-    override suspend fun insertRecipe(favouriteRecipe: DatabaseRecipe) {
+    override suspend fun insertRecipe(favouriteRecipe: RecipeModel): Boolean {
         insertedRecipe = favouriteRecipe
+        return true
     }
+
 
     // set deleted recipe to check if input if correctly received
     override suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe) {

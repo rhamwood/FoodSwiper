@@ -1,7 +1,6 @@
 package org.rowanhamwood.hungr.viewmodel
 
 
-import android.accounts.NetworkErrorException
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule

@@ -1,13 +1,9 @@
 package org.rowanhamwood.hungr.data.source
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -15,7 +11,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.runner.manipulation.Ordering
 import org.robolectric.RobolectricTestRunner
 import org.rowanhamwood.hungr.MainCoroutineRule
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
@@ -30,7 +25,6 @@ class RecipesRepositoryTest{
     // use fake data sources to test repository
     private lateinit var localDataSource: FakeLocalDataSource
     private lateinit var remoteDataSource: FakeRemoteDataSource
-    private lateinit var context: Context
     private lateinit var ioDispatcher: CoroutineDispatcher
 
     private lateinit var recipesRepository: BaseRecipesRepository
@@ -47,7 +41,6 @@ class RecipesRepositoryTest{
     fun setupRepository(){
         localDataSource = FakeLocalDataSource()
         remoteDataSource = FakeRemoteDataSource()
-        context = ApplicationProvider.getApplicationContext()
         ioDispatcher = Dispatchers.Main
 
         val recipe1 = RecipeModel("recipe1", "label1", "largeImage1", "smallImage1", "source1", "url1")
@@ -69,7 +62,7 @@ class RecipesRepositoryTest{
         val databaseRecipe2 = DatabaseRecipe("recipe2", "label2",  "image2", "source2", "url2")
         localDataSource.addFavRecipes(databaseRecipe1, databaseRecipe2)
 
-        recipesRepository = RecipesRepository(localDataSource, remoteDataSource, context, ioDispatcher)
+        recipesRepository = RecipesRepository(localDataSource, remoteDataSource, ioDispatcher)
 
 
     }

@@ -23,7 +23,7 @@ import java.util.*
 
 class LocalDataSource(
     private val recipeDao: RecipeDao,
-    context: Context,
+    private val context: Context,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) :
     BaseLocalDataSource {

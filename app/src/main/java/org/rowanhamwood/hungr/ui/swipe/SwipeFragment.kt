@@ -2,15 +2,11 @@ package org.rowanhamwood.hungr.ui.swipe
 
 
 import android.content.Context
-import android.content.Context.CONNECTIVITY_SERVICE
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
@@ -86,7 +82,7 @@ class SwipeFragment : Fragment(), CardStackListener {
         val currentTimeHrs = System.currentTimeMillis() / 1000 / 60 / 60
         val lastStartupTimeHrs = sharedPreferences.getLong(CURRENT_TIME_HRS, currentTimeHrs)
 
-        if ((lastStartupTimeHrs +3 ) < currentTimeHrs) {
+        if ((lastStartupTimeHrs + 3) < currentTimeHrs) {
             sharedViewModel.clearRecipes()
             val getNext = sharedPreferences.getBoolean(GET_NEXT, false)
             sharedViewModel.getRecipeData(getNext, true)
@@ -118,17 +114,23 @@ class SwipeFragment : Fragment(), CardStackListener {
                     loadingimage.visibility = View.GONE
                     errorTextView.visibility = View.VISIBLE
                     errorImageView.visibility = View.VISIBLE
-                    Snackbar.make(cardStackView, getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG)
-                        .setAction("Retry") {
-                            sharedViewModel.getRecipeData(false, false)
-                        }
-                        .setAnchorView(R.id.nav_view)
-                        .show()
+                    if (state.message != "Nothing here yet, try searching for something!") {
+                        Snackbar.make(
+                            cardStackView,
+                            getString(R.string.no_internet_connection),
+                            Snackbar.LENGTH_LONG
+                        )
+                            .setAction("Retry") {
+                                sharedViewModel.getRecipeData(false, false)
+                            }
+                            .setAnchorView(R.id.nav_view)
+                            .show()
+                    }
 
 
                 }
                 is ResultState.Loading -> {
-                    //do something with loading
+                    //show loading image
                     loadingimage.visibility = View.VISIBLE
                     cardStackView.visibility = View.GONE
                     errorTextView.visibility = View.GONE
@@ -138,9 +140,15 @@ class SwipeFragment : Fragment(), CardStackListener {
             }
         }
 
-        sharedViewModel.recipeImageLoadingState.observe(viewLifecycleOwner){ state ->
+
+        // check if image has been saved successfully
+        sharedViewModel.recipeImageLoadingState.observe(viewLifecycleOwner) { state ->
             if (state == false) {
-                Snackbar.make(cardStackView, getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    cardStackView,
+                    getString(R.string.no_internet_connection),
+                    Snackbar.LENGTH_LONG
+                )
                     .setAction("Retry") {
                         sharedViewModel.getRecipeData(false, false)
 
@@ -157,25 +165,20 @@ class SwipeFragment : Fragment(), CardStackListener {
     }
 
 
-
-
     override fun onStop() {
+        // save current top car as well as current time to check if images need to be refresh
         sharedPreferences.edit().putInt(TOP_CARD, manager.topPosition).apply()
         val currentTimeHours = System.currentTimeMillis() / 1000 / 60 / 60
         sharedPreferences.edit().putLong(CURRENT_TIME_HRS, currentTimeHours).apply()
         super.onStop()
     }
 
-    
-
-    
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
 
     }
-
 
 
     override fun onCardDragging(direction: Direction?, ratio: Float) {
