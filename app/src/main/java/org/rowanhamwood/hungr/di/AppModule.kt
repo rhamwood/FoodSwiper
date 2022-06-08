@@ -41,10 +41,11 @@ object AppModule {
     @Provides
     fun provideLocalDataSource(
         database: FavouriteRecipesDatabase,
+        @ApplicationContext context: Context,
         ioDispatcher: CoroutineDispatcher
     ): BaseLocalDataSource {
         return LocalDataSource(
-            database.recipeDao, ioDispatcher
+            database.recipeDao,context, ioDispatcher
         )
     }
 
@@ -87,11 +88,10 @@ object RecipesRepositoryModule {
     fun provideRecipesRepository(
         remoteDataSource: BaseRemoteDataSource,
         localDataSource: BaseLocalDataSource,
-        @ApplicationContext context: Context,
         ioDispatcher: CoroutineDispatcher
     ): BaseRecipesRepository {
         return RecipesRepository(
-            localDataSource, remoteDataSource, context, ioDispatcher
+            localDataSource, remoteDataSource, ioDispatcher
         )
     }
 }

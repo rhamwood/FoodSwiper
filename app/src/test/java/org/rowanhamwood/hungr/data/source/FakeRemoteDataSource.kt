@@ -4,32 +4,40 @@ import android.accounts.NetworkErrorException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.rowanhamwood.hungr.Result
-import org.rowanhamwood.hungr.local.database.DatabaseRecipe
+import org.rowanhamwood.hungr.remote.BaseRemoteDataSource
 import org.rowanhamwood.hungr.remote.network.RecipeModel
-import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 import java.lang.NullPointerException
 
+class FakeRemoteDataSource: BaseRemoteDataSource {
 
-class FakeTestRepository : BaseRecipesRepository {
-
-
-    private val _favouriteRecipes: MutableLiveData<Result<List<DatabaseRecipe>>> = MutableLiveData()
-    override val favouriteRecipes: LiveData<Result<List<DatabaseRecipe>>> = _favouriteRecipes
-
+    var searchSuccess: Boolean = true
+    val recipesLiveData = MutableLiveData<List<RecipeModel>>()
 
     var recipesServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
     var recipesSecondPageServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
     var recipesThirdPageServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
-    var favRecipesServiceData: LinkedHashMap<String, DatabaseRecipe> = LinkedHashMap()
+
+    fun addRecipes(vararg recipeModels: RecipeModel) {
+        for (recipemodel in recipeModels) {
+            recipesServiceData[recipemodel.label] = recipemodel
+        }
+    }
+
+    fun addSecondPageRecipes(vararg recipeModels: RecipeModel) {
+        for (recipemodel in recipeModels) {
+            recipesSecondPageServiceData[recipemodel.label] = recipemodel
+        }
+    }
+
+    fun addThirdPageRecipes(vararg recipeModels: RecipeModel) {
+        for (recipemodel in recipeModels) {
+            recipesThirdPageServiceData[recipemodel.label] = recipemodel
+        }
+    }
 
 
-    private val recipesLiveData = MutableLiveData<List<RecipeModel>>()
-
-    var searchSuccess: Boolean = true
-    var favRecipesSuccess: Boolean = true
-    lateinit var deletedRecipe: DatabaseRecipe
-
-
+    //return service data depending on whether the request is successful or not and whether search query is null
+    // getNext and appNewStart will give different pages of results
     override suspend fun getRecipes(
         searchQuery: String?,
         healthQuery: String?,
@@ -79,55 +87,5 @@ class FakeTestRepository : BaseRecipesRepository {
 
             return Result.Error(NullPointerException())
         }
-
-    }
-
-    fun addRecipes(vararg recipeModels: RecipeModel) {
-        for (recipemodel in recipeModels) {
-            recipesServiceData[recipemodel.label] = recipemodel
-        }
-    }
-
-    fun addSecondPageRecipes(vararg recipeModels: RecipeModel) {
-        for (recipemodel in recipeModels) {
-            recipesSecondPageServiceData[recipemodel.label] = recipemodel
-        }
-    }
-
-    fun addThirdPageRecipes(vararg recipeModels: RecipeModel) {
-        for (recipemodel in recipeModels) {
-            recipesThirdPageServiceData[recipemodel.label] = recipemodel
-        }
-    }
-
-    fun addFavRecipes(vararg databaseRecipes: DatabaseRecipe) {
-        for (databaserecipe in databaseRecipes) {
-            favRecipesServiceData[databaserecipe.label] = databaserecipe
-        }
-
-    }
-
-    fun setFavRecipes() {
-        if (favRecipesSuccess) {
-            _favouriteRecipes.value = Result.Success(favRecipesServiceData.values.toList())
-        } else {
-            _favouriteRecipes.value = Result.Error(NetworkErrorException())
-        }
-    }
-
-
-    override suspend fun insertRecipe(favouriteRecipe: RecipeModel): Boolean {
-
-        if (favouriteRecipe.smallImage == "validSmallImage") {
-            return true
-        }
-        return false
-
-
-    }
-
-    override suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe) {
-        deletedRecipe = favouriteRecipe
-
     }
 }
