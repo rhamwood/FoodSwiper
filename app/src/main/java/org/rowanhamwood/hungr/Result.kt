@@ -1,5 +1,7 @@
 package org.rowanhamwood.hungr
 
+import java.lang.Exception
+
 
 sealed class Result<out R> {
 
@@ -21,3 +23,4 @@ sealed class Result<out R> {
  */
 val Result<*>.succeeded
     get() = this is Result.Success && data != null
+

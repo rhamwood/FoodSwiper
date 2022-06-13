@@ -2,6 +2,7 @@ package org.rowanhamwood.hungr.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.lifecycle.SavedStateHandle
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -63,15 +64,8 @@ object AppModule {
     @Provides
     fun provideIoDispatcher() = Dispatchers.IO
 
-    @Singleton
-    @Provides
-    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
-        return context.getSharedPreferences(
-            context.getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE
-        )
 
-    }
+
 
 
 }

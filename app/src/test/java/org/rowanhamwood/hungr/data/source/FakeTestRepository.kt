@@ -1,13 +1,11 @@
 package org.rowanhamwood.hungr.data.source
 
-import android.accounts.NetworkErrorException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
-import java.lang.NullPointerException
 
 
 class FakeTestRepository : BaseRecipesRepository {
@@ -44,7 +42,7 @@ class FakeTestRepository : BaseRecipesRepository {
                 return Result.Success(recipesLiveData)
             } else
             {
-                return Result.Error(NetworkErrorException())
+                return Result.Error(Exception())
             }
 
         } else if (searchQuery != null && getNext) {
@@ -54,7 +52,7 @@ class FakeTestRepository : BaseRecipesRepository {
                 return Result.Success(recipesLiveData)
             } else
             {
-                return Result.Error(NetworkErrorException())
+                return Result.Error(Exception())
             }
 
         } else if (searchQuery != null && appNewStart) {
@@ -63,7 +61,7 @@ class FakeTestRepository : BaseRecipesRepository {
                 return Result.Success(recipesLiveData)
             } else
             {
-                return Result.Error(NetworkErrorException())
+                return Result.Error(Exception())
             }
 
         } else if (searchQuery != null) {
@@ -72,12 +70,12 @@ class FakeTestRepository : BaseRecipesRepository {
                 return Result.Success(recipesLiveData)
             } else
             {
-                return Result.Error(NetworkErrorException())
+                return Result.Error(Exception())
             }
 
         } else {
 
-            return Result.Error(NullPointerException())
+            return Result.Error(Exception())
         }
 
     }
@@ -111,7 +109,7 @@ class FakeTestRepository : BaseRecipesRepository {
         if (favRecipesSuccess) {
             _favouriteRecipes.value = Result.Success(favRecipesServiceData.values.toList())
         } else {
-            _favouriteRecipes.value = Result.Error(NetworkErrorException())
+            _favouriteRecipes.value = Result.Error(Exception())
         }
     }
 

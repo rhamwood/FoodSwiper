@@ -1,23 +1,16 @@
 package org.rowanhamwood.hungr.viewmodel
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
-import android.provider.Settings.Secure.getString
 import android.util.Log
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
-import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.ResultState
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.*
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
 
 private const val TAG = "RecipeViewModel"
@@ -27,8 +20,27 @@ private const val GET_NEXT = "GET_NEXT"
 @HiltViewModel
 class RecipeViewModel @Inject constructor(
     private val recipesRepository: BaseRecipesRepository,
-    sharedPreferences: SharedPreferences
+    private val state: SavedStateHandle
 ) : ViewModel() {
+
+
+    // Expose an immutable LiveData
+    val getNext: LiveData<Boolean> = state.getLiveData(GET_NEXT)
+
+    fun saveGetNext(getNext: Boolean) {
+        // Sets a new value for the object associated to the key. There's no need to set it
+        // as a LiveData.
+        state.set(GET_NEXT, getNext)
+    }
+
+    val search: LiveData<String> = state.getLiveData(CURRENT_SEARCH)
+
+    fun setSearch(searchText: String) {
+        state.set(CURRENT_SEARCH, searchText)
+    }
+
+
+
 
     private val _favouriteRecipes =
         recipesRepository.favouriteRecipes.switchMap { recipesResults(it) }
@@ -62,8 +74,7 @@ class RecipeViewModel @Inject constructor(
     private val _recipes: MutableLiveData<List<RecipeModel>> = MutableLiveData(emptyList())
     val recipes: LiveData<List<RecipeModel>> = _recipes
 
-    private val _search = MutableLiveData<String>()
-    val search: LiveData<String> = _search
+
 
     private val _cuisine = MutableLiveData<String?>()
     val cuisine: LiveData<String?> = _cuisine
@@ -78,9 +89,7 @@ class RecipeViewModel @Inject constructor(
         _recipes.value = emptyList()
     }
 
-    fun setSearch(searchText: String) {
-        _search.value = searchText
-    }
+
 
     fun setCuisine(cuisineName: String?) {
         _cuisine.value = cuisineName
@@ -91,7 +100,6 @@ class RecipeViewModel @Inject constructor(
     }
 
     fun setFavouriteRecipes(recipe: RecipeModel) {
-
         viewModelScope.launch {
             _recipeImageLoadingState.value = recipesRepository.insertRecipe(recipe)
         }
@@ -109,13 +117,13 @@ class RecipeViewModel @Inject constructor(
     }
 
     init {
-        val currentSearch = sharedPreferences.getString(CURRENT_SEARCH, null)
-        if (currentSearch != null) {
-            setSearch(currentSearch)
-        }
-        val getNext = sharedPreferences.getBoolean(GET_NEXT, false)
+
         val appNewStart = true
-        getRecipeData(getNext, appNewStart)
+        if (getNext.value!=null) {
+            getRecipeData(getNext.value!!, appNewStart)
+        } else {
+            getRecipeData(false, appNewStart)
+        }
     }
 
     @SuppressLint("NullSafeMutableLiveData")
@@ -146,10 +154,10 @@ class RecipeViewModel @Inject constructor(
 
     fun getRecipeData(getNext: Boolean, appNewStart: Boolean) {
 
-        val searchQuery = _search.value
+        val searchQuery = search.value
         if (searchQuery != null && !getNext) {
-            val healthQuery = _health.value
-            val cuisineQuery = _cuisine.value
+            val healthQuery = health.value
+            val cuisineQuery = cuisine.value
             viewModelScope.launch {
                 val result = recipesRepository.getRecipes(
                     searchQuery,

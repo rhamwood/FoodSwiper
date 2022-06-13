@@ -1,18 +1,17 @@
 package org.rowanhamwood.hungr.data.source
 
-import android.accounts.NetworkErrorException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.remote.BaseRemoteDataSource
 import org.rowanhamwood.hungr.remote.network.RecipeModel
-import java.lang.NullPointerException
+import java.lang.Exception
 
 class FakeRemoteDataSource: BaseRemoteDataSource {
 
     var searchSuccess: Boolean = true
     val recipesLiveData = MutableLiveData<List<RecipeModel>>()
-
+    lateinit var exception: Exception
     var recipesServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
     var recipesSecondPageServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
     var recipesThirdPageServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
@@ -52,7 +51,7 @@ class FakeRemoteDataSource: BaseRemoteDataSource {
                 return Result.Success(recipesLiveData)
             } else
             {
-                return Result.Error(NetworkErrorException())
+                return Result.Error(exception)
             }
 
         } else if (searchQuery != null && getNext) {
@@ -62,7 +61,7 @@ class FakeRemoteDataSource: BaseRemoteDataSource {
                 return Result.Success(recipesLiveData)
             } else
             {
-                return Result.Error(NetworkErrorException())
+                return Result.Error(exception)
             }
 
         } else if (searchQuery != null && appNewStart) {
@@ -71,7 +70,7 @@ class FakeRemoteDataSource: BaseRemoteDataSource {
                 return Result.Success(recipesLiveData)
             } else
             {
-                return Result.Error(NetworkErrorException())
+                return Result.Error(exception)
             }
 
         } else if (searchQuery != null) {
@@ -80,12 +79,12 @@ class FakeRemoteDataSource: BaseRemoteDataSource {
                 return Result.Success(recipesLiveData)
             } else
             {
-                return Result.Error(NetworkErrorException())
+                return Result.Error(exception)
             }
 
         } else {
 
-            return Result.Error(NullPointerException())
+            return Result.Error(exception)
         }
     }
 }

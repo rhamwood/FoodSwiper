@@ -109,7 +109,7 @@ class SearchFragment : Fragment() {
         }
 
         //setup searchView
-        searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 return false
             }
@@ -121,12 +121,10 @@ class SearchFragment : Fragment() {
                 if (searchQuery != null) {
 
                     sharedViewModel.setSearch(searchQuery.toString())
-                    sharedPreferences.edit().putString(CURRENT_SEARCH, searchQuery.toString())
-                        .apply()
                     sharedViewModel.clearRecipes()
                     sharedPreferences.edit().putInt(TOP_CARD, 0).apply()
                     sharedViewModel.getRecipeData(false, false)
-                    sharedPreferences.edit().putBoolean(GET_NEXT, false).apply()
+                    sharedViewModel.saveGetNext(true)
                     sharedViewModel.setRecipesResultStateLoading()
                     goToNextScreen()
                 }

@@ -56,8 +56,7 @@ class RemoteDataSource(
 
             } else {
 
-
-                return@withContext Result.Error(Exception("search query is null"))
+                return@withContext Result.Error(Exception())
             }
         } else {
 

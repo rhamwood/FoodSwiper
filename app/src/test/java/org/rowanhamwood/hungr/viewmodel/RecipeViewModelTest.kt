@@ -4,10 +4,10 @@ package org.rowanhamwood.hungr.viewmodel
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.*
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
-
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,7 +26,7 @@ class RecipeViewModelTest {
 
     // Use a fake repository to be injected into the viewmodel
     private lateinit var recipesRepository: FakeTestRepository
-    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var state: SavedStateHandle
 
     // Subject under test
     private lateinit var recipeViewModel: RecipeViewModel
@@ -35,13 +35,10 @@ class RecipeViewModelTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
 
-    @ExperimentalCoroutinesApi
-    @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
-
 
     @Before
     fun setupViewModel(){
+
         recipesRepository = FakeTestRepository()
         //add recipes for first page of data
         val recipe1 = RecipeModel("recipe1", "label1", "largeImage1", "smallImage1", "source1", "url1")
@@ -64,13 +61,14 @@ class RecipeViewModelTest {
         recipesRepository.addFavRecipes(databaseRecipe1, databaseRecipe2)
 
 
-        sharedPreferences = getApplicationContext<Context>().getSharedPreferences("org.rowanhamwood.hungr.PREFERENCE_FILE_KEY", Context.MODE_PRIVATE)
-        recipeViewModel = RecipeViewModel(recipesRepository, sharedPreferences)
+        state = SavedStateHandle()
+        recipeViewModel = RecipeViewModel(recipesRepository, state)
 
 
 
 
     }
+
 
     @Test
     fun setSearch_LiveDataChanged() {
@@ -120,6 +118,7 @@ class RecipeViewModelTest {
 
     }
 
+    @ExperimentalCoroutinesApi
     @Test
     fun getFavouriteRecipesSuccess(){
         //When recipes are retrieved successfully
@@ -134,7 +133,7 @@ class RecipeViewModelTest {
     }
 
     @Test
-    fun setFavouriteRecipes_insertRecipeCalledWithValidDatabaseRecipe() {
+    fun setFavouriteRecipes_insertRecipeCalledWithValidDatabaseRecipe(){
 
         //Given a valid recipeModel with a valid smallImage
         val recipeModel: RecipeModel = RecipeModel("uri", "label", "image", "validSmallImage", "source", "url")
@@ -181,7 +180,7 @@ class RecipeViewModelTest {
     }
 
     @Test
-    fun getRecipeData_AllQueriesfilledPassedCorrectly() {
+    fun getRecipeData_AllQueriesfilledPassedCorrectly_GetNextAndAppNewStartFalse() {
 
         // Given search, health and cuisine Livedata is not null
         recipeViewModel.setSearch("PIE")
@@ -199,7 +198,7 @@ class RecipeViewModelTest {
     }
 
     @Test
-    fun getRecipeData_SearchQueryFilledTwoEmptyStringPassedCorrectly() {
+    fun getRecipeData_SearchQueryFilledTwoEmptyStringPassedCorrectly_GetNextAndAppNewStartFalse() {
 
         // Given search is filled and other liveData are empty strings
         recipeViewModel.setSearch("PIE")
@@ -218,7 +217,7 @@ class RecipeViewModelTest {
     }
 
     @Test
-    fun getRecipeData_SearchQueryfilledTwoNullPassedCorrectly() {
+    fun getRecipeData_SearchQueryfilledTwoNullPassedCorrectly_GetNextAndAppNewStartFalse() {
 
         // Given search is filled and other liveData are empty strings
         recipeViewModel.setSearch("PIE")
