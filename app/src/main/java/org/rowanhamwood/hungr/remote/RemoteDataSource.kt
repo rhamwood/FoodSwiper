@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.getNextUrl
 import org.rowanhamwood.hungr.local.database.getNextDao
-import org.rowanhamwood.hungr.remote.network.RecipeApi
+import org.rowanhamwood.hungr.remote.network.RecipeApiService
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 import org.rowanhamwood.hungr.remote.network.asRecipeModel
 
@@ -16,6 +16,7 @@ import org.rowanhamwood.hungr.remote.network.asRecipeModel
 class RemoteDataSource(
     private val getNextDao: getNextDao,
     private val ioDispatcher: CoroutineDispatcher,
+    private val recipeApiService: RecipeApiService
 ) :
     BaseRemoteDataSource {
 
@@ -35,7 +36,7 @@ class RemoteDataSource(
             if (searchQuery != null) {
 
                 try {
-                    val requestValue = RecipeApi.retrofitService.getRecipes(
+                    val requestValue = recipeApiService.getRecipes(
                         searchQuery = searchQuery,
                         healthQuery = healthQuery,
                         cuisineQuery = cuisineQuery
@@ -66,7 +67,7 @@ class RemoteDataSource(
                 }
 
                 val requestValue = oldNextUrl?.let {
-                    RecipeApi.retrofitService.getNext(
+                    recipeApiService.getNext(
                         it
 
                     )

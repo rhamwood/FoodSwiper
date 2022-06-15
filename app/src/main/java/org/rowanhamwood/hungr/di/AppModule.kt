@@ -16,6 +16,7 @@ import org.rowanhamwood.hungr.local.LocalDataSource
 import org.rowanhamwood.hungr.local.database.FavouriteRecipesDatabase
 import org.rowanhamwood.hungr.remote.BaseRemoteDataSource
 import org.rowanhamwood.hungr.remote.RemoteDataSource
+import org.rowanhamwood.hungr.remote.network.RecipeApiService
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 import org.rowanhamwood.hungr.repository.RecipesRepository
 import javax.inject.Singleton
@@ -30,10 +31,11 @@ object AppModule {
     @Provides
     fun provideRemoteDataSource(
         database: FavouriteRecipesDatabase,
-        ioDispatcher: CoroutineDispatcher
+        ioDispatcher: CoroutineDispatcher,
+        recipeApiService: RecipeApiService
     ): BaseRemoteDataSource {
         return RemoteDataSource(
-            database.getNextDao, ioDispatcher
+            database.getNextDao, ioDispatcher, recipeApiService
         )
     }
 
@@ -62,26 +64,25 @@ object AppModule {
     @Singleton
     @Provides
     fun provideIoDispatcher() = Dispatchers.IO
-
-
 }
 
-/**
- * The binding for TasksRepository is on its own module so that we can replace it easily in tests.
- */
-@Module
-@InstallIn(SingletonComponent::class)
-object RecipesRepositoryModule {
 
-    @Singleton
-    @Provides
-    fun provideRecipesRepository(
-        remoteDataSource: BaseRemoteDataSource,
-        localDataSource: BaseLocalDataSource,
-        ioDispatcher: CoroutineDispatcher
-    ): BaseRecipesRepository {
-        return RecipesRepository(
-            localDataSource, remoteDataSource, ioDispatcher
-        )
+    /**
+     * The binding for TasksRepository is on its own module so that we can replace it easily in tests.
+     */
+    @Module
+    @InstallIn(SingletonComponent::class)
+    object RecipesRepositoryModule {
+
+        @Singleton
+        @Provides
+        fun provideRecipesRepository(
+            remoteDataSource: BaseRemoteDataSource,
+            localDataSource: BaseLocalDataSource,
+            ioDispatcher: CoroutineDispatcher
+        ): BaseRecipesRepository {
+            return RecipesRepository(
+                localDataSource, remoteDataSource, ioDispatcher
+            )
+        }
     }
-}
