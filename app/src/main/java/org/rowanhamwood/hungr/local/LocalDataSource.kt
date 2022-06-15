@@ -10,7 +10,6 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
@@ -24,7 +23,7 @@ import java.util.*
 class LocalDataSource(
     private val recipeDao: RecipeDao,
     private val context: Context,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher
 ) :
     BaseLocalDataSource {
 
@@ -71,7 +70,6 @@ class LocalDataSource(
 
         val result = (loader.execute(request) as SuccessResult).drawable
         val bitmap = (result as BitmapDrawable).bitmap
-
 
         return bitmap
     }

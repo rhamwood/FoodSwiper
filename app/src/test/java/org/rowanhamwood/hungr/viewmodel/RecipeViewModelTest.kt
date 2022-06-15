@@ -142,7 +142,7 @@ class RecipeViewModelTest {
         recipeViewModel.setFavouriteRecipes(recipeModel)
 
         //Then recipeImageLoadingState LiveData is set to true
-        assertThat(recipeViewModel.recipeImageLoadingState.value, `is`(true) )
+        assertThat(recipeViewModel.recipeImageLoadingState.getOrAwaitValue(), `is`(true) )
 
 
 
@@ -158,7 +158,7 @@ class RecipeViewModelTest {
         recipeViewModel.setFavouriteRecipes(recipeModel)
 
         //Then recipeImageLoadingState LiveData is set to false
-        assertThat(recipeViewModel.recipeImageLoadingState.value, `is`(false) )
+        assertThat(recipeViewModel.recipeImageLoadingState.getOrAwaitValue(), `is`(false) )
 
 
     }

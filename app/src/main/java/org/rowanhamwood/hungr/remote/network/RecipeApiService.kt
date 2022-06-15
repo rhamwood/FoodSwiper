@@ -71,7 +71,6 @@ interface RecipeApiService {
 
 
 object RecipeApi {
-
     val retrofitService: RecipeApiService by lazy {
         retrofit.create(RecipeApiService::class.java)
     }

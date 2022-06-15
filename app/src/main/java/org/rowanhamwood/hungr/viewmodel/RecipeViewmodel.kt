@@ -24,12 +24,10 @@ class RecipeViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    // Expose an immutable LiveData
+
     val getNext: LiveData<Boolean> = state.getLiveData(GET_NEXT)
 
-    fun saveGetNext(getNext: Boolean) {
-        // Sets a new value for the object associated to the key. There's no need to set it
-        // as a LiveData.
+    fun setGetNext(getNext: Boolean) {
         state.set(GET_NEXT, getNext)
     }
 

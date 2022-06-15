@@ -11,7 +11,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import org.rowanhamwood.hungr.R
 import org.rowanhamwood.hungr.local.BaseLocalDataSource
 import org.rowanhamwood.hungr.local.LocalDataSource
 import org.rowanhamwood.hungr.local.database.FavouriteRecipesDatabase
@@ -46,7 +45,7 @@ object AppModule {
         ioDispatcher: CoroutineDispatcher
     ): BaseLocalDataSource {
         return LocalDataSource(
-            database.recipeDao,context, ioDispatcher
+            database.recipeDao, context, ioDispatcher
         )
     }
 
@@ -63,9 +62,6 @@ object AppModule {
     @Singleton
     @Provides
     fun provideIoDispatcher() = Dispatchers.IO
-
-
-
 
 
 }

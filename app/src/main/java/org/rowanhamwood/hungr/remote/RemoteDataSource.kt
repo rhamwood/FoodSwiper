@@ -4,7 +4,6 @@ package org.rowanhamwood.hungr.remote
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.getNextUrl
@@ -16,7 +15,7 @@ import org.rowanhamwood.hungr.remote.network.asRecipeModel
 
 class RemoteDataSource(
     private val getNextDao: getNextDao,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher,
 ) :
     BaseRemoteDataSource {
 
@@ -55,7 +54,6 @@ class RemoteDataSource(
 
 
             } else {
-
                 return@withContext Result.Error(Exception())
             }
         } else {

@@ -124,7 +124,7 @@ class SearchFragment : Fragment() {
                     sharedViewModel.clearRecipes()
                     sharedPreferences.edit().putInt(TOP_CARD, 0).apply()
                     sharedViewModel.getRecipeData(false, false)
-                    sharedViewModel.saveGetNext(true)
+                    sharedViewModel.setGetNext(true)
                     sharedViewModel.setRecipesResultStateLoading()
                     goToNextScreen()
                 }
