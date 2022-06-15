@@ -22,13 +22,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-//    private const val BASE_URL = "https://api.edamam.com/api/"
-//    private const val API_KEY = "801fbc496f6b39e5afbe4b810261585f"
-//    private const val APP_ID = "2023fe67"
-
-
-
-
     private fun addApiKeyToRequests(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
         val originalHttpUrl = chain.request().url()
@@ -70,9 +63,6 @@ object NetworkModule {
     fun provideApiClient(retrofit: Retrofit): RecipeApiService {
         return retrofit.create(RecipeApiService::class.java)
     }
-
-
-
 
 
 }
