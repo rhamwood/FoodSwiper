@@ -10,7 +10,6 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
@@ -23,21 +22,15 @@ import java.util.*
 
 class LocalDataSource(
     private val recipeDao: RecipeDao,
-    private val context: Context,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val fileSaverService: BaseFileSaverService
 ) :
     BaseLocalDataSource {
 
     override suspend fun insertRecipe(favouriteRecipe: RecipeModel): Boolean = withContext(ioDispatcher){
 
             try {
-                val recipeBitmap = getBitmapFile(favouriteRecipe.smallImage)
-                val imageId = UUID.randomUUID().toString()
-                saveFavouriteRecipeFile(recipeBitmap, imageId)
-
-                val path = File(recipeImageDirectory(), imageId).absolutePath
-                favouriteRecipe.smallImage = path
-
+                favouriteRecipe.smallImage = fileSaverService.imageUriToFile(favouriteRecipe.smallImage)
                 val databaseRecipe = maptoDataBaseModel(favouriteRecipe)
                 recipeDao.insertRecipe(databaseRecipe)
                 return@withContext true
@@ -50,7 +43,7 @@ class LocalDataSource(
 
     override suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe) {
         withContext(ioDispatcher) {
-            File(favouriteRecipe.image).delete()
+            fileSaverService.deleteImageFile(favouriteRecipe.image)
             recipeDao.deleteRecipe(favouriteRecipe)
         }
     }
@@ -60,32 +53,6 @@ class LocalDataSource(
 
     }
 
-
-    private suspend fun getBitmapFile(imgUrl: String): Bitmap {
-        val loader = ImageLoader(context)
-        val request = ImageRequest.Builder(context)
-            .data(imgUrl)
-            .allowHardware(false)
-            // Disable hardware bitmaps.
-            .build()
-
-        val result = (loader.execute(request) as SuccessResult).drawable
-        val bitmap = (result as BitmapDrawable).bitmap
-
-        return bitmap
-    }
-
-
-    private fun saveFavouriteRecipeFile(recipeBitmap: Bitmap, fileName: String)  {
-        try {
-            val fileOutputStream: FileOutputStream =
-                context.openFileOutput(fileName, Context.MODE_PRIVATE)
-            recipeBitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
-            fileOutputStream.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
     private fun maptoDataBaseModel(recipeModel: RecipeModel): DatabaseRecipe {
         return recipeModel.let {
@@ -99,7 +66,7 @@ class LocalDataSource(
         }
     }
 
-    private fun recipeImageDirectory(): String = context.filesDir.absolutePath
+
 
 
 }

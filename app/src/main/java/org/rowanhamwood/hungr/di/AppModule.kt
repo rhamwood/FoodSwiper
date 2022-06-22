@@ -9,7 +9,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import org.rowanhamwood.hungr.local.BaseFileSaverService
 import org.rowanhamwood.hungr.local.BaseLocalDataSource
+import org.rowanhamwood.hungr.local.FileSaverService
 import org.rowanhamwood.hungr.local.LocalDataSource
 import org.rowanhamwood.hungr.local.database.FavouriteRecipesDatabase
 import org.rowanhamwood.hungr.remote.BaseRemoteDataSource
@@ -23,6 +25,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideFileSaverService(@ApplicationContext context: Context): BaseFileSaverService{
+        return FileSaverService(
+            context
+        )
+    }
 
 
     @Singleton
@@ -41,11 +51,11 @@ object AppModule {
     @Provides
     fun provideLocalDataSource(
         database: FavouriteRecipesDatabase,
-        @ApplicationContext context: Context,
-        ioDispatcher: CoroutineDispatcher
+        ioDispatcher: CoroutineDispatcher,
+        fileSaverService: BaseFileSaverService
     ): BaseLocalDataSource {
         return LocalDataSource(
-            database.recipeDao, context, ioDispatcher
+            database.recipeDao,ioDispatcher, fileSaverService
         )
     }
 
