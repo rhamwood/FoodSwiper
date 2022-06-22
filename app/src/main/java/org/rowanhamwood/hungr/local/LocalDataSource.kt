@@ -10,6 +10,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
@@ -75,7 +76,7 @@ class LocalDataSource(
     }
 
 
-    private fun saveFavouriteRecipeFile(recipeBitmap: Bitmap, fileName: String) {
+    private fun saveFavouriteRecipeFile(recipeBitmap: Bitmap, fileName: String)  {
         try {
             val fileOutputStream: FileOutputStream =
                 context.openFileOutput(fileName, Context.MODE_PRIVATE)

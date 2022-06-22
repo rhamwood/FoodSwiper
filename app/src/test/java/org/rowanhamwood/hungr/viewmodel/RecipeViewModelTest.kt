@@ -1,8 +1,7 @@
 package org.rowanhamwood.hungr.viewmodel
 
 
-import android.content.Context
-import android.content.SharedPreferences
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.*
@@ -13,11 +12,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.RecipeModel
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-
-
 import org.rowanhamwood.hungr.*
 import org.rowanhamwood.hungr.data.source.FakeTestRepository
 

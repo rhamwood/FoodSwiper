@@ -24,7 +24,7 @@ object NetworkModule {
 
     private fun addApiKeyToRequests(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
-        val originalHttpUrl = chain.request().url()
+        val originalHttpUrl = chain.request().url
         val newUrl = originalHttpUrl.newBuilder()
             .addQueryParameter("app_id", BuildConfig.APP_ID)
             .addQueryParameter("app_key", BuildConfig.API_KEY)
