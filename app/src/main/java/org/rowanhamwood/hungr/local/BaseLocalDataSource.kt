@@ -12,4 +12,6 @@ interface BaseLocalDataSource {
     suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe)
 
     fun getRecipes(): LiveData<Result<List<DatabaseRecipe>>>
+
+    suspend fun isRecipeSaved(key: String): Boolean
 }

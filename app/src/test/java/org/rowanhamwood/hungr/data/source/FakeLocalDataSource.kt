@@ -38,6 +38,10 @@ class FakeLocalDataSource: BaseLocalDataSource {
         return _favouriteRecipes
     }
 
+    override suspend fun isRecipeSaved(key: String): Boolean {
+        return true
+    }
+
 
     //add favouriterecipes to service data
     fun addFavRecipes(vararg databaseRecipes: DatabaseRecipe) {

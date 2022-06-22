@@ -52,6 +52,9 @@ class RemoteDataSourceTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    var coroutineRule = AndroidCoroutineRule()
+
 
 
     @Before
@@ -60,7 +63,7 @@ class RemoteDataSourceTest {
         database = Room.inMemoryDatabaseBuilder(context, FavouriteRecipesDatabase::class.java)
             .build()
         getNextDao = database.getNextDao
-        ioDispatcher = Dispatchers.IO
+        ioDispatcher = Dispatchers.Main
 
 
     }
@@ -115,7 +118,7 @@ class RemoteDataSourceTest {
 
         // Assert
         assert(result is Result.Success)
-            assertEquals((result as Result.Success).data.getOrAwaitValueAndroidTest(), expectedRecipesList)
+        assertEquals((result as Result.Success).data.getOrAwaitValueAndroidTest(), expectedRecipesList)
     }
 
     @Test

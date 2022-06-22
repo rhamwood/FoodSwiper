@@ -1,5 +1,6 @@
 package org.rowanhamwood.hungr
 
+import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 
 val recipeModel1 = RecipeModel(
@@ -19,6 +20,16 @@ val recipeModel2 = RecipeModel(
     largeImage = "large",
     smallImage = "small"
 )
+
+val databaseRecipe1 = DatabaseRecipe(
+    uri = "http://www.edamam.com/ontologies/edamam.owl#recipe_76af243a27a2c3f938003d551238833e",
+    url = "http://www.goodhousekeeping.com/food-recipes/a15642/chess-pie-recipe-clv0314/",
+    source = "Good Housekeeping",
+    label = "Chess Pie",
+    image = "smallImagePath"
+)
+
+
 
 
 
