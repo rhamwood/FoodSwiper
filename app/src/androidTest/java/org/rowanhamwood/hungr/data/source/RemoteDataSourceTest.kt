@@ -1,4 +1,4 @@
-package org.rowanhamwood.hungr
+package org.rowanhamwood.hungr.data.source
 
 
 import android.content.Context
@@ -20,6 +20,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.rowanhamwood.hungr.*
 import org.rowanhamwood.hungr.local.database.FavouriteRecipesDatabase
 import org.rowanhamwood.hungr.local.database.getNextDao
 import org.rowanhamwood.hungr.remote.RemoteDataSource
