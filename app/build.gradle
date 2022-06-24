@@ -16,7 +16,8 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "org.rowanhamood.hungr.CustomTestRunner"
+         testInstrumentationRunner "org.rowanhamwood.hungr.CustomTestRunner"
+//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -31,9 +32,7 @@ android {
                 buildConfigField "String", "API_URL", "\"https://api.edamam.com/api/\""
                 buildConfigField "String", "API_KEY", API_KEY
                 buildConfigField "String", "APP_ID", APP_ID
-                minifyEnabled false
-                testCoverageEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
 
             }
 
@@ -47,16 +46,7 @@ android {
         }
     }
 
-    // Always show the result of every unit test, even if it passes.
-    testOptions.unitTests {
-        includeAndroidResources = true
 
-        all {
-            testLogging {
-                events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
-            }
-        }
-    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -71,13 +61,7 @@ android {
 
 }
 
-kapt {
-    arguments {
-        // Make Hilt share the same definition of Components in tests instead of
-        // creating a new set of Components per test class.
-        arg("dagger.hilt.shareTestComponents", "true")
-    }
-}
+
 
 dependencies {
 

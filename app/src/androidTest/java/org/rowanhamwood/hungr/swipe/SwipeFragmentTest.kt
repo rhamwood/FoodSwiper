@@ -48,7 +48,9 @@ class SwipeFragmentTest {
 
 
         //Then
-        onView(withId(R.id.item_name))
+        onView(withId(R.id.swipeErrorImage))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.swipeErrorText))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
 
