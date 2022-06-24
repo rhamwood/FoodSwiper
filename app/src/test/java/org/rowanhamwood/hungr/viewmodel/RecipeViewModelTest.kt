@@ -72,7 +72,7 @@ class RecipeViewModelTest {
             //When a new search term is set
             recipeViewModel.setSearch("PIE")
 
-            //search LiveData is updated
+            //Then search LiveData is updated
             val value = recipeViewModel.search.getOrAwaitValue()
             assertThat(value, `is`("PIE"))
 
@@ -84,7 +84,7 @@ class RecipeViewModelTest {
         //When a new cuisine type is set
         recipeViewModel.setCuisine("CHINESE")
 
-        //cuisine LiveData is updated
+        //Then cuisine LiveData is updated
         val value = recipeViewModel.cuisine.getOrAwaitValue()
         assertThat(value, `is`("CHINESE"))
 
@@ -96,7 +96,7 @@ class RecipeViewModelTest {
         //When a new health type is set
         recipeViewModel.setHealth("VEGAN")
 
-        //health LiveData is updated
+        //Then health LiveData is updated
         val value = recipeViewModel.health.getOrAwaitValue()
         assertThat(value, `is`("VEGAN"))
 
@@ -108,7 +108,7 @@ class RecipeViewModelTest {
         //When a new url is set
         recipeViewModel.setUrl("http//:hello")
 
-        //url LiveData is updated
+        //Then url LiveData is updated
         val value = recipeViewModel.url.getOrAwaitValue()
         assertThat(value, `is`("http//:hello"))
 
@@ -122,7 +122,7 @@ class RecipeViewModelTest {
         recipesRepository.setFavRecipes()
 
 
-        //fav recipe ui state is Success and favRecipesLivedata holds correct data
+        //Then fav recipe ui state is Success and favRecipesLivedata holds correct data
         assertThat(recipeViewModel.favouriteRecipes.getOrAwaitValue(), `is`(recipesRepository.favRecipesServiceData.values.toList()))
         assertThat(recipeViewModel.favRecipeUiState.getOrAwaitValue(), `is`(ResultState.Success))
 

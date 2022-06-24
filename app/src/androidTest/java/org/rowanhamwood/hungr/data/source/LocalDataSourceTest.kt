@@ -1,17 +1,14 @@
-package org.rowanhamwood.hungr
+package org.rowanhamwood.hungr.data.source
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -19,6 +16,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnitRunner
+import org.rowanhamwood.hungr.*
 import org.rowanhamwood.hungr.local.BaseLocalDataSource
 import org.rowanhamwood.hungr.local.LocalDataSource
 import org.rowanhamwood.hungr.local.database.FavouriteRecipesDatabase
@@ -26,6 +25,7 @@ import org.rowanhamwood.hungr.local.database.RecipeDao
 import java.io.IOException
 
 @ExperimentalCoroutinesApi
+@RunWith(MockitoJUnitRunner::class)
 class LocalDataSourceTest {
     private lateinit var recipeDao: RecipeDao
     private lateinit var database : FavouriteRecipesDatabase
@@ -53,6 +53,9 @@ class LocalDataSourceTest {
     @get:Rule
     var coroutineRule = AndroidCoroutineRule()
 
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
+
     @After
     @Throws(IOException::class)
     fun closeDb() {
@@ -65,10 +68,10 @@ class LocalDataSourceTest {
     @Test
     fun insertRecipeToDatabase()  = runTest {
 
-        //Arrange
+        //Given
         localDataSource = LocalDataSource(recipeDao, ioDispatcher, fileSaverService)
 
-        //Act and Assert
+        //When, Then
         assertThat(localDataSource.insertRecipe(recipeModel1),`is`(true))
 
 
@@ -77,15 +80,39 @@ class LocalDataSourceTest {
     @Test
     fun deleteRecipeFromDatabase()  = runTest {
 
-        //Arrange
+        //Given
         localDataSource = LocalDataSource(recipeDao, ioDispatcher, fileSaverService)
         localDataSource.insertRecipe(recipeModel1)
 
-        //Act and Assert
+        //When
         localDataSource.deleteRecipe(databaseRecipe1)
+
+        //Then
         assert(!localDataSource.isRecipeSaved(databaseRecipe1.label))
 
     }
+
+    @Test
+    fun retrieveSavedRecipesLivedataFromDatabase() = runTest {
+
+        //Given
+        localDataSource = LocalDataSource(recipeDao, ioDispatcher, fileSaverService)
+        localDataSource.insertRecipe(recipeModel1)
+        localDataSource.insertRecipe(recipeModel2)
+
+        //When, Then
+        assertThat(localDataSource.getRecipes().getOrAwaitValueAndroidTest(), `is` (
+            Result.Success(
+                responseDatabaseRecipeList
+            )
+        ))
+
+
+    }
+
+
+
+
 
 
 

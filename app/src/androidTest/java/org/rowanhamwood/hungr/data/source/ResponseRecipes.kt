@@ -8,8 +8,8 @@ val recipeModel1 = RecipeModel(
     url = "http://www.goodhousekeeping.com/food-recipes/a15642/chess-pie-recipe-clv0314/",
     source = "Good Housekeeping",
     label = "Chess Pie",
-    largeImage = "large",
-    smallImage = "small"
+    largeImage = "https://upload.wikimedia.org/wikipedia/commons/7/7e/Cherry-Pie-Slice.jpg",
+    smallImage = "https://upload.wikimedia.org/wikipedia/commons/8/84/Coconut_cream_pie.jpg"
 )
 
 val recipeModel2 = RecipeModel(
@@ -17,8 +17,8 @@ val recipeModel2 = RecipeModel(
     url = "http://www.rachaelray.com/recipe/limesicle-summer-pie-sicles/",
     source = "Rachael Ray",
     label = "Limesicle Summer Pie-Sicles",
-    largeImage = "large",
-    smallImage = "small"
+    largeImage = "https://upload.wikimedia.org/wikipedia/commons/7/7e/Cherry-Pie-Slice.jpg",
+    smallImage = "https://upload.wikimedia.org/wikipedia/commons/8/84/Coconut_cream_pie.jpg"
 )
 
 val databaseRecipe1 = DatabaseRecipe(
@@ -26,11 +26,19 @@ val databaseRecipe1 = DatabaseRecipe(
     url = "http://www.goodhousekeeping.com/food-recipes/a15642/chess-pie-recipe-clv0314/",
     source = "Good Housekeeping",
     label = "Chess Pie",
-    image = "smallImagePath"
+    image = "https://upload.wikimedia.org/wikipedia/commons/8/84/Coconut_cream_pie.jpg"
+)
+
+val databaseRecipe2 = DatabaseRecipe(
+    uri = "http://www.edamam.com/ontologies/edamam.owl#recipe_985748e59463ec8cd0a4182f22ad0e42",
+    url = "http://www.rachaelray.com/recipe/limesicle-summer-pie-sicles/",
+    source = "Rachael Ray",
+    label = "Limesicle Summer Pie-Sicles",
+    image = "https://upload.wikimedia.org/wikipedia/commons/8/84/Coconut_cream_pie.jpg"
 )
 
 
 
-
+val responseDatabaseRecipeList = listOf<DatabaseRecipe>(databaseRecipe1, databaseRecipe2)
 
 val responseRecipeList = listOf<RecipeModel>(recipeModel1, recipeModel2)
