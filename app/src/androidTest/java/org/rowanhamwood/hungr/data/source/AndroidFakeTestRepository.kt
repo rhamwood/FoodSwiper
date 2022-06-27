@@ -1,13 +1,19 @@
 package org.rowanhamwood.hungr.data.source
 
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.rowanhamwood.hungr.Result
+import org.rowanhamwood.hungr.getOrAwaitValueAndroidTest
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
+import org.rowanhamwood.hungr.recipeModel1
+import org.rowanhamwood.hungr.recipeModel2
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 import javax.inject.Inject
+
+private const val TAG = "AndroidFakeTestReposito"
 
 
 class AndroidFakeTestRepository @Inject constructor(): BaseRecipesRepository {
@@ -18,14 +24,12 @@ class AndroidFakeTestRepository @Inject constructor(): BaseRecipesRepository {
 
 
     var recipesServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
-    var recipesSecondPageServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
-    var recipesThirdPageServiceData: LinkedHashMap<String, RecipeModel> = LinkedHashMap()
     var favRecipesServiceData: LinkedHashMap<String, DatabaseRecipe> = LinkedHashMap()
+
 
 
     private val recipesLiveData = MutableLiveData<List<RecipeModel>>()
 
-    var searchSuccess: Boolean = true
     var favRecipesSuccess: Boolean = true
     lateinit var deletedRecipe: DatabaseRecipe
 
@@ -37,48 +41,15 @@ class AndroidFakeTestRepository @Inject constructor(): BaseRecipesRepository {
         getNext: Boolean,
         appNewStart: Boolean
     ): Result<LiveData<List<RecipeModel>>> {
-        if (searchQuery != null && getNext && appNewStart) {
+//        if (searchQuery != null) {
+            addRecipes(recipeModel1, recipeModel2)
+            recipesLiveData.value = recipesServiceData.values.toList()
+            Log.d(TAG, "getRecipes: result success")
+            return Result.Success(recipesLiveData)
 
-            if (searchSuccess) {
-                recipesLiveData.value = recipesSecondPageServiceData.values.toList()
-                return Result.Success(recipesLiveData)
-            } else
-            {
-                return Result.Error(Exception())
-            }
-
-        } else if (searchQuery != null && getNext) {
-
-            if (searchSuccess) {
-                recipesLiveData.value = recipesThirdPageServiceData.values.toList()
-                return Result.Success(recipesLiveData)
-            } else
-            {
-                return Result.Error(Exception())
-            }
-
-        } else if (searchQuery != null && appNewStart) {
-            if (searchSuccess) {
-                recipesLiveData.value = recipesServiceData.values.toList()
-                return Result.Success(recipesLiveData)
-            } else
-            {
-                return Result.Error(Exception())
-            }
-
-        } else if (searchQuery != null) {
-            if(searchSuccess) {
-                recipesLiveData.value = recipesServiceData.values.toList()
-                return Result.Success(recipesLiveData)
-            } else
-            {
-                return Result.Error(Exception())
-            }
-
-        } else {
-
-            return Result.Error(Exception())
-        }
+//        } else {
+//            return Result.Error(Exception())
+//        }
 
     }
 
@@ -89,17 +60,6 @@ class AndroidFakeTestRepository @Inject constructor(): BaseRecipesRepository {
         }
     }
 
-    fun addSecondPageRecipes(vararg recipeModels: RecipeModel) {
-        for (recipemodel in recipeModels) {
-            recipesSecondPageServiceData[recipemodel.label] = recipemodel
-        }
-    }
-
-    fun addThirdPageRecipes(vararg recipeModels: RecipeModel) {
-        for (recipemodel in recipeModels) {
-            recipesThirdPageServiceData[recipemodel.label] = recipemodel
-        }
-    }
 
     fun addFavRecipes(vararg databaseRecipes: DatabaseRecipe) {
         for (databaserecipe in databaseRecipes) {
@@ -119,9 +79,9 @@ class AndroidFakeTestRepository @Inject constructor(): BaseRecipesRepository {
 
     override suspend fun insertRecipe(favouriteRecipe: RecipeModel): Boolean {
 
-        if (favouriteRecipe.smallImage == "validSmallImage") {
-            return true
-        }
+        val favDatabaseRecipe = maptoDataBaseModel(favouriteRecipe)
+        addFavRecipes(favDatabaseRecipe)
+        _favouriteRecipes.value = Result.Success(favRecipesServiceData.values.toList())
         return false
 
 
@@ -130,5 +90,17 @@ class AndroidFakeTestRepository @Inject constructor(): BaseRecipesRepository {
     override suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe) {
         deletedRecipe = favouriteRecipe
 
+    }
+
+    private fun maptoDataBaseModel(recipeModel: RecipeModel): DatabaseRecipe {
+        return recipeModel.let {
+            DatabaseRecipe(
+                uri = it.uri,
+                label = it.label,
+                image = it.smallImage,
+                source = it.source,
+                url = it.url
+            )
+        }
     }
 }

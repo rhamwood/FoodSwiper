@@ -13,7 +13,7 @@ import org.rowanhamwood.hungr.repository.BaseRecipesRepository
 import javax.inject.Inject
 
 
-private const val TAG = "RecipeViewModel"
+
 private const val CURRENT_SEARCH = "CURRENT_SEARCH"
 private const val GET_NEXT = "GET_NEXT"
 
@@ -36,8 +36,6 @@ class RecipeViewModel @Inject constructor(
     fun setSearch(searchText: String) {
         state.set(CURRENT_SEARCH, searchText)
     }
-
-
 
 
     private val _favouriteRecipes =
@@ -168,7 +166,6 @@ class RecipeViewModel @Inject constructor(
                 if (result is Result.Success) {
 
                     _recipes.value = result.data.value
-                    Log.d(TAG, "${recipes.value}")
                     _recipesUiState.value = ResultState.Success
 
 
@@ -189,11 +186,9 @@ class RecipeViewModel @Inject constructor(
                 val result = recipesRepository.getRecipes("", "", "", getNext, appNewStart)
                 if (result is Result.Success) {
                     _recipes.value = result.data.value
-                    Log.d(TAG, "${recipes.value}")
                     _recipesUiState.value = ResultState.Success
                 } else {
                     _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
-                    Log.d(TAG, "${recipes.value}")
                 }
 
 

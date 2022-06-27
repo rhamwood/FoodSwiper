@@ -55,8 +55,6 @@ class RecipeListFragment : Fragment() {
 
         }
 
-
-
         //Initialize recyclerView and layoutManager
         recyclerView = binding.recyclerview
         val linearLayoutManager = LinearLayoutManager(requireContext())
