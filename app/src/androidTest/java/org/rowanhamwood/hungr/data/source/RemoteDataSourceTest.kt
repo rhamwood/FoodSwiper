@@ -25,6 +25,7 @@ import org.rowanhamwood.hungr.local.database.FavouriteRecipesDatabase
 import org.rowanhamwood.hungr.local.database.getNextDao
 import org.rowanhamwood.hungr.remote.RemoteDataSource
 import org.rowanhamwood.hungr.remote.network.RecipeApiService
+import org.rowanhamwood.hungr.utils.AndroidCoroutineRule
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory

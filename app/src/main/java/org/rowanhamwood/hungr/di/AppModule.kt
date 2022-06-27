@@ -29,12 +29,11 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideFileSaverService(@ApplicationContext context: Context): BaseFileSaverService{
+    fun provideFileSaverService(@ApplicationContext context: Context): BaseFileSaverService {
         return FileSaverService(
             context
         )
     }
-
 
 
     @Singleton
@@ -57,7 +56,7 @@ object AppModule {
         fileSaverService: BaseFileSaverService
     ): BaseLocalDataSource {
         return LocalDataSource(
-            database.recipeDao,ioDispatcher, fileSaverService
+            database.recipeDao, ioDispatcher, fileSaverService
         )
     }
 
@@ -77,22 +76,22 @@ object AppModule {
 }
 
 
-    /**
-     * The binding for TasksRepository is on its own module so that we can replace it easily in tests.
-     */
-    @Module
-    @InstallIn(SingletonComponent::class)
-    object RecipesRepositoryModule {
+/**
+ * The binding for TasksRepository is on its own module so that we can replace it easily in tests.
+ */
+@Module
+@InstallIn(SingletonComponent::class)
+object RecipesRepositoryModule {
 
-        @Singleton
-        @Provides
-        fun provideRecipesRepository(
-            remoteDataSource: BaseRemoteDataSource,
-            localDataSource: BaseLocalDataSource,
-            ioDispatcher: CoroutineDispatcher
-        ): BaseRecipesRepository {
-            return RecipesRepository(
-                localDataSource, remoteDataSource, ioDispatcher
-            )
-        }
+    @Singleton
+    @Provides
+    fun provideRecipesRepository(
+        remoteDataSource: BaseRemoteDataSource,
+        localDataSource: BaseLocalDataSource,
+        ioDispatcher: CoroutineDispatcher
+    ): BaseRecipesRepository {
+        return RecipesRepository(
+            localDataSource, remoteDataSource, ioDispatcher
+        )
     }
+}

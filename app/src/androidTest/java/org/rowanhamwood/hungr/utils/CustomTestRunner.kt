@@ -1,5 +1,5 @@
 
-package org.rowanhamwood.hungr
+package org.rowanhamwood.hungr.utils
 
 import android.app.Application
 import android.content.Context

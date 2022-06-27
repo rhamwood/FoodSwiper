@@ -15,7 +15,7 @@ interface RecipeDao {
     fun deleteRecipe(recipe: DatabaseRecipe)
 
     @Query("SELECT EXISTS(SELECT * FROM DatabaseRecipe WHERE label = :label)")
-    fun isRecipeSaved(label : String) : Boolean
+    fun isRecipeSaved(label: String): Boolean
 }
 
 @Dao

@@ -10,19 +10,19 @@ import org.rowanhamwood.hungr.ResultState
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.*
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
+import org.rowanhamwood.hungr.utils.wrapEspressoIdlingResource
 import javax.inject.Inject
-
 
 
 private const val CURRENT_SEARCH = "CURRENT_SEARCH"
 private const val GET_NEXT = "GET_NEXT"
+private const val TAG = "RecipeViewmodel"
 
 @HiltViewModel
 class RecipeViewModel @Inject constructor(
     private val recipesRepository: BaseRecipesRepository,
     private val state: SavedStateHandle
 ) : ViewModel() {
-
 
 
     val getNext: LiveData<Boolean> = state.getLiveData(GET_NEXT)
@@ -36,7 +36,6 @@ class RecipeViewModel @Inject constructor(
     fun setSearch(searchText: String) {
         state.set(CURRENT_SEARCH, searchText)
     }
-
 
     private val _favouriteRecipes =
         recipesRepository.favouriteRecipes.switchMap { recipesResults(it) }
@@ -63,13 +62,12 @@ class RecipeViewModel @Inject constructor(
     private val _recipeImageLoadingState = MutableLiveData<Boolean>()
     val recipeImageLoadingState: LiveData<Boolean> = _recipeImageLoadingState
 
-    fun setRecipeImageLoadingState(state: Boolean){
+    fun setRecipeImageLoadingState(state: Boolean) {
         _recipeImageLoadingState.value = state
     }
 
     private val _recipes: MutableLiveData<List<RecipeModel>> = MutableLiveData(emptyList())
     val recipes: LiveData<List<RecipeModel>> = _recipes
-
 
 
     private val _cuisine = MutableLiveData<String?>()
@@ -84,7 +82,6 @@ class RecipeViewModel @Inject constructor(
     fun clearRecipes() {
         _recipes.value = emptyList()
     }
-
 
 
     fun setCuisine(cuisineName: String?) {
@@ -115,7 +112,7 @@ class RecipeViewModel @Inject constructor(
     init {
 
         val appNewStart = true
-        if (getNext.value!=null) {
+        if (getNext.value != null) {
             getRecipeData(getNext.value!!, appNewStart)
         } else {
             getRecipeData(false, appNewStart)
@@ -149,55 +146,57 @@ class RecipeViewModel @Inject constructor(
 
 
     fun getRecipeData(getNext: Boolean, appNewStart: Boolean) {
+        wrapEspressoIdlingResource {
+            val searchQuery = search.value
+            if (searchQuery != null && !getNext) {
+                val healthQuery = health.value
+                val cuisineQuery = cuisine.value
+                viewModelScope.launch {
+                    val result = recipesRepository.getRecipes(
+                        searchQuery,
+                        healthQuery,
+                        cuisineQuery,
+                        getNext,
+                        appNewStart
+                    )
 
-        val searchQuery = search.value
-        if (searchQuery != null && !getNext) {
-            val healthQuery = health.value
-            val cuisineQuery = cuisine.value
-            viewModelScope.launch {
-                val result = recipesRepository.getRecipes(
-                    searchQuery,
-                    healthQuery,
-                    cuisineQuery,
-                    getNext,
-                    appNewStart
-                )
+                    if (result is Result.Success) {
 
-                if (result is Result.Success) {
+                        _recipes.value = result.data.value
+                        _recipesUiState.value = ResultState.Success
+                        Log.d(TAG, "getRecipeData: ${_recipes.value}")
 
-                    _recipes.value = result.data.value
-                    _recipesUiState.value = ResultState.Success
+                    } else {
+                        if (appNewStart) {
+                            _recipesUiState.value =
+                                ResultState.Failure("Nothing here yet, try searching!")
+                        } else {
+                            _recipesUiState.value =
+                                ResultState.Failure("Oops, something went wrong!")
+
+                        }
+                    }
 
 
-                } else {
-                    if (appNewStart) {
-                        _recipesUiState.value =
-                            ResultState.Failure("Nothing here yet, try searching!")
+                }
+            } else if (searchQuery != null && getNext) {
+                viewModelScope.launch {
+                    val result = recipesRepository.getRecipes("", "", "", getNext, appNewStart)
+                    if (result is Result.Success) {
+                        _recipes.value = result.data.value
+                        _recipesUiState.value = ResultState.Success
                     } else {
                         _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
-
                     }
+
+
                 }
-
-
+            } else {
+                _recipesUiState.value =
+                    ResultState.Failure("Nothing here yet, try searching for something!")
             }
-        } else if (searchQuery != null && getNext) {
-            viewModelScope.launch {
-                val result = recipesRepository.getRecipes("", "", "", getNext, appNewStart)
-                if (result is Result.Success) {
-                    _recipes.value = result.data.value
-                    _recipesUiState.value = ResultState.Success
-                } else {
-                    _recipesUiState.value = ResultState.Failure("Oops, something went wrong!")
-                }
 
-
-            }
-        } else {
-            _recipesUiState.value =
-                ResultState.Failure("Nothing here yet, try searching for something!")
         }
-
     }
 
 

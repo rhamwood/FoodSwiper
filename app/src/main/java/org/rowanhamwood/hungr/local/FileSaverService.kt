@@ -10,7 +10,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.*
 
-class FileSaverService (private val context: Context) : BaseFileSaverService {
+class FileSaverService(private val context: Context) : BaseFileSaverService {
 
     private suspend fun getBitmapFile(imgUrl: String): Bitmap {
         val loader = ImageLoader(context)
@@ -28,7 +28,7 @@ class FileSaverService (private val context: Context) : BaseFileSaverService {
 
     private fun recipeImageDirectory(): String = context.filesDir.absolutePath
 
-    private fun saveFavouriteRecipeFile(recipeBitmap: Bitmap, fileName: String)  {
+    private fun saveFavouriteRecipeFile(recipeBitmap: Bitmap, fileName: String) {
         try {
             val fileOutputStream: FileOutputStream =
                 context.openFileOutput(fileName, Context.MODE_PRIVATE)
@@ -39,7 +39,7 @@ class FileSaverService (private val context: Context) : BaseFileSaverService {
         }
     }
 
-    override suspend fun imageUriToFile(imgUri: String) : String{
+    override suspend fun imageUriToFile(imgUri: String): String {
 
         val recipeBitmap = getBitmapFile(imgUri)
         val imageId = UUID.randomUUID().toString()
@@ -51,7 +51,7 @@ class FileSaverService (private val context: Context) : BaseFileSaverService {
 
     }
 
-    override suspend fun deleteImageFile(imgPath: String){
+    override suspend fun deleteImageFile(imgPath: String) {
         File(imgPath).delete()
     }
 

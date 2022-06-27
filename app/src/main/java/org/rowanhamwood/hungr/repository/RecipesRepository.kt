@@ -10,6 +10,7 @@ import org.rowanhamwood.hungr.local.BaseLocalDataSource
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.BaseRemoteDataSource
 import org.rowanhamwood.hungr.remote.network.RecipeModel
+import org.rowanhamwood.hungr.utils.wrapEspressoIdlingResource
 
 
 class RecipesRepository(
@@ -25,17 +26,21 @@ class RecipesRepository(
         getNext: Boolean,
         appNewStart: Boolean
     ): Result<LiveData<List<RecipeModel>>> {
-        return baseRemoteDataSource.getRecipes(
-            searchQuery,
-            healthQuery,
-            cuisineQuery,
-            getNext,
-            appNewStart
-        )
+        wrapEspressoIdlingResource {
+            return baseRemoteDataSource.getRecipes(
+                searchQuery,
+                healthQuery,
+                cuisineQuery,
+                getNext,
+                appNewStart
+            )
+        }
     }
 
     override val favouriteRecipes: LiveData<Result<List<DatabaseRecipe>>> =
-        baseLocalDataSource.getRecipes()
+        wrapEspressoIdlingResource {
+            baseLocalDataSource.getRecipes()
+        }
 
     override suspend fun insertRecipe(favouriteRecipe: RecipeModel): Boolean =
         withContext(ioDispatcher) {

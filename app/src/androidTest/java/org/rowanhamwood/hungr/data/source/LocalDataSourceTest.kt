@@ -22,6 +22,7 @@ import org.rowanhamwood.hungr.local.BaseLocalDataSource
 import org.rowanhamwood.hungr.local.LocalDataSource
 import org.rowanhamwood.hungr.local.database.FavouriteRecipesDatabase
 import org.rowanhamwood.hungr.local.database.RecipeDao
+import org.rowanhamwood.hungr.utils.AndroidCoroutineRule
 import java.io.IOException
 
 @ExperimentalCoroutinesApi

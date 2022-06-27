@@ -1,4 +1,4 @@
-package org.rowanhamwood.hungr
+package org.rowanhamwood.hungr.utils
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

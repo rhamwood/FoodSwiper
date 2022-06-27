@@ -29,9 +29,6 @@ class RecipeListFragmentTest {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
-
     @Inject
     lateinit var repository: BaseRecipesRepository
 

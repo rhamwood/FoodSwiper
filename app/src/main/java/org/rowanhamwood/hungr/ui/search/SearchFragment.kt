@@ -79,7 +79,7 @@ class SearchFragment : Fragment() {
 
         // diet selection menu
         val healthMenu = binding.dietMenu
-        val healthTextView = binding.dietTextView
+        val healthTextView = binding.healthTextView
 
         //setup cuisine selection menu
         val cuisineAdapter =
@@ -123,9 +123,10 @@ class SearchFragment : Fragment() {
                     sharedViewModel.setSearch(searchQuery.toString())
                     sharedViewModel.clearRecipes()
                     sharedPreferences.edit().putInt(TOP_CARD, 0).apply()
+                    sharedViewModel.setRecipesResultStateLoading()
                     sharedViewModel.getRecipeData(false, false)
                     sharedViewModel.setGetNext(true)
-                    sharedViewModel.setRecipesResultStateLoading()
+
                     goToNextScreen()
                 }
 

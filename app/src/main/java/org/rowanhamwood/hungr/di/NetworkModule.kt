@@ -16,8 +16,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 
-
-
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
@@ -36,7 +34,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideClient(): OkHttpClient {
-       return OkHttpClient.Builder()
+        return OkHttpClient.Builder()
             .addInterceptor { chain -> return@addInterceptor addApiKeyToRequests(chain) }
             .build()
     }

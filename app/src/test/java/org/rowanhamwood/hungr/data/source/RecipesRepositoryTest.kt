@@ -12,7 +12,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.rowanhamwood.hungr.CoroutineRule
+import org.rowanhamwood.hungr.utils.CoroutineRule
 import org.rowanhamwood.hungr.Result
 import org.rowanhamwood.hungr.getOrAwaitValue
 import org.rowanhamwood.hungr.local.database.DatabaseRecipe

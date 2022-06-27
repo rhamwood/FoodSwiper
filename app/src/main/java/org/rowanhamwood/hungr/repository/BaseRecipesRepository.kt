@@ -19,7 +19,7 @@ interface BaseRecipesRepository {
         appNewStart: Boolean
     ): Result<LiveData<List<RecipeModel>>>
 
-    suspend fun insertRecipe(favouriteRecipe: RecipeModel) : Boolean
+    suspend fun insertRecipe(favouriteRecipe: RecipeModel): Boolean
 
     suspend fun deleteRecipe(favouriteRecipe: DatabaseRecipe)
 

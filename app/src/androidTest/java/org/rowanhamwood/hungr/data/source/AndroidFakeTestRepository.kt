@@ -11,6 +11,7 @@ import org.rowanhamwood.hungr.recipeModel1
 import org.rowanhamwood.hungr.recipeModel2
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 import org.rowanhamwood.hungr.repository.BaseRecipesRepository
+import org.rowanhamwood.hungr.utils.wrapEspressoIdlingResource
 import javax.inject.Inject
 
 private const val TAG = "AndroidFakeTestReposito"
@@ -41,7 +42,10 @@ class AndroidFakeTestRepository @Inject constructor(): BaseRecipesRepository {
         getNext: Boolean,
         appNewStart: Boolean
     ): Result<LiveData<List<RecipeModel>>> {
+
+
 //        if (searchQuery != null) {
+        wrapEspressoIdlingResource {
             addRecipes(recipeModel1, recipeModel2)
             recipesLiveData.value = recipesServiceData.values.toList()
             Log.d(TAG, "getRecipes: result success")
@@ -50,6 +54,7 @@ class AndroidFakeTestRepository @Inject constructor(): BaseRecipesRepository {
 //        } else {
 //            return Result.Error(Exception())
 //        }
+        }
 
     }
 

@@ -12,6 +12,7 @@ import org.rowanhamwood.hungr.local.database.DatabaseRecipe
 import org.rowanhamwood.hungr.remote.network.RecipeModel
 import org.rowanhamwood.hungr.ui.recipelist.RecipeListAdapter
 import org.rowanhamwood.hungr.ui.swipe.SwipeAdapter
+import org.rowanhamwood.hungr.utils.wrapEspressoIdlingResource
 import java.io.File
 
 private const val TAG = "BindingAdapters"
@@ -19,14 +20,15 @@ private const val TAG = "BindingAdapters"
 @BindingAdapter("recipeImageUrl")
 fun bindRecipeImage(imgView: ImageView, imgUrl: String) {
     Log.d(TAG, "bindRecipeImage: $imgUrl")
+    wrapEspressoIdlingResource {
+        imgUrl.let {
+            val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
+            Log.d(TAG, "bindRecipeImage: $imgUri")
+            imgView.load(imgUri) {
+                placeholder(R.drawable.loading_animation)
+                error(R.drawable.ic_broken_image)
 
-    imgUrl.let {
-        val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
-        Log.d(TAG, "bindRecipeImage: $imgUri")
-        imgView.load(imgUri) {
-            placeholder(R.drawable.loading_animation)
-            error(R.drawable.ic_broken_image)
-
+            }
         }
     }
 }
@@ -48,10 +50,10 @@ fun bindFavImage(imgView: ImageView, imgFilePath: String) {
 fun bindCardStackView(
     cardStackView: CardStackView,
     data: List<RecipeModel>?
-) {
+) { wrapEspressoIdlingResource {
     val adapter = cardStackView.adapter as SwipeAdapter
     adapter.submitList(data)
-
+}
 
 }
 
