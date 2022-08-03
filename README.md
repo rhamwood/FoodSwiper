@@ -1,5 +1,5 @@
 # FoodSwiper
-A simple recipe searching app where you can swipe left or right on recipies
+A simple recipe searching app where you can swipe left or right on recipes
 
 ## API
 This app uses [Edamam Api](https://developer.edamam.com/edamam-recipe-api), you will need to signup for an API key and APP Key
